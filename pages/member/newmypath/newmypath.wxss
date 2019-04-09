@@ -1,0 +1,84 @@
+.new-my-path{
+  border-top: 1.5px solid #F5F5F5;
+}
+
+.new-my-path .nav {
+  background: #ffffff;
+  padding: 10px;
+  overflow: scroll;
+}
+
+.new-my-path .nav .ul {
+  white-space: nowrap;
+}
+
+.nav::-webkit-scrollbar {
+  display: none;
+}
+
+.new-my-path .nav .ul .li {
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid #EEE;
+  margin: 0 5px;
+  font-size: 13px;
+  white-space: pre-line;
+  display: inline-block;
+}
+
+.new-my-path .nav .ul .li.selected {
+  border: 1px solid #999999;
+  color: #000000;
+  background: #f1f1f1;
+  font-weight:900;
+}
+
+.new-my-path .list .li .date {
+  background: #F4F4F4;
+  padding-left: 20px;
+  padding: 5px 5px 5px 20px;
+}
+
+.new-my-path .list .li .right {
+  overflow: hidden;
+  background: #ffffff;
+  position: relative;
+  border-bottom: 1px solid #eee;
+  padding: 5px 10px;
+}
+
+.new-my-path .list .li .right .img-block {
+  /* width: 30%;
+  float: left; */
+}
+
+.new-my-path .list .li .right .img-block image {
+ height:100px;
+width:100px;
+display: block;
+}
+
+.new-my-path .list .li .right .content-block {
+  /* float: left; */
+  /* width: 70%; */
+  flex:1;
+  padding: 5px 0 0 10px;
+}
+
+.new-my-path .list .li .right .content-block .goods-name {
+  display: block;
+  padding-bottom: 25px;
+
+}
+
+.new-my-path .list .li .right .content-block .price {
+  margin-bottom: 5px;
+  color:#333;
+}
+
+.new-my-path .list .li .right .content-block .del {
+  color: gray;
+  font-weight:900;
+  width:100%;
+  text-align: right;
+}

@@ -1,0 +1,102 @@
+/* pages/member/givingDetail/givingDetail.wxss */
+.gift-item{
+  background: #fff;
+  margin-bottom: 10px;
+}
+.gift-detail{
+  display: flex;
+  justify-content: flex-start;
+  padding:10px;
+  border-bottom: 1px solid #f1f1f1;
+}
+.giftUrl{
+  width:180rpx;
+  height:180rpx;
+  display: block;
+  margin-right: 10px;
+}
+.gift-text{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+  font-size: 12px;
+  line-height: 22px;
+}
+.item-status{
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 10px;
+}
+.order-status{
+  background: #fff;
+  width:100%;
+}
+.order-top{
+  border-bottom: 1px solid #f1f1f1;
+  padding: 10px 0;
+}
+.order-top:last-child{
+  border-bottom: none;
+}
+.order-item{
+  font-size: 14px;
+  line-height: 30px;
+  padding:0 10px;
+}
+
+.givingMan{
+  margin-bottom: 8px;
+  padding:10px;
+  background: #fff;
+}
+.time{
+  font-size: 14px;
+  line-height: 25px;
+}
+.info{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.info>image{
+  width:60rpx;
+  height:60rpx;
+  display: block;
+  margin-right: 10px;
+}
+.info>text{
+  font-size: 14px;
+  color:#000;
+}
+.message{
+  font-size: 14px;
+  line-height: 30px;
+  color:#000;
+}
+
+/*收货地址  */
+.address{
+  margin-bottom: 8px;
+  background: #fff;
+}
+.address-info{
+  border-bottom: 1px solid #f1f1f1;
+  padding:10px;
+}
+.address-info>view{
+  font-size: 14px;
+  line-height: 25px;
+}
+.wl-info{
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  line-height: 40px;
+  padding:0 10px;
+}
+.checkBtn{
+  font-size: 17px;
+  color:#8f8e94;
+}

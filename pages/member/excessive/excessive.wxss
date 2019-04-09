@@ -1,0 +1,32 @@
+/* pages/member/excessive/excessive.wxss */
+scroll-view{
+     background: url('http://p6yljnwkf.bkt.clouddn.com/DBF22809-6E5D-4CE6-B15B-F7835890A546@1x.png') no-repeat;
+      background-size:cover; 
+      height: 100%;
+} 
+.lis{
+    margin-top: 180rpx;
+  width: 60px;
+  height: 60px;
+  margin-left: 42%;
+}
+.prosperity{
+ font-size: 17px;
+  color: #000;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  text-align: center
+}
+.jump{
+ font-size: 17px;
+  color: #999;
+   text-align: center
+}
+.ims{
+  width: 109px;
+  height: 109px;
+  margin-top: 380rpx;
+  margin-left: 36%;
+  margin-bottom:80rpx;
+
+}

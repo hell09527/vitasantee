@@ -1,0 +1,6 @@
+<!-- <button>{{Openbank}}</button> -->
+<view class="ul" wx:for="{{Openbank}}" wx:key="{{code}}"wx:for-item='item' wx:for-index='index'>
+<view class="li">
+{{item}}
+</view>
+</view>

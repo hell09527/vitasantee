@@ -1,0 +1,27 @@
+<!--pages/index/coupon/coupon.wxml-->
+<view>  
+  <view class="couponList">
+    <block wx:for='{{coupon}}' wx:key='' wx:for-item='coupons' wx:for-index='index'>
+      <view class="flex couponItem">
+        <image class="couponItem-image" catchtap='selectCart' data-id="{{coupons.coupon_type_id}}" src='/images/goods/{{coupons.status==1?"cartp2.png":"cartp1.png"}}' mode='widthFix'></image>
+        <view class='couponItem-middle'>
+          <view class='flex'>￥<text style='font-size:22px;'>{{coupons.money}}</text></view>
+          <hr/>
+          <view style='margin-top:8rpx;font-size:12px;'>优惠券</view>
+        </view>
+        <view class="couponItem-right">
+          <view>
+            <view style='font-size:18px;color:#000;'>满{{coupons.at_least}}元使用</view>
+            <view style='color:#333;' wx:if="{{coupons.use_type!=2}}">{{coupons.start_time}}-{{coupons.end_time}}</view>
+            <view style='color:#333;' wx:if="{{coupons.use_type==2}}">请在领取后{{coupons.get_after_days}}天内使用 </view>
+          </view>
+          <view style='color:#666;'>{{coupons.coupon_name}}</view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!--按钮 -->
+  <button class="coupon-btn" open-type="share">分享优惠券</button>  
+  <!--  catchtap='share'-->
+</view>

@@ -1,0 +1,87 @@
+
+@import "/templates/HomeOrShare-icon-template/HomeOrShare-icon-template.wxss";
+.discount_time_box{
+  white-space:nowrap;
+  height: 140rpx;
+}
+.discount_time_detail{
+  background: #96989e;
+  padding:10rpx 20rpx;
+  font-size: 14px;
+  color:#e4e4e6;
+  position: relative;
+  display: inline-block;
+}
+.discount_time_detail>.discount_time{
+  text-align: center;
+  line-height: 50rpx;
+}
+.discount_time_detail_active{
+  color:#fff;
+  font-size: 16px;
+  background: #7ca8bd;
+  padding:10rpx 40rpx;
+}
+.discount_time_detail_active .discount_text{
+  background: #fff;
+  text-align: center;
+  padding:0 20rpx;
+  color:#7ca8bd;
+  border-radius: 18rpx;
+}
+.discount_icon{
+  position: absolute;
+  bottom:-28rpx;
+  left:50%;
+  transform: translateX(-50%);
+  width:24rpx;
+  border-top: 15rpx solid #7ca8bd;
+  border-bottom: 15rpx solid transparent;
+  border-left: 15rpx solid transparent;
+  border-right: 15rpx solid transparent;
+  z-index: 100;
+}
+
+/* 商品列表 */
+.discount_goods_list{
+  padding:0 20rpx;
+}
+.discount_goods{
+  width:100%;
+  background: #fff;
+  border-radius: 5px;
+  padding:20rpx;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20rpx;
+}
+.discount_goods>image{
+  width:180rpx;
+}
+.discount_goods_detail{
+  flex: 1;
+  padding:0 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 180rpx;
+}
+.discount_inventory{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.discount_goods_price{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.discount_immediately{
+  background: #e40046;
+  height:44rpx;
+  line-height: 44rpx;
+  padding:0 20rpx;
+  border-radius: 22rpx;
+  color:#fff;
+}
+

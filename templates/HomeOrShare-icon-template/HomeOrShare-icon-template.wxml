@@ -1,0 +1,10 @@
+<template name="HomeOrShareIconTemplate">
+  <view class='set_icon_box'>
+    <button class="set_icon icon_share" open-type="share">
+      <image src="https://static.vitasantee.com/%E8%BD%AC%E5%8F%91%20copy@2x.png" mode="widthFix"/>
+    </button>
+    <view class='set_icon icon_home' catchtap='toHome'>
+      <image src="https://static.vitasantee.com/Homepage%20Copy@2x.png" mode="widthFix"/>
+    </view>
+  </view>
+</template>

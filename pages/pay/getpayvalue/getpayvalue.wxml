@@ -1,0 +1,45 @@
+<scroll-view>
+  <view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25' color='#FFF'></icon>
+    <view class="motify-inner">{{prompt}}</view>
+  </view>
+
+  <view class="head-info">
+    <view class="head-pay">向维美善特商城支付</view>
+    <view class="head-pay-value">￥{{pay_money}}</view>
+  </view>
+  <view class="pay-type-item">
+	  <view class="pay-item-list" id="pay-type">支付方式 
+		  <view class='span' id="pay-text">微信支付</view>
+	</view>
+	<view class="codes">
+    <view class="wchat-weixin">
+      <image class='wchat-photo' src="/images/pay/weifu.png" mode='widthFix'></image>
+        <view class="span wchat-title">微信支付</view>
+				<view class='span' id="wchatpay">
+          <icon type='success' size='25' color='#46A0F0'></icon>
+        </view> 
+			</view>
+	  </view>
+    <view class='pay-user'>支付人<view class='span'>{{nick_name}}</view></view>
+  </view>
+  <view class="footer">
+    <view class="copyright" id="bottom_copyright">
+      <view class="ft-copyright">
+        <view class='a' id="copyright_companyname"></view>
+      </view>
+    </view>
+  </view>
+
+
+
+  <view class="s-btn">
+
+      <form bindsubmit="payOrder" report-submit="true">
+          <button class="alipay" formType="submit">确认支付￥{{pay_money}}</button>
+      </form>
+
+        <view class="{{isIphoneX?'Lise':''}}"></view>
+    <!--<button class="alipay" catchtap='payOrder'>确认支付￥{{pay_money}}</button>-->
+  </view>
+</scroll-view>

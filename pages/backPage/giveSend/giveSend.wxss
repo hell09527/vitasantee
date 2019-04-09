@@ -1,0 +1,149 @@
+.heder{
+  width: 100%;
+  /* height: 188px;
+  background-color: #ccc; */
+}
+.pic{
+ text-align: center;
+ margin-bottom: 10px;
+}
+.pic .img{
+   /* margin-top: 40.33px; */
+  width: 100%;
+  display: block;
+}
+.title_gift{
+  margin: 0 auto;
+  font-weight: 700;
+ font-size: 16px;
+}
+.body{
+  padding: 10px;
+   background-color: #fff;
+}
+.data_shop{
+  width: 100%;
+  height: 100px;
+  display:flex;
+  justify-content:flex-start;
+  align-items: center;
+  padding:10px 0;
+  border-bottom: 1px solid #ccc;
+}
+.tu{
+  margin-right:10px; 
+  display: block;
+  height: 80px;
+  width:80px;
+}
+.tupi{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.l_f{
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: flex-start;
+ height:80px;
+}
+.shop_title{
+  font-size:12px;
+}
+.sku{
+ font-size:12px;
+ margin:8px 0;
+}
+.moeny{
+ font-size:12px;
+}
+.line{
+ border-bottom: 0.5px solid #ccc;
+}
+.dula{
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  color:#ccc;
+  margin-bottom: 20px;
+   background-color: #fff;
+   text-align: right;
+   padding:0 10px;
+}
+.song{
+  height:40px; 
+  line-height: 40px;
+  border:0;
+  color:#8F8E94;
+  background: #fff;
+  text-align: right;
+}
+.back{
+  width: 80%;
+   margin: 0 auto;
+    text-align: center;
+     height: 50px;
+     border:none;
+     border-radius: 0;
+      line-height: 50px;
+      color: #fff;
+      background-color: #000;
+}
+/* //地址 */
+.addList{
+  border-top:1px solid #999;
+  background: #fff;
+  padding:10rpx 30rpx;
+}
+.noAdd{
+  padding:40rpx 0;
+}
+.noAdd>image{
+  width:40rpx;
+  height:40rpx;
+  margin-right: 10rpx;
+}
+.noAdd>text{
+  font-size: 14px;
+}
+.addData{
+  padding:40rpx 0;
+}
+.addData>image{
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 10rpx;
+}
+.addInfo{
+  display: flex;
+  flex-direction: column;
+}
+.addInfo>text{
+  line-height: 20px;
+  font-size: 14px;
+}
+.flex{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+/* 圆 */
+.yuan{
+   position: fixed;
+ box-shadow: 5px 5px 15px #ccc;
+  bottom:30rpx;
+  right:30rpx;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 50px;
+  font-size: 12px;
+  color: #fff;
+  background-color: #000;
+}
+.footer{
+  background: none;
+  margin-top: 20px;
+}

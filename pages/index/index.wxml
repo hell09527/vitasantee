@@ -1,0 +1,238 @@
+<!-- 引入tempalte -->
+<import src="/templates/top-template/top-template.wxml" />
+<import src="/templates/goods-list-template/goods-list-template.wxml" />
+<!-- <import src="/templates/coupon-mask-template/coupon-mask-template.wxml" /> -->
+
+<view class="scroll-view">
+  <form bindsubmit='songGift' report-submit="true">
+
+    <!-- 等待标识 -->
+    <view class="motify {{prompt==''?'hide':''}}">
+      <icon class="i show_type warning" type='warn' size='25' color='#fff'></icon>
+      <view class="motify-inner">{{prompt}}</view>
+    </view>
+
+    <view class="com-content">
+
+      <!-- 公共头部 -->
+      <template is="topTemplate" data="{{category_list,scrollLeft,select}}" />
+
+      <!-- <block wx:for="{{category_list}}" wx:key="*this" wx:for-index='index'> -->
+        <view class="item-ans {{currentTab==0?'':'hide'}}">
+          <!-- 轮播图 -->
+          <view class="index_slide" wx:if='{{imgUrls[0] != undefined}}'>
+            <swiper autoplay="true" circular='true' class='index-swiper' bindchange='swiperChange' interval='3500' duration='500' style='height:{{swiperHeight}}px'>
+              <block wx:for="{{imgUrls}}" wx:key="" wx:for-item='imgs'>
+                <swiper-item>
+                  <image src="{{imgs.adv_image}}" class="slide-image" catchtap='toGood' data-url='{{imgs.adv_url}}' />
+                </swiper-item>
+              </block>
+            </swiper>
+
+            <view class='swiper_dots'>
+              <block wx:for="{{imgUrls}}" wx:key="" wx:for-index='index'>
+                <button form-type='submit' class="form-button">
+                  <view class="swiper_dots-item {{index==swiperCurrent?'swiper_dots_item_active':''}}"></view>
+                </button>
+              </block>
+            </view>
+          </view>
+
+          <!-- 新品推荐热卖推荐限时抢购 -->
+          <view class='recommended_box'>
+            <view class='recommended_item_box'>
+              <!-- 新品推荐 -->
+              <view class='recommended_item' wx:if='{{new_pro.length>0}}'>
+                <view class='recommended_title'>
+                  <view style='position: relative;'>
+                    <view class='recommended_title_text'>
+                      <text style='color:#005882'>新品</text>推荐
+                    </view>
+                    <view class='recommended_title_top' style='color:#005882'>New</view>
+                  </view>
+                  <view class='flex' catchtap='toNewProduct'>更多
+                    <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" class="more" mode="widthFix" />
+                  </view>
+                </view>
+                <view class='recommended_detail'>
+                  <block wx:for='{{new_pro}}' wx:key='' wx:for-item='shops' wx:for-index='index'>
+                    <view class='recommended_detail_item'  catchtap='toNewProduct' wx:if='{{index<2}}'>
+                      <image lazy-load="true" src="{{shops.new_pic}}" mode="widthFix" />
+                      <text>{{shops.goods_name}}</text>
+                    </view>
+                  </block>
+                </view>
+              </view>
+              <!-- 热卖推荐 -->
+              <view class='recommended_item' wx:if='{{index_goods_list.length>0}}'>
+                <view class='recommended_title'>
+                  <view style='position: relative;'>
+                    <view class='recommended_title_text'>
+                      <text style='color:#e40046'>热卖</text>推荐</view>
+                    <view class='recommended_title_top' style='color:#e40046;right:-14px;'>Hot</view>
+                  </view>
+                  <view class='flex' catchtap='toHotProduct'>更多
+                    <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" class="more" mode="widthFix" />
+                  </view>
+                </view>
+                <view class='recommended_detail'>
+                  <block wx:for='{{index_goods_list}}' wx:key='' wx:for-item='shops' wx:for-index='index'>
+                    <view class='recommended_detail_item' catchtap='toHotProduct' wx:if='{{index<2}}'>
+                      <image lazy-load="true" src="{{shops.pic_cover_small}}" mode="widthFix" />
+                      <text>{{shops.goods_name}}</text>
+                    </view>
+                  </block>
+                </view>
+              </view>
+            </view>
+
+            <!-- 限时推荐 -->
+            <view class='Timelimit' wx:if="{{discount_list.length>0}}">
+              <view class='recommended_title' style='padding:20rpx;'>
+                <view class='timeLimit-title'>
+                  <view style='position: relative'>
+                    <view class='recommended_title_text'>
+                      <text style='color:#e40046'>限时</text>推荐</view>
+                    <view class='recommended_title_top' style='color:#e40046'>Sale</view>
+                  </view>
+                </view>
+                <view class='timeLimit-box'>
+                  <block wx:if="{{timer_array.end == 0}}">
+                    <view class="span timeLimit-time">{{timer_array.hour}}</view>
+                    <view class='em'>:</view>
+                    <view class="span timeLimit-time">{{timer_array.minute}}</view>
+                    <view class='em'>:</view>
+                    <view class="span timeLimit-time">{{timer_array.second}}</view>
+                  </block>
+                  <block wx:else>
+                    <view class="span">活动已结束！</view>
+                  </block>
+                </view>
+                <view class='flex' catchtap='toDiscount'>更多
+                  <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" class="more" mode="widthFix" />
+                </view>
+              </view>
+
+              <view class='Timelimit_item'>
+                <block wx:for='{{discount_list}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+                  <view class='Timelimit_item_detail' wx:if='{{index<4}}' catchtap='toGood' data-id='{{item.goods_id}}'>
+                    <!-- 已抢光 -->
+                    <!-- <view wx:if='{{item.isHav==0}}' class='Timelimit_no'>已抢光</view> -->
+                    <image src="{{item.picture.pic_cover_small}}" lazy-load='true' mode="widthFix" />
+                    <!-- 精度条 -->
+                    <!-- <view class="Timelimit_progress {{item.isHav==0?'Timelimit_progress_no':''}}">
+                      <view class="Timelimit_progress_active"></view>
+                    </view> -->
+                    <text class='Timelimit_text'>{{item.goods_name}}</text>
+                    <view class='Timelimit_price'>￥{{item.promotion_price}}
+                      <text style='text-decoration:line-through;'>￥{{item.promotion_price}}</text>
+                    </view>
+                  </view>
+                </block>
+              </view>
+            </view>
+          </view>
+
+          <!-- 优惠券领取 -->
+          <view class="cp-container {{coupon_list[0]==undefined?'hide':''}}">
+            <!-- <view class="coupon-title">
+              <image src="/images/index/coupon_title_bg.png" mode='widthFix'/>
+            </view> -->
+            <view class="coupon-all">
+              <block wx:for='{{coupon_list}}' wx:key='' wx:for-item='coupon' wx:for-index='index'>
+                <view class="receive-coupons {{coupon.status==0?'gray':''}}" catchtap='toReceivePopup' data-id='{{coupon.coupon_type_id}}' data-index='{{index}}'>
+                  <image src='/images/index/index_coupon_bg.png'/>
+                  <view class="big money-number">￥{{coupon.money}}</view>
+                  <view class="p explanation">满{{coupon.at_least}}可用</view>
+                  <view class="get">领取优惠券</view>
+                </view>
+              </block>
+            </view>
+          </view>
+
+          <!-- 话题 -->
+          <view class="bodyBox">
+            <block wx:for='{{activities}}' wx:key='' wx:for-item='shops' wx:for-index='index'>
+              <view class='activity' wx:if='{{index<4}}'>
+                <!-- 标题 -->
+                <view class='activity_title'>
+                  <view class='activity_title_border'></view>
+                  <view class='activity_title_text'>{{shops.title}}</view>
+                </view>
+                <!-- 活动商品 -->
+                <view class='activity_container'>
+                  <image src="{{shops.pic}}" mode='widthFix'></image>
+                  <scroll-view class='activity_goods' scroll-x wx:if='{{shops.goods_list.length>0}}'>
+                    <block wx:for='{{active}}' wx:key='' wx:for-item='shops' wx:for-index='index'>
+                      <view class='activity_goods_detail'>
+                        <image src="https://static.vitasantee.com/2A8BD77F-ADB4-4F6F-A55D-D405F17464BA@2x.png" mode="widthFix" />
+                        <text class='activity_text'>收敛毛孔补水保湿收敛毛孔补水保湿</text>
+                        <text class='activity_info'>收敛毛孔补水保湿收敛毛孔补水保湿</text>
+                        <view class='activity_price'>￥69</view>
+                      </view>
+                    </block>
+                  </scroll-view>
+                </view>
+              </view>
+            </block>
+            <!-- 更多活动 -->
+            <view class='more-activity' catchtap='toTopicList' wx:if='{{activities.length>4}}'>更多话题</view>
+          </view>
+
+          <!-- 品牌推荐 -->
+          <view class='brand' wx:if='{{brand_goods.length>0}}'>
+            <!--  标题 -->
+            <view class='activity_title'>
+              <view class='activity_title_border'></view>
+              <view class='activity_title_text'>品牌推荐</view>
+            </view>
+            <!-- 推荐商品 -->
+            <view class='brand_goods'>
+              <block wx:for='{{brand_goods}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+                <template is="goodsListTemplate" data="{{...item,index}}" />
+              </block>
+            </view>
+          </view>
+        </view>
+
+        <view class="item-ans {{currentTab>0?'':'hide'}}">
+          <view class="content-title hide">
+            <block wx:for='{{titleList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+              <view class="title-item {{item.select==1?'':'title-item-active'}}" catchtap='titleCheck' data-id='{{index}}'>
+                <text>{{item.name}}</text>
+                <image src="{{item.select==1?'https://static.vitasantee.com/B740D975-6827-4391-84F2-3877ABD6D46E@2x.png':'https://static.vitasantee.com/967EC88C-B7B6-448B-AD30-1375B28B4A26@2x.png'}}" mode="widthFix" />
+              </view>
+            </block>
+          </view>
+          <!-- 内容主体 -->
+          <view class='skin-container'>
+            <!-- 商品列表 -->
+            <view class='brand_goods'>
+              <block wx:for='{{category_goods}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+                <template is="goodsListTemplate" data="{{...item,index}}" />
+              </block>
+            </view>
+              <view class="p {{isNoGoods?'':'hide'}}" style='margin:20px auto;text-align:center;'>
+                <!-- <image src="/images/goods/wap_nodata.png" mode='widthFix' style='width:60px;display:block;margin:20rpx auto'/> -->
+                <br/>此分类暂时没有商品了
+              </view>
+          </view>
+        </view>
+      <!-- </block> -->
+
+    </view>
+
+  </form>
+
+</view>
+
+<!-- 新人提示 -->
+<view class='collect-prompt' wx:if='{{is_login==1}}'>
+  <view class='prompt-text'>点击“·•·”添加到我的小程序，
+  <view class='prompt-close' catchtap='toClosePrompt'>X</view>微信首页下拉即可快速访问店铺</view>
+  <view class='prompt-nav'></view>
+</view>
+
+
+<!-- 新人优惠券 -->
+<!-- <template is="couponMaskTemplate" wx:if='{{isCouponMask}}'/> -->

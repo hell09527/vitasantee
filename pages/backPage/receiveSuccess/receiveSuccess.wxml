@@ -1,0 +1,18 @@
+<!--pages/backPage/receiveSuccess/receiveSuccess.wxml-->
+<scroll-view>
+  <view class="top">
+    <image src="https://static.bonnieclyde.cn/202-110.png" mode='widthFix'></image>
+    <text>礼物打包成功</text>
+<view class="wait">已火速送往您手中</view>
+  </view>
+
+  <view class="container">
+    <!-- <button catchtap='toNextPage' data-i="1">去还礼</button> -->
+<view class="lis" catchtap='toNextPage' data-i="1">
+<view class="give"  >我也要送礼</view>
+</view>
+<!-- <view class="lis_d" catchtap='toNextPage' data-i="2">
+<view class="stroll" >发现更多惊喜</view>
+</view> -->
+  </view>
+</scroll-view>

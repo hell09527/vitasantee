@@ -1,0 +1,42 @@
+<scroll-view>
+  <!-- 搜索 -->
+  <view class='first-search'>
+    <view class='search-box'>
+      <image src='/images/goods/search_icon_2.png' class="search-button" catchtap='toSearch'/>
+      <input type="text" class="search-input" bindinput='searchInput' placeholder="按照商品关键字搜索" bindconfirm='toSearch' />
+    </view>
+  </view>
+
+  <!-- 导航 -->
+  <view class='navTitle'>
+    <view class="navTitle-item {{isNav==1?'navTitle-item-active':''}}" catchtap='navCheck' data-index='1'>精选</view>
+    <view class="navTitle-item {{isNav==2?'navTitle-item-active':''}}" catchtap='navCheck' data-index='2'>最新</view>
+  </view>
+
+  <!-- 主要内容 -->
+  <view class='topic-list'>
+    <block wx:for='{{topicList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+      <view class='topic-list-item' catchtap='toDetail'>
+        <view class='item-title'>
+          <view class='flex'>
+            <image src="{{item.headImgUrl}}" mode="widthFix"/>
+            <text style='color:#4a4a4a'>{{item.name}}</text>
+          </view>
+          <view style='height:60rpx;border-radius:30rpx;background:#fae9ef;color:#f17fa2;line-height:60rpx;text-align:center;width:310rpx;'>#{{item.info}}</view>
+        </view>
+        <view class='item-detail'>
+          <view class='item-detail-title'>{{item.title}}</view>
+          <image src="{{item.imgUrl}}" mode="widthFix"/>
+          <view class='item-share'>
+            <view style='color:#9b9b9b'>{{item.data}}</view>
+            <view class='flex'>
+              <image src="{{!item.isActive?'https://static.vitasantee.com/%E6%94%B6%E8%97%8F@2x.png':'https://static.vitasantee.com/%E6%94%B6%E8%97%8F%20copy%202@2x.png'}}" mode="widthFix"  catchtap='toCollect' data-index='{{index}}'/>
+              <image src="https://static.vitasantee.com/B72A3CC2-D0C5-4C9F-860D-C659CBB48058@2x.png" mode="widthFix" style='width:36rpx;margin-right:0;'/>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+</scroll-view>

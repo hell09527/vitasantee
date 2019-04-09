@@ -1,0 +1,19 @@
+
+<!-- 头部导航 -->
+<template name="topTemplate">
+  <view class="{{isFixed==1?'fixed':''}}">
+  <!-- 搜索框 -->
+      <view class='first-search'>
+        <view class='search-box'>
+          <image src='/images/goods/search_icon_2.png' class="search-button" catchtap='toSearch'/>
+          <input type="text" class="search-input" bindinput='searchInput' placeholder="按照商品关键字搜索" bindconfirm='toSearch' />
+        </view>
+      </view>
+
+      <scroll-view scroll-x class="goods-detail-nav" scroll-left='{{scrollLeft}}'> 
+        <block wx:for='{{category_list}}' wx:key='' wx:for-item='category' wx:for-index='index'>
+          <text class="nav-item {{category.select==2?'nav-item-active':''}}" catchtap="selectCheck" data-id='{{category.category_id}}' data-current="{{index}}">{{category.category_name}}</text>
+        </block>
+      </scroll-view>
+    </view>
+</template>

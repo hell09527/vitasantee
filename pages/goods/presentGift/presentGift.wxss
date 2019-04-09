@@ -1,0 +1,111 @@
+.heder{
+  width: 100%;
+  /* height: 188px; */
+  /* background-color: #ccc; */
+}
+.pic{
+ text-align: center;
+}
+.pic .img{
+   margin-top: 40.33px;
+  width: 120px;
+  height: 70px;
+margin-bottom: 20px;
+}
+.title_gift{
+  margin: 0 auto;
+ font-size: 14px;
+}
+.body{
+  padding: 10px 10px 4px 10px;
+   background-color: #fff;
+}
+.data_shop{
+  width: 100%;
+  height: 100px;
+  display:flex;
+  justify-content:flex-start;
+  align-items: center;
+  padding:10px 0;
+  border-bottom: 1px solid #ccc;
+}
+.tu{
+  margin-right:10px; 
+  display: block;
+  height: 80px;
+  width:80px;
+}
+.tupi{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.l_f{
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: flex-start;
+ height:80px;
+}
+.shop_title{
+  font-size:12px;
+}
+.sku{
+ font-size:12px;
+ margin:8px 0;
+}
+.moeny{
+ font-size:12px;
+}
+.line{
+ border-bottom: 0.5px solid #ccc;
+}
+.dula{
+  width: 100%;
+  color:#ccc;
+   background-color: #fff;
+   text-align: right;
+   padding:10px;
+}
+.footer{
+  background: none;
+  margin-top: 20px;
+}
+.song{
+  height:35px; 
+  line-height: 35px;
+  border:0;
+  color:#8F8E94;
+  text-align: right;
+  font-size: 14px;
+  display: inline-block;
+}
+.back{
+  width: 80%;
+   margin: 0 auto;
+    text-align: center;
+     height: 50px;
+     border:none;
+     border-radius: 0;
+      line-height: 50px;
+      color: #fff;
+      background-color: #000;
+}
+ .wait{
+   text-align: center;
+   height: 30px;
+   margin: 10rpx auto 60rpx;
+   font-size: 14px;
+ }
+ .footer-down{
+
+   /* background: #fff; */
+   color:#000;
+   line-height: 30px;
+   font-size: 12px;
+   /* border:1px solid #eee; */
+   width:200rpx;
+   text-align: center;
+   margin: 20px auto 0;
+
+ }

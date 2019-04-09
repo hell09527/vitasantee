@@ -1,0 +1,47 @@
+<!--pages/index/couponReceive/couponReceive.wxml-->
+
+<!-- 引入tempalte -->
+<import src="/templates/dataLogin-template/dataLogin.wxml" />
+
+<view>
+
+<view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25'color='#fff' ></icon>
+    <view class="motify-inner">{{prompt}}</view>
+  </view>
+
+
+  <view class="receiveList">
+    <view class="flex receiveItem">
+      <view class="receiveItem-left">
+        <view class='flex'>￥<text style='font-size:22px;'>{{coupon.money}}</text></view>
+        <hr/>
+        <view style='margin-top:8rpx;font-size:12px;'>优惠券</view>
+      </view>
+      <view class="receiveItem-right">
+        <view style='margin:20rpx 0;'>
+          <view style='color:#333;' style='font-size:18px;color:#000;'>满{{coupon.at_least}}元使用</view>
+          <view style='color:#333;' wx:if="{{coupon.use_type!=2}}">{{coupon.start_time}}-{{coupon.end_time}}</view>
+          <view wx:if="{{coupon.use_type==2}}">请在领取后{{coupon.get_after_days}}天内使用 </view>
+        </view>
+        <view style='color:#666;margin:0 0 10rpx;'>{{coupon.coupon_name}}</view>
+      </view>
+    </view>
+  </view> 
+
+
+    <view wx:if='{{unregistered==1 || tel==""}}'>
+      <view class="receive-btn" catchtap='Crossroad'>领取优惠券</view> 
+    </view>
+    <!-- 领取优惠券按钮 -->
+    <view wx:if='{{unregistered==0 && tel!="" }}'>
+      <view class="{{lickstick==1?'receive-btn':'receive-btn-success'}}" catchtap="{{lickstick==1?'toReceive':''}}">{{lickstick==1?'领取优惠券':'领取成功'}}</view> 
+    </view>
+
+
+  <view>
+    <view class="back-btn" catchtap='backIndex'>前往购物</view>
+  </view>
+
+  <template is="dataLogin" data="{{showModal,Choice,layout}}" />
+</view>

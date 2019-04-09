@@ -1,0 +1,56 @@
+<scroll-view>
+
+  
+    <view class="cf-content">
+      <view class="cf-tab-item {{status==1?'select':''}}" data-status="1" catchtap='topNav'>未使用
+      </view>
+      <view class="cf-tab-item {{status==2?'select':''}}" data-status="2" catchtap='topNav'>已使用
+      </view>
+      <view class="cf-tab-item {{status==3?'select':''}}" data-status="3" catchtap='topNav'>已过期
+      </view>
+    </view>
+  <view class="com_content">
+    <view class="coupon-contianer">
+      <block wx:for='{{coupon_list}}' wx:key='' wx:for-item='item'> 
+        <view class="coupon-item {{status==1?'coupon-item-user':'coupon-item-nouser'}}">
+          <view class="coupon-left {{status>1?'backgroundColor':''}}">
+            <view class="coupon-left-price">
+              <text style='font-size:24px;font-weight:600;'>￥</text>
+              <text style='font-size:30px;font-weight:600;'>{{item.money}}</text>
+            </view>
+            <view style='color:#fff;font-size:12px;' wx:if='{{status==1}}'>满￥{{item.at_least}}可使用</view> 
+            <view style='color:#999;font-size:12px;' wx:else>满￥{{item.at_least}}可使用</view>
+          </view>
+          <view class='coupon_right_box'>
+            <view class="coupon-middle">
+              <view class='coupon-middle-text'>
+                <view style='color:#333;font-size:14px;margin-bottom:10rpx'>{{item.title}}</view>
+                <view style='color:#333;font-size:16px;'>{{item.coupon_name}}</view>
+              </view>
+              <view style='color:#999;font-size:10px;'>有效期：{{item.start_time}}至{{item.end_time}}</view>
+            </view>
+            <block wx:if='{{status==1}}'>
+              <view class='coupon-right' catchtap='toIndex'>
+                <view>去使用</view>
+              </view>
+            </block>
+            <block wx:if='{{status>1}}'>
+              <view class='coupon-right' style='height:100%'>
+                <image src="{{status==2?'https://static.vitasantee.com/chapter-1@2x.png':'https://static.vitasantee.com/chapter-2@2x.png'}}" mode="widthFix" style='width:100rpx;margin-top:40rpx;'/>
+              </view>
+            </block>
+          </view>
+        </view>
+      </block>
+
+      <view class="null_default {{coupon_list[0]==undefined?'':'hide'}}">
+        <view class="icon-nocontent-coupon">
+          <image src='https://static.vitasantee.com/NoCoupon@2x.png' mode='widthFix'/>
+        </view>
+        <view class="nulltext span">
+          暂无优惠券
+        </view>
+      </view>
+    </view>
+  </view>
+</scroll-view>

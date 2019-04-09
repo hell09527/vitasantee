@@ -1,0 +1,17 @@
+<scroll-view>
+<view class="heder">
+<image src="http://video.ushopal.com/A81CE2FD-48D7-46F1-BD2F-7579D26FEA05@2x.png" class="givingImg" mode='widthFix'></image>
+<view class="li_title">礼物已经成功赠予</view>
+</view>
+<view class="wait">等待领取!</view>
+<view class="footer_l">
+<view class="lis" catchtap='backGfit'>
+<view class="give"  >再送一份</view>
+</view>
+<view class="lis_d" catchtap='backIndex'>
+<view class="stroll" >发现更多惊喜</view>
+</view>
+
+
+</view>
+</scroll-view>

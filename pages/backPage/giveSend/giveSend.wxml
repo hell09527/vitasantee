@@ -1,0 +1,56 @@
+<scroll-view>
+<view class="heder">
+<view class="pic">
+<image   class="img"   src="{{imgUrl}}" mode='widthFix'>
+
+</image>
+<!-- <view class="title_gift">礼物打包成功</view> -->
+</view>
+
+</view>
+<view class="body">
+<block wx:for='{{goodsInfo}}' wx:key='' wx:for-item='goods' wx:for-index='index'>
+<view class="data_shop">
+<view class="tu">
+<image class="tupi"  src="{{goods.picture_info.pic_cover_small}}" mode='widthFix'></image>
+</view>
+
+<view class="l_f">
+<text decode="{{true}}" class="shop_title">
+{{goods.goods_name}}
+</text>
+<view class="sku">规格:{{goods.sku_name}} x{{goods.num}}</view>
+<!-- <view class="moeny">价格:¥{{goods.price}}</view> -->
+</view>
+</view>
+</block>
+
+<view class="line"></view>
+</view>
+<!-- <view class="dula">
+<view class="song">赠送礼物 ></view>
+</view> -->
+<view class="addList">
+ <view class="flex noAdd" catchtap='myAddress' wx:if="{{Info.is_default==1}}">
+   <image src="/images/member/icon_address.png" mode='widthFix'></image>
+        <view class="addInfo">
+          <text decode="{{true}}">收货人信息：{{Info.consigner}} {{Info.mobile}}</text>
+          <text decode="{{true}}">收货地址：{{Info.address_info}} {{Info.address}}</text>
+        </view>
+      </view>
+      <view catchtap='myAddress' class="flex addData" wx:else>
+        <image src="/images/order/order_address.jpg" mode='widthFix'></image>
+        <text >添加收货地址</text>
+      </view>
+    </view>
+
+<!-- </view> -->
+   <view class="footer">
+    <form bindsubmit='affirmSave' report-submit="true">
+   <button class="back" formType="submit" >确认领取</button>
+   </form>
+  </view>
+
+
+</scroll-view>
+<!-- <view class="yuan"  catchtap='Backindex'>回首页</view> -->

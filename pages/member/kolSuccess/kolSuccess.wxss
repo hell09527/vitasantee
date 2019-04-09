@@ -1,0 +1,41 @@
+.article{
+  text-align: center;
+  margin: 140rpx auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.article .h3{
+  font-weight: normal;
+  color: #373737;
+  font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial,sans-serif;
+  font-size: 18px;
+}
+
+.article .p{
+  color: #000;
+  margin:40rpx 0;
+  width:400rpx;
+  font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial,sans-serif;
+}
+
+.pay-block image{
+  width:200rpx;
+}
+
+.article button{
+  display: inline-block;
+  border: 0;
+  background: #000;
+  color: #ffffff;
+  border-radius: 3px;
+  padding: 10px;
+  width: 80%;
+  font-size: 16px;
+  outline: none;
+  font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial,sans-serif;
+  margin: 15px 0;
+  line-height: 1.5;
+}
+

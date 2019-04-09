@@ -1,0 +1,102 @@
+/* pages/index/topicList/topicList.wxss */
+page{
+  
+}
+
+.first-search{
+  padding: 10px 20rpx;
+  background: #e40046;
+}
+.search-box{
+  position: relative;
+  z-index: 10;
+  width:100%;
+  border-radius: 45rpx;
+  height:33px;
+  border:1px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding:0 20rpx;
+  background:#fff;
+}
+.search-button{
+  width:32rpx;
+  height:32rpx;
+  margin-right: 20rpx;
+}
+.search-input{
+  border:0;
+  background: transparent;
+  color:#000;
+  font-size: 14px;
+  width:100%;
+}
+
+.navTitle{
+  background: #fff;
+  height: 88rpx;
+  padding:0 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.navTitle-item{
+  height: 60rpx;
+  border-radius:30rpx; 
+  border:1px solid #005882;
+  font-size: 14px;
+  text-align: center;
+  line-height: 56rpx;
+  color:#005882;
+  width:324rpx;
+}
+.navTitle-item-active{
+  color:#fff;
+  background: #005882;
+  font-size: 16px;
+}
+.topic-list{
+  padding:20rpx;
+  margin-top: 20rpx;
+}
+.topic-list-item{
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+.item-title{
+  border-bottom: 1px solid #f5f5f5;
+  padding:20rpx 40rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.item-title>.flex>image{
+  width:70rpx;
+  border-radius: 50%;
+  margin-right: 10rpx;
+}
+.item-detail{
+  padding:30rpx 20rpx;
+}
+.item-detail-title{
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 25px;
+  letter-spacing:2px;
+  color:#333;
+}
+.item-detail>image{
+  width:100%;
+  margin-top: 20rpx;
+}
+.item-share{
+  padding:20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.item-share image{
+  width:40rpx;
+  margin-right: 60rpx;
+}

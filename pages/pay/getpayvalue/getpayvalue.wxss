@@ -1,0 +1,144 @@
+button{
+  border-radius: 0;
+}
+
+.head-info{
+  text-align: center;
+  padding-top: 10px;
+  background: none;
+  line-height: 31px;
+  height: 98px;
+}
+
+.head-pay{
+  color: #222;
+  margin-top: 12px;
+  font-size: 15px;
+}
+
+.head-pay-value{
+  font-size: 24px;
+  color: #222;
+}
+
+.pay-type-item{
+  padding: 8px 15px;
+  margin-top: 10px;
+  background: #FFF;
+}
+
+.pay-item-list{
+  padding: 10px 0px;
+}
+
+#pay-text{
+  float: right;
+  margin-right: 20px;
+  position: relative;
+}
+
+#pay-text::after{
+  content: '>';
+  position:absolute !important;
+  right:-22px;
+  color:#CCC;
+  font-size:20px;
+  top:-4px;
+}
+
+.wchat-weixin{
+  text-align: left;
+}
+
+.codes{
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  border-bottom: 1px solid #e5e5e5;
+  border-top: 1px solid #e5e5e5;
+}
+
+.codes .wchat-weixin{
+  background: #fff;
+}
+
+.ali-pay{
+  background: #fff;
+  padding: 10px 0px;
+  text-align: left;
+}
+
+.codes .wchat-weixin, .codes .ali-pay{
+  padding: 5px 0;
+}
+
+.wchat-title{
+  font-size: 14px;
+  line-height: 28px;
+  color: #222;
+}
+
+#wchatpay{
+  margin-right: 13px;
+  float: right;
+}
+
+#wchatpay icon{
+  margin-top: 3px;
+}
+
+.wchat-photo{
+  width: 32px;
+  float: left;
+  margin: 0 15px;
+}
+
+.pay-user{
+  padding: 10px 0px;
+}
+
+.pay-user .span{
+  float: right;
+}
+
+.footer{
+  margin: 0 0 45px 0;
+  padding: 0;
+  min-height: 86px;
+  text-align: center;
+  line-height: 16px;
+  background-color: #f8f8f8;
+}
+
+.ft-copyright{
+  padding: 20px 0 20px;
+  margin: 0 15px;
+  font-size: 12px;
+}
+
+.s-btn{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0;
+  z-index: 5;
+}
+
+.s-btn button{
+  width: 100%;
+  border: 0;
+  height: 54px;
+  line-height: 54px;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  font-size: 16px;
+  color: #FFF;
+  background: #FF6600;
+  outline: none;
+}
+
+.s-btn button.alipay{
+  background: #e40046;
+}

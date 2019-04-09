@@ -1,0 +1,30 @@
+/* pages/member/withdrawalSuccess/withdrawalSuccess.wxss */
+scroll-view{
+  position: fixed;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  background: url('https://static.bonnieclyde.cn/8138945F-2DE9-4790-A9DF-873F8BDAFADE@2x.png') no-repeat;
+  background-size: 100% 100%;
+}
+.containerBox{
+  position: absolute;
+  top:66px;
+  left:50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.containerBox image{
+  width:200rpx;
+  height:200rpx;
+  margin-bottom: 40rpx;
+}
+.containerBox text{
+  width:420rpx;
+  text-align: center;
+  font-size: 16px;
+}

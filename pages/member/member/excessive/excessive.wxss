@@ -1,0 +1,5 @@
+scroll-view{
+     background: url('http://p6yljnwkf.bkt.clouddn.com/DBF22809-6E5D-4CE6-B15B-F7835890A546@1x.png') no-repeat;
+      background-size:cover; 
+      height: 100%;
+} 

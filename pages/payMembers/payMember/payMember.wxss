@@ -1,0 +1,83 @@
+/* pages/members/payMember/payMember.wxss */
+
+
+page{
+  background: #000;
+  height:100%;
+}
+
+.pay-way{
+  background: #fff;
+  padding:10rpx 0;
+}
+.pay-wap-line{
+  padding:0 70rpx;
+  font-size: 14px;
+  line-height: 90rpx;
+  border-bottom: 1px solid #e6e6e6;
+}
+.pay-btn{
+  padding:30rpx 70rpx;
+  text-align: center;
+}
+.pay-btn>view{
+  background: #000;
+  font-size: 14px;
+  color:#fff;
+  text-align: center;
+  line-height: 70rpx;
+  border-radius: 40rpx;
+}
+.pay-wap-line>text{
+  margin-right: 20rpx;
+}
+
+.btn{
+  background-image: url("http://video.ushopal.com/feihuiyuan_04.jpg");
+  color:#000;
+  line-height: 50px;
+  height:50px;
+  width:100%;
+  position: fixed;
+  bottom: 0;
+  left:0;
+  font-size: 14px;
+  z-index: 100;
+  border-radius: 0;
+  font-weight: bold;
+}
+
+.logo{
+  position: fixed;
+  z-index: 100;
+  width:100%;
+}
+.logo>image{
+  display: block;
+}
+
+.body{
+  padding-top: 68rpx;
+}
+
+
+.yuan{
+  bottom: 120rpx;
+}
+
+.gift-box{
+  display: flex;
+  margin:0 auto;
+  flex-wrap: wrap;
+  margin-bottom: 100px;
+  border-bottom:1px solid #000;
+  border-left:1px solid #000;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+}
+.gift-box image{
+  width: 218rpx;
+  border-top:1px solid #000;
+  border-right:1px solid #000;
+}

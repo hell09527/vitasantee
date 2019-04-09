@@ -1,0 +1,8 @@
+<scroll-view>
+  <view class="mt-55 mlr-15 {{edit_nick_name==1?'':'hide'}}" id="edit_nick_name" style="background-color: rgb(255, 255, 255); margin: 8px 0px 0px;">
+    <view><view class='span'>昵称</view>
+      <input type="text" id="input_nick_name" placeholder="请输入昵称" value="{{nick_name}}"/>
+    </view>
+  </view>
+  <button>保存</button>
+</scroll-view>

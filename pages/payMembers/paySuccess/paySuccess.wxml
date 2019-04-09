@@ -1,0 +1,60 @@
+<scroll-view>
+
+
+<!--等待标识  -->
+  <view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25'color='#fff' ></icon>
+    <view class="motify-inner">{{prompt}}</view>
+  </view>
+<!--等待标识  -->
+
+<!-- 
+  <block wx:if='{{is_login == 0}}'>
+    <image class='load_img' src='/images/member/5-121204193R0-50.gif'></image>
+  </block> -->
+
+  <view class="paySuccess">
+    <!-- <image src='/images/index/brand.png' mode='widthFix'></image>
+    <text class="title">恭喜你成为付费会员</text>
+    <text class="content">请选取一份礼物带走吧</text> -->
+    <image src="{{img2}}" mode='widthFix' style='width:100%;margin-bottom:20rpx;'></image>
+  </view>
+
+  <view class="membership-container">
+    <view class="membership-gifts">
+      <block wx:for='{{giftList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+        <view class="gift-item" catchtap='checkAll' data-i="{{item.goods_id}}"
+>
+          <image src="{{item.pic_cover_small}}"
+ class="giftUrl" mode='widthFix'></image>
+          <view class="gift-detail">
+            <text class="detail-title">{{item.goods_name}}</text>
+            <text class="detail-content">{{item.content}}</text>
+            <view class="detail-price">
+              <del>￥{{item.promotion_price}}</del>
+              <image src='/images/goods/cartp2.png' mode='widthFix' wx:if="{{item.selected}}" class="selected"></image>
+            </view>
+          </view>
+        </view>
+      </block>
+
+    <!--收货地址  -->
+    <view class="addList">
+      <view class="flex noAdd" catchtap='myAddress' wx:if="{{Info.is_default==1}}">
+        <image src="/images/member/icon_address.png" mode='widthFix'></image>
+        <view class="addInfo">
+       <text decode="{{true}}">收货人信息：{{Info.consigner}} {{Info.mobile}}</text>
+        <text decode="{{true}}">收货地址：{{Info.address_info}} {{Info.address}}</text>
+        </view>
+      </view>
+      <view catchtap='myAddress' class="flex addData" wx:else>
+       <image src="/images/order/order_address.jpg" mode='widthFix'></image>
+        <text >添加收货地址</text>
+      </view>
+    </view>
+    </view>
+
+    <button class="toPayBtn" catchtap='verifyDraw'>确认领取</button>
+  </view>
+   
+</scroll-view>

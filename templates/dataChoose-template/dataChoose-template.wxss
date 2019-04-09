@@ -1,0 +1,20 @@
+
+.ck_blue_box{
+  background: #fff;
+  line-height: 56rpx;
+  box-shadow: 0px 0px 20px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  padding: 10rpx;
+}
+.ck_blue_box>view{
+  padding:0 50rpx;
+  font-size:16px;
+  color:#808080;
+  border-right: 1px solid #e5e5e5;
+}
+.ck_blue_box image{
+  width: 26rpx;
+  height:20rpx;
+  padding:0 50rpx;
+}

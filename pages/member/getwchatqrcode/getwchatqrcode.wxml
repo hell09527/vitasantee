@@ -1,0 +1,3 @@
+<scroll-view>
+  <image class='.image' src='/images/member/wechatcode.jpg' mode='widthFix'/>
+</scroll-view>

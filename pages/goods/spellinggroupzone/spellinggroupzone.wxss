@@ -1,0 +1,73 @@
+.none-goods{
+  color: #939393;
+  text-align: center;
+  margin-top: 100px;
+}
+
+.none-goods image{
+  margin-bottom: 20px;
+  width: 60px;
+  height: 58.6364px;
+}
+
+.spelling-block{
+  border-top: 1.5px solid #F5F5F5;
+}
+
+.spelling-block .ul .li {
+  background: #ffffff;
+  padding: 15px;
+  margin: 0 0 10px 0;
+}
+
+.spelling-block .ul .li view::first-child {
+  text-align: center;
+  margin: 0;
+}
+
+.spelling-block .ul .li view image {
+  display: inline-block;
+  vertical-align: middle;
+  width: 100%;
+  font-size: 12px;
+}
+
+.spelling-block .ul .li .p {
+  color: black;
+  padding: 10px 0;
+  word-wrap: break-word;
+}
+
+.spelling-block .ul .li .footer {
+  display: block;
+  border: 0;
+  margin: 0;
+  padding: 10px 0;
+  text-align: left;
+  background: #fff;
+  min-height: unset;
+  line-height: 1.5;
+}
+
+.spelling-block .ul .li .footer .tuangou-money {
+  color: #f44;
+  font-weight: bold;
+  font-size: 18px;
+  margin-right: 5px;
+}
+
+.spelling-block .ul .li .footer .original-money {
+  font-size: 12px;
+  color: #999999;
+}
+
+.spelling-block .ul .li .footer button {
+  background: #f44;
+  color: #ffffff;
+  line-height: 1.5;
+  padding: 5px 15px;
+  border: 0;
+  float: right;
+  border-radius: 3px;
+  font-size: 14px;
+}

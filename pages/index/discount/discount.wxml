@@ -1,0 +1,40 @@
+
+<import src="/templates/HomeOrShare-icon-template/HomeOrShare-icon-template.wxml" />
+
+<scroll-view class='discount_time_box' scroll-x>
+  <block wx:for='{{discountList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+    <view class="discount_time_detail {{item.active==1?'discount_time_detail_active':''}}" catchtap='toCheck' data-index='{{index}}'>
+      <view class='discount_time'>18:00</view>
+      <view class='discount_text'>{{item.active==1?'抢购中':'即将开始'}}</view>
+      <view class='discount_icon' wx:if='{{item.active==1}}'></view>
+    </view>
+  </block>
+</scroll-view>
+
+<view class='discount_goods_list'>
+  <block wx:for='{{discountGoods}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+    <view class="discount_goods">
+      <image src="https://static.vitasantee.com/2A8BD77F-ADB4-4F6F-A55D-D405F17464BA@2x.png" mode="widthFix"/>
+      <view class='discount_goods_detail'>
+        <view style='font-size:14px;color:#333;'>收敛毛孔，补水保湿</view>
+        <view style='font-size:12px;color:#999;margin:5rpx 0 10rpx;'>海洋花园密集补水精华</view>
+        <view class='discount_inventory'>
+          <text style='font-size:12px;color:#999;margin-bottom:5rpx;'>30ml</text>
+          <view style='color:#999;' wx:if='{{item.isHav==1}}'>仅剩<text style='color:#ea566a'>60</text>件</view>
+          <view style='color:#999;' wx:else>来晚了哦</view>
+        </view>
+        <view class='discount_inventory'>
+          <view class='discount_goods_price'>
+            <text style='font-size:18px;color:#005882'>￥69</text>
+            <view style='color:#999;margin-left:10rpx;text-decoration:line-through;'>￥179</view>
+          </view>
+          <view class='discount_immediately' wx:if='{{item.isHav==1}}'>马上抢</view>
+          <view class='discount_immediately' style='background:#333;' wx:else>已抢完</view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
+
+<!-- 分享与回到首页 -->
+<template is="HomeOrShareIconTemplate" />

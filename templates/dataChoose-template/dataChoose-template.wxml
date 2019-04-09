@@ -1,0 +1,10 @@
+<!-- 日期选择器 -->
+
+<template name="dataChooseTemplate">
+  <view class='ck_blue_box'>
+    <view>{{datetime}}</view>
+    <picker mode="date" value="{{datetime}}" start="2010-01" end="{{nowData}}" fields='month' bindchange="bindDateChange">
+      <image src='https://static.bonnieclyde.cn/WechatIMG268.png'></image>
+    </picker>
+  </view>
+</template>

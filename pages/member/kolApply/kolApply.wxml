@@ -1,0 +1,219 @@
+<!--pages/member/kolApply/kolApply.wxml-->
+<scroll-view wx:if='{{isKol==2}}'>
+  <view class='article'>
+    <view class="pay-block">
+			<image src='https://static.bonnieclyde.cn/W56.png' mode='widthFix'/>
+		</view>
+        <view class='p' >{{kolText}}</view>
+       <button catchtap='toIndex'>返回首页</button>
+			
+  </view>
+</scroll-view>
+
+
+
+<scroll-view wx:if='{{isKol==1}}'>
+
+  <view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25'color='#fff' ></icon>
+    <view class="motify-inner">{{prompt}}</view>
+  </view>
+
+  <!-- 标题 -->
+  <view class='title-nav'>
+    <view class='nav-text'>
+      <block wx:for='{{navList}}' wx:item='{{item}}' wx:key=''>
+        <view class="nav-text-item {{item.select?'nav-text-active':''}}">{{item.name}}</view>
+      </block>
+    </view>
+    <view class='nav-circle'>
+      <block wx:for='{{navList}}' wx:item='{{item}}' wx:key=''>
+        <view class="nav-circle-item {{item.select?'nav-circle-active':''}} "></view> 
+      </block>
+    </view>
+  </view>
+
+  <!-- 基本资料 -->
+  <view class='basic-infor' wx:if='{{isShow==1}}'>
+    <view style='margin:20rpx 0;'>
+      <view class='realname-title'>上传您的身份证正反面照片</view>
+      <view class='titel-bottom'>（仅作为认证需要）</view>
+    </view>
+    <view class='identityCard'>
+      <view class="identityCard_item_box">
+        <view class="identityCard_item">
+          <image src="{{FilePaths}}" mode="aspectFill" class="paths" wx:if='{{FilePaths}}' catchtap='preivewImg' data-img='{{FilePaths}}'/>
+          <view class="imgs FilePaths" bindtap="frontimage" wx:else></view>
+        </view>
+        <image src='https://static.bonnieclyde.cn/%E5%88%A0%E9%99%A4ICON@2x.png' wx:if='{{FilePaths}}' class='identityCard_del' catchtap='toDelImg' data-img='face'/>
+      </view>
+      <view class="identityCard_item_box">
+        <view class="identityCard_item">
+          <image src="{{recitePaths}}" mode="aspectFill" class="paths" wx:if='{{recitePaths}}' catchtap='preivewImg' data-img='{{recitePaths}}'/>
+          <view class="imgs recitePaths" bindtap="reciteimage" wx:else></view>
+        </view>
+        <image src='https://static.bonnieclyde.cn/%E5%88%A0%E9%99%A4ICON@2x.png' wx:if='{{recitePaths}}' class='identityCard_del' catchtap='toDelImg' data-img='back'/>
+      </view>
+    </view>
+    <!-- <view class='identityCard' wx:if='{{FilePaths||recitePaths}}'>
+      <view style='color:#aaa;width:100%;text-align:center;'>直接点击可更换图片</view>
+    </view> -->
+    <view class='table' wx:if='{{listData.name}}'>
+      <view>
+        <view class='table-text'>姓名</view>
+        <input type='text' class='table-input' value='{{listData.name}}'  bindinput='nameValue'></input>
+      </view> 
+      <view>
+        <view class='table-text'>性别</view>
+        <radio-group class="radio-group" bindchange="radioChange" style='flex: 1;'>
+          <label class="radio" wx:for="{{sexList}}" wx:key=''>
+            <radio value="{{item.name}}" checked="{{item.checked}}"/>{{item.name}}
+          </label>
+        </radio-group>
+      </view> 
+      <view>
+        <view class='table-text'>出生日期</view>
+        <view class="section table-input">
+          <view style='height:1.4rem'>{{listData.birthday}}</view>
+          <picker mode="date" value="{{listData.birthday}}" start="1900-01-01" end="2015-01-01" bindchange="bindDateChange">
+            <view class="picker">···</view>
+          </picker>
+        </view>
+      </view> 
+      <view>
+        <view class='table-text'>民族</view>
+        <input type='text' value='{{listData.nation}}' class='table-input' bindinput='nationValue'></input>
+      </view> 
+      <!-- <view>
+        <view class='table-text'>籍贯</view>
+        <input type='text' placeholder='请填写您的籍贯' class='table-input'></input>
+      </view>  -->
+      <view>
+        <view class='table-text'>现住址</view>
+        <view class="table-input section" style='flex:1;'>
+          <picker bindchange="bindProvincChange" mode='selector' value="{{provinceIndex}}" range="{{provinceArray}}" data-id='{{provinceArray[provinceIndex].province_id}}' range-key="province_name" class='addressText'>
+              {{provinceArray[provinceIndex].province_name}}
+          </picker>
+          <text>/</text>
+          <picker bindchange="bindCityChange" mode='selector' value="{{cityIndex}}" range="{{cityArray}}" data-id='{{cityArray[cityIndex].city_id}}' range-key="city_name" class='addressText'>
+              {{cityArray[cityIndex].city_name}}
+          </picker>
+          <text>/</text>
+          <picker bindchange="bindDistrictChange" mode='selector' value="{{districtIndex}}" range="{{districtArray}}" data-id='{{districtArray[districtIndex].district_id}}' range-key="district_name" class='addressText'>
+              {{districtArray[districtIndex].district_name}}
+          </picker>
+        </view>
+      </view> 
+      <view style='height:80rpx;'>
+        <view class='table-text'></view>
+        <input type='text' placeholder='详细住址' class='table-input' bindinput='addressValue' value='{{listData.address}}'></input>
+      </view> 
+      <view>
+        <view class='table-text'>手机号码</view>
+        <input type='text' placeholder='请填写您的手机号码' class='table-input' value='{{listData.tel}}' bindinput='phoneValue'></input>
+      </view> 
+      <view>
+        <view class='table-text'>EMAIL</view>
+        <input type='text' placeholder='请填写您的电子邮箱' class='table-input' bindinput='emailValue' value='{{listData.email}}'></input>
+      </view> 
+      <view>
+        <view class='table-text'>推荐人</view>
+        <view class='table-input'>{{recommend_user}}</view>
+      </view> 
+      <view class='next-btn' catchtap='tohobby'>下一步</view>
+    </view>
+  </view>
+
+  <!-- 经历爱好 -->
+  <view class='hobby' wx:if='{{isShow==2}}'>
+    <view>
+      <view class='table-text'>教育经历</view>
+      <textarea placeholder="请填写您的教育经历(10个字符以上)" placeholder-style='line-height:200rpx;color:#808080' class='table-textarea' bindinput='educationValue' value='{{listData.educational_experience}}'/>
+    </view> 
+    <view>
+      <view class='table-text'>工作经历</view>
+      <textarea placeholder="请填写您的工作经历(10个字符以上)" placeholder-style='line-height:200rpx;color:#808080' class='table-textarea' bindinput='joinValue' value='{{listData.work_experience}}'/>
+    </view>
+    <view>
+      <view class='table-text'>爱好特长</view>
+      <textarea placeholder="请填写您的爱好特长(10个字符以上)" placeholder-style='line-height:200rpx;color:#808080' class='table-textarea' bindinput='hobbyValue' value='{{listData.hobbies}}'/>
+    </view>
+    <view class='hobby-btn'>
+      <view class='hobby-preo-btn' catchtap='topreo' data-index='1'>上一步</view>
+      <view class='hobby-next-btn' catchtap='torealname'>下一步</view>
+    </view>
+  </view>
+
+  <!-- 实名制认证 -->
+  <view class='realname-box' wx:if='{{isShow==3}}'>
+    <view style='margin:20rpx 0;'>
+      <view class='realname-title'>银行卡照片</view>
+    </view>
+    <view class='identityCard'>
+      <view class="identityCard_item_box">
+        <view class="bankCard">
+          <image src="{{bankCardImage}}" mode="aspectFill" class="bankCard-image" wx:if='{{bankCardImage}}' catchtap='preivewImg' data-img='{{bankCardImage}}'/>
+          <view class="backCard-text" bindtap="cardimage" wx:else>
+          </view>
+        </view>
+        <image src='https://static.bonnieclyde.cn/%E5%88%A0%E9%99%A4ICON@2x.png' wx:if='{{bankCardImage}}' class='identityCard_del' catchtap='toDelImg' data-img='bankCard' style='bottom:20rpx;'/>
+      </view>
+    </view>
+    <!-- <view class='realname-card' wx:if='{{bankCardImage}}'>
+      <view class='table-text'></view>
+      <view style='color:#aaa'>直接点击可更换图片</view>
+    </view> -->
+    <view class='realname' wx:if='{{bankCardImage}}'>
+      <view>
+        <view class='table-text'>银行账号</view>
+        <input type='text' class='table-input' value='{{listData.bank_account_number}}' bindinput='bankNumValue'></input>
+      </view> 
+      <view>
+        <view class='table-text'>银行名称</view>
+        <input type='text' class='table-input' value='{{listData.bank_name}}' bindinput='bankNameValue'></input>
+      </view>
+      <view>
+        <view class='table-text'>银行开户行</view>
+        <input type='text' placeholder='详细到支行' class='table-input' bindinput='banKDetailValue' value='{{listData.bank_open_name}}'></input>
+      </view>
+    </view> 
+      <view class='hobby-btn'>
+        <view class='hobby-preo-btn' catchtap='topreo' data-index='2'>上一步</view>
+        <view class='hobby-next-btn' catchtap='toIntro'>下一步</view>
+      </view> 
+  </view>
+
+  <!-- 自我介绍 -->
+  <view class='myInfor' wx:if='{{isShow==4}}'>
+    <view>
+      <view class='myInfor-text'>流量入口及销售方向</view>
+      <textarea class='table-textarea' bindinput='describe1Value' value='{{listData.describe1}}' placeholder="(10个字符以上)" placeholder-style='line-height:200rpx;color:#808080'/>
+    </view> 
+    <view>
+      <view class='myInfor-text'>你眼中的Bonnie&Clyde</view>
+      <textarea class='table-textarea'  bindinput='describe2Value' value='{{listData.describe2}}' placeholder="(10个字符以上)" placeholder-style='line-height:200rpx;color:#808080'/>
+    </view>
+    <view>
+      <view class='myInfor-text'>为何选择做极选师</view>
+      <textarea class='table-textarea'  bindinput='describe3Value' value='{{listData.describe3}}' placeholder="(10个字符以上)" placeholder-style='line-height:200rpx;color:#808080'/>
+    </view>
+    <view>
+      <view class='myInfor-text'>未来三个月预估销售额（元）</view>
+      <input type='number' class='myInfor-input' placeholder='请填写一个金额'  bindinput='moneyValue' value='{{listData.estimate_money}}'></input>
+    </view>
+    <!-- <view class='agreement myInfor-btn'>
+      <view>
+        <image></image>同意协议
+      </view>
+    </view> -->
+    <view class='hobby-btn'>
+      <view class='hobby-preo-btn' catchtap='topreo' data-index='3'>上一步</view>
+      <form bindsubmit="toApply" report-submit="true">
+          <button class='hobby-next-btn'  formType="submit">提交申请</button>
+      </form>
+      <!-- <view class='hobby-next-btn' catchtap='toApply'>申请成为极选师</view> -->
+    </view>
+  </view>
+</scroll-view>
+
+

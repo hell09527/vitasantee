@@ -1,0 +1,6 @@
+/* pages/index/hotProduct/hotProduct.wxss */
+@import "/templates/new-product-template/new-product-template.wxss";
+@import "/templates/HomeOrShare-icon-template/HomeOrShare-icon-template.wxss";
+.hot_goods_list{
+  padding:20rpx;
+}

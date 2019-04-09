@@ -1,0 +1,84 @@
+scroll-view{
+  font-size: 14px;
+}
+.side-nav{
+  padding:20rpx;
+}
+.address-item{
+  background: #fff;
+  padding:40rpx 20rpx;
+  margin-bottom: 20rpx;
+}
+.address-item:last-child{
+  margin-bottom: 0;
+}
+.address-btn{
+  margin-top: 20rpx;
+  display: flex;
+  justify-content: flex-start;
+}
+.address-btn>view{
+  height:56rpx;
+  border-radius: 28rpx;
+  width:160rpx;
+  text-align: center;
+  line-height: 54rpx;
+}
+.address-btn>view:first-child{
+  border:1px solid #e40046;
+  color:#e40046;
+  margin-right: 20rpx;
+}
+.address-btn>view:last-child{
+  border:1px solid #96989e;
+  color:#96989e;
+}
+
+
+
+.footer_wx{
+  padding:40rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer_wx>view{
+  height:84rpx;
+  line-height: 84rpx;
+  text-align: center;
+  width:330rpx;
+  border-radius: 42rpx;
+  color:#fff;
+  font-size: 16px;
+}
+.btn-save{
+ background: #e40046;
+}
+.btn-wx{
+  background: #005882;
+}
+
+.no-address{
+  margin: 200rpx auto 40rpx;
+  display: block;
+  width: 64px;
+  height: 64px;
+}
+
+.addr-box{
+  margin:40rpx 0;
+  text-align: center;
+}
+
+.addr-tip{
+  font-size: 14px;
+  color: #8f8f8f;
+  margin-top: 10px;
+}
+.defaultAddress{
+  font-size: 12px;
+  border:1px solid #e40046;
+  color:#e40046;
+  border-radius: 3px;
+  padding:0 6rpx;
+}

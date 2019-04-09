@@ -1,0 +1,44 @@
+
+<scroll-view>
+<view class="heder">
+<view class="pic">
+<image   class="img"   src="https://static.bonnieclyde.cn/202-110.png" mode='widthFix'>
+
+</image>
+<view class="title_gift">礼物准备就绪</view>
+</view>
+
+<view class="wait">快送给朋友吧</view>
+</view>
+<view class="body">
+<block wx:for='{{GiftList}}' wx:key='' wx:for-item='goods' wx:for-index='index'>
+<view class="data_shop">
+  <view class="tu">
+    <image class="tupi"  src="{{goods.picture_info.pic_cover_small}}" mode='widthFix'></image>
+  </view>
+<!-- 规格:{{goods.sku_name}}  -->
+  <view class="l_f">
+    <text decode="{{true}}" class="shop_title">{{goods.goods_name}}</text>
+    <view class="sku"> 数量x{{goods.num}}</view>
+    <!-- <view class="moeny">价格:¥{{goods.price}}</view> -->
+  </view>
+</view>
+</block>
+<view class="line"></view>
+</view>
+<view class="dula">
+
+  
+  <!-- <button class="song" open-type='share'  >送给朋友</button>   -->
+  
+ 
+</view>
+
+<view class="footer">
+<form bindsubmit='songGift' report-submit="true">
+<button class="back" open-type='share' formType="submit">选朋友 去送礼</button>
+ </form>
+<view class="footer-down" catchtap='Backgift' wx:if="{{is_vip==0}}">返回礼物专区</view>
+<view class="footer-down" catchtap='BackMember' wx:else>返回会员专区</view>
+</view>
+</scroll-view>

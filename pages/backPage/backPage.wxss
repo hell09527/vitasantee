@@ -1,0 +1,51 @@
+.heder{
+  margin-bottom: 10px;
+    position: relative;
+}
+  .heder .li{
+    position: absolute;
+    bottom: 0;
+ } 
+  .heder  .li_title{
+    text-align: center;
+ }
+ .heder .li image{
+ position: absolute;
+    bottom: 1px;
+  left: 260rpx;
+   width: 20px;
+ }
+ .wait{
+   text-align: center;
+    margin: 0 auto;
+    height: 30px;
+    margin-bottom: 80px;
+ }
+ .footer_l .lis{
+   float: left;
+   margin-left:8%; 
+   margin-right:2%;
+   width: 40%;
+   text-align: center;
+   height: 48px;
+   line-height: 48px;
+      color: #fff;
+      background-color: #000; 
+ }
+ .footer_l .lis_d{
+   float: left;
+   width: 40%;
+   text-align: center;
+   height: 48px;
+   line-height: 48px;
+   margin-left:2%; 
+   margin-right:8%;
+      color: #fff;
+      background-color: #000; 
+ }
+ .givingImg{
+  width:280rpx;
+  height:140rpx;
+  display: block;
+  margin:40px auto 20px;
+}

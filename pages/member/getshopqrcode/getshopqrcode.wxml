@@ -1,0 +1,3 @@
+<scroll-view>
+  <image class="shop-qrcode" src='/images/member/shopqrcode.png'/>
+</scroll-view>

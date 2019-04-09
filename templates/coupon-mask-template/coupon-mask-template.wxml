@@ -1,0 +1,33 @@
+<!-- CB商品列表 -->
+<template name="couponMaskTemplate">
+  <view class='mask-box'>
+    <view class='couponMask' catchtap='closeCouponMask'></view>
+    <view class='coupon-container'>
+      <view class='coupon-title'>新人专享礼包</view>
+      <view class='coupon-list'>
+        <view class='coupon-item'>
+          <view class='coupon-item-left'>
+            <text style='color:#f9d904;font-size:24px;'>￥</text>
+            <text style='color:#f9d904;font-size:36px;'>20</text>
+          </view>
+          <view class='coupon-item-right'>
+            <text style='color:#fff;font-size:18px;'>优惠券</text>
+            <text style='color:#fff;font-size:12px;'>满￥199即可使用</text>  
+          </view>
+        </view>
+        <view class='coupon-item'>
+          <view class='coupon-item-left'>
+            <text style='color:#f9d904;font-size:24px;'>￥</text>
+            <text style='color:#f9d904;font-size:40px;'>20</text>
+          </view>
+          <view class='coupon-item-right'>
+            <text style='color:#fff;font-size:18px;'>优惠券</text>
+            <text style='color:#fff;font-size:12px;'>满￥199即可使用</text>  
+          </view>
+        </view>
+      </view>
+
+      <view class='couponBtn' catchtap='couponReceive'>立即领取</view>
+    </view>
+  </view>
+</template>

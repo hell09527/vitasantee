@@ -1,0 +1,117 @@
+<scroll-view bindtap = "handletap" bindtouchstart = "handletouchtart" bindtouchend="handletouchend" bindtouchmove="handletouchmove">
+
+  <view class="body">
+    <view class="tab">
+      <view class="tab-item {{status==1?'select':''}}" data-status="1" catchtap='topNav'>
+        <view class="a">我送出的</view>
+      </view>
+      <view class="tab-item {{status==2?'select':''}}" data-status="2" catchtap='topNav'>
+        <view class="a">我收到的</view>
+      </view>
+    </view>
+    <view wx:if='{{status == 1}}'>
+      <view wx:if="{{giftList.length>0}}">
+        <block wx:for='{{giftList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+          <view class="gift-item">
+            <view class="item-nav">
+              <text style='color:#000'>{{item.order_no}}</text>
+              <text style='color:#8F8E94'>{{item.create_time}}</text>
+            </view>
+
+              <view class="item-content" catchtap='toDetail' data-status="1" data-id="{{item.order_id}}">
+                <block wx:for='{{item.order_item_list}}' wx:key='' wx:for-item='goods' wx:for-index='key'>
+                  <view class="gift-detail">
+                    <image src="{{goods.picture.pic_cover_small==''?0:goods.picture.pic_cover_small}}" class="giftUrl" mode='widthFix'></image>
+                    <view class="gift-text">
+                      <view>
+                      <text decode="true">{{goods.goods_name}}</text>
+                      <text class='i gift' wx:if='{{goods.gift_flag > 0}}'>赠品</text>
+                      <text class='i gift' wx:if='{{goods.gift_flag == -1}}'>会员礼</text>
+                      </view>
+                      <text style='color:#8F8E94'>价格：￥{{goods.goods_money}}</text>
+                      <!-- <text style='color:#8F8E94'>规格：{{goods.sku_name}}</text> -->
+                      <text style='color:#8F8E94'>数量：{{goods.num}}</text>
+                    </view>
+                  </view>
+                </block>
+                <view class="item-status">
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==0}}">待付款</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==1}}">待发货</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==2}}">已发货</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==3}}">已收货</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==4}}">已完成</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==5}}">已关闭</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==-1}}">退款中</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==-2}}">已退款</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==11}}">待领取</text>
+                  <view style='color:#8F8E94'>总价 <text style='color:#F44'>￥{{item.order_money}}</text></view>
+                </view>
+              </view>
+
+              <view class="hint">
+              <!-- open-type='share' -->
+                <button wx:if="{{item.order_status==11}}"  catchtap='tobtain' data-order="{{item.order_no}}" class="checkWL" >赠送朋友</button>
+                <text wx:if="{{item.order_status==0}}" class="checkWL" catchtap='commitrder' data-trade="{{item.out_trade_no}}">去支付</text>
+                                <!-- <text wx:if="{{item.order_status==4||item.order_status==5}}" class="checkWL deL" catchtap='deL' data-id="{{item.order_id}}">删除订单</text> -->
+                <text style='color:#8F8E94'>若被赠送人未领取礼物，将在7个工作内原路退回所付款项</text>
+              </view>
+          </view>
+        </block>
+      </view>
+      <view class="noList" wx:else>
+        <image src='/images/order/distribution.png' mode='widthFix'/>
+        <text>你还没有收到过礼物！</text> 
+      </view>
+    </view>
+    <view wx:if='{{status == 2}}'>
+      <view wx:if="{{receiveGift.length>0}}">
+        <block wx:for='{{receiveGift}}' wx:key='' wx:for-item='item' wx:for-index='index' wx:if="status==2">
+          <view class="gift-item">
+            <view class="item-nav">
+              <text style='color:#000'>{{item.order_no}}</text>
+              <text style='color:#8F8E94'>{{item.create_time}}</text>
+            </view>
+              <view class="item-content" catchtap='toDetail' data-status="2" data-id="{{item.order_id}}">
+                <block wx:for='{{item.order_item_list}}' wx:key='' wx:for-item='goods' wx:for-index='key'>
+                  <view class="gift-detail">
+                    <image src="{{goods.picture.pic_cover_small==''?0:goods.picture.pic_cover_small}}" class="giftUrl" mode='widthFix'></image>
+                    <view class="gift-text">
+                      <text>{{goods.goods_name}}</text>
+                      <!-- <text style='color:#8F8E94'>价格：￥{{goods.goods_money}}</text> -->
+                      <!-- <text style='color:#8F8E94'>规格：{{goods.sku_name}}</text> -->
+                      <text style='color:#8F8E94'>数量：{{goods.num}}</text>
+                    </view>
+                  </view>
+                </block>
+                <view class="item-status">
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==1}}">待发货</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==2}}">已发货</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==3}}">已收货</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==4}}">已完成</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==5}}">已关闭</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==-1}}">退款中</text>
+                  <text style='color:#8F8E94' wx:if="{{item.order_status==-2}}">已退款</text>
+                   <text style='color:#8F8E94' wx:if="{{item.order_status==11}}">待领取</text> 
+                  <!-- <view style='color:#8F8E94'>总价 <text style='color:#F44'>￥{{item.order_money}}</text></view> -->
+                </view>
+              </view>
+
+            <!-- <text style='color:#8F8E94' class="hint">若被赠送人未填写地址，礼物将在7日后过期</text> -->
+            <text wx:if="{{item.order_status==2}}" class="checkWL" catchtap='checkWL'data-id="{{item.order_id}}" >查看物流</text>
+            <!-- <text wx:if="{{item.order_status==2}}" class="checkWL" catchtap='getGoods'data-id="{{item.order_id}}" >确认收货</text> -->
+            <!-- <text wx:if="{{item.order_status==4||item.order_status==5}}" class="checkWL deL" catchtap='deL' data-id="{{item.order_id}}">删除订单</text> -->
+          </view>
+        </block>
+      </view>
+      <view class="noList" wx:else>
+        <image src='/images/order/distribution.png' mode='widthFix'/>
+        <text>你还没有收到过礼物！</text> 
+      </view>
+    </view>
+  </view>
+<!-- //客服 -->
+           <button class="a new-btn buy-cart" open-type="contact" session-from="weapp" class="{{isHide==0?'yuan':'hide-kf'}}" >
+                <view><image src="https://static.bonnieclyde.cn/tt.png"  mode='widthFix' ></image></view>
+                 <!-- <text class="ke_fu">客服</text> -->
+            </button>
+</scroll-view>

@@ -1,0 +1,136 @@
+     <scroll-view  bindtap = "handletap" bindtouchstart = "handletouchtart" bindtouchend="handletouchend" bindtouchmove="handletouchmove"
+     >
+
+<!--等待标识  -->
+  <view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25'color='#fff' ></icon>
+    <view class="motify-inner">{{prompt}}</view>
+  </view>
+<!--等待标识  -->
+<!-- 
+  <block wx:if='{{is_login == 0}}'>
+    <image class='load_img' src='/images/member/5-121204193R0-50.gif'></image>
+  </block> -->
+
+   <!-- <view class="logo">
+   <image src="{{imgUrl}}" mode="widthFix" style="width:750rpx;display:block;"> </image>
+  </view> -->
+  <view class="project-container" wx:if='{{actList}}'>
+
+  <block wx:for='{{actList}}' wx:key='' wx:for-item='acticities' wx:for-index='index'> 
+    <view>
+    
+      <!--标题  -->
+       <view class='project-title'  wx:if='{{acticities.goods_info}}' style='padding-bottom:40rpx;'>
+        <text style='font-size: 40rpx;line-height: 26px;padding:40rpx 20rpx 0;;font-weight:600'>{{acticities.title_pro}}</text>
+        <text wx:if="{{acticities.goods_info.introduction}}" style='font-size: 14px;line-height: 40rpx;padding:20rpx 60rpx 0'>{{acticities.goods_info.introduction}}</text>
+      </view> 
+
+      <!--图片  -->
+      <view class='project-image' data-title='{{acticities.goods_info.goods_name}}' data-id='{{acticities.pid}}'  data-url="{{acticities.pic_link}}" data-info="{{acticities.goods_info}}" catchtap='toLink'>
+        <image wx:if='{{acticities.pic_pro}}' src="{{acticities.pic_pro}}" mode='widthFix' style='width:680rpx;margin:0 auto;'></image>
+        <image wx:if='{{acticities.pic}}' src="{{acticities.pic}}" mode='widthFix' style='width:100%'></image>
+      </view>
+
+
+       <view class='project-content' wx:if='{{acticities.goods_info}}'>
+        <view class='project-content-text'>{{acticities.goods_info.goods_name}}</view>
+        <view class='project-content-text'>￥{{acticities.goods_info.promotion_price}}</view>
+        <view class='project-content-btn'>
+          <button style='color:#101010;background:#fff;' data-title='{{acticities.goods_info.goods_name}}' data-id='{{acticities.pid}}'  data-url="{{acticities.pic_link}}" data-info="{{acticities.goods_info}}" catchtap='toLink'>了解更多</button>
+          <!-- <button style='color:#fff;background:#101010;' data-data='{{acticities}}' catchtap='addCart'>加入购物车</button> -->
+        </view>
+      </view> 
+    </view>
+
+
+ </block> 
+
+
+  <!-- <button class="btn-bottom" open-type="share">
+                <image src='https://static.bonnieclyde.cn/WechatIM21.png'></image>
+                <text>分享</text>
+            </button> -->
+
+
+  <view class='center-line'  wx:if="{{new_actList.length>=2}}" >
+  <br/>
+  <text>本期商品</text>  
+ </view> 
+
+  <view class="body" wx:if="{{new_actList.length>=2}}" >
+  <block wx:for='{{new_actList}}' wx:key='' wx:for-item='shops' wx:for-index='index'>
+    <view  class='all' catchtap='toLink'  data-id="{{shops.pid}}" data-title='{{shops.goods_info.goods_name}}' data-url="{{shops.pic_link}}" data-info="{{shops.goods_info}}">
+      <view class="all-box">
+        <image src="{{shops.pic_pro}}" mode="widthFix"></image>
+        <view class="shop-detail">
+          <text  decode="true" class="title">
+          <block wx:for='{{shops.gorup_list}}' wx:key='' wx:for-item='vo'>
+            <i class="goods_tab">{{vo.group_name}}</i>
+          </block>{{shops.goods_info.goods_name}}</text>
+          <view class="shop-detail-price">
+            <text>￥{{shops.goods_info.promotion_price}}</text>
+            <view style='text-decoration:line-through;color:#d7d7d7;font-size:12px;' wx:if="{{shops.goods_info.market_price - shops.goods_info.promotion_price > 0}}">￥{{shops.goods_info.market_price}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view> 
+ 
+ <view class='center-line' wx:if='{{activities}}'>
+ <image  class="rur" src='https://static.bonnieclyde.cn/Wec.png' mode='widthFix'></image>
+ </view> 
+
+ <!--轮播  -->
+
+<scroll-view wx:if="{{actList[0] == undefined}}" style="margin-top:400px;" class='indexShop-swiper' scroll-x>
+  <block wx:for='{{activities}}' wx:key='' wx:for-item='shops' wx:for-index='index'>
+      <view class='shop-shuffing-item' catchtap='listClick' data-id="{{shops.id}}" data-title="{{shops.title}}" > 
+        <image src="{{shops.pic}}" style="height:292rpx;width:520rpx;"> </image> 
+        <view class='lase-shuffing-mask'>
+          <text>{{shops.title}}</text>  
+          <image src='/images/index/right.png'></image>
+        </view>
+      </view>
+  </block>
+
+  <view class='shop-shuffing-item' catchtap='toTopicList'  wx:if='{{activities}}'> 
+        <image src="https://static.bonnieclyde.cn/We22.jpeg" style="height:292rpx;width:520rpx;"> </image> 
+      </view>
+</scroll-view> 
+
+<scroll-view wx:else class='indexShop-swiper' scroll-x>
+  <block wx:for='{{activities}}' wx:key='' wx:for-item='shops' wx:for-index='index'>
+      <view class='shop-shuffing-item' catchtap='listClick' data-id="{{shops.id}}" data-title="{{shops.title}}" > 
+        <image src="{{shops.pic}}" style="height:292rpx;width:520rpx;border-radius:2px"> </image> 
+        <view class='lase-shuffing-mask'>
+          <text>{{shops.title}}</text>  
+          <image src='/images/index/right.png'></image>
+        </view>
+      </view>
+  </block>
+
+  <view class='shop-shuffing-item' catchtap='toTopicList' wx:if='{{activities}}'> 
+        <image src="https://static.bonnieclyde.cn/We22.jpeg" style="height:292rpx;width:520rpx;"> </image> 
+      </view>
+</scroll-view> 
+
+</view>
+
+  <!--弹窗-->
+<!-- <view class="modal-mask" bindtap="hideModal" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+ <view class="modal-dialog" wx:if="{{showModal}}">
+ <view class="titl-box">
+  <view class="modal-title"><span>温馨提示</span></view>
+  <view class="gift_title">礼物选定后将无法调换</view>
+  <view class="gift_title">您确定选择这个吗？</view>
+  </view>
+  <view class="modal-footer">
+    <view class="btn-cancel" bindtap="onCancel" data-status="cancel">取消</view>
+    <view class="btn-confirm" bindtap="toGift" data-status="confirm">确认</view>
+  </view>
+</view>  -->
+
+ 
+</scroll-view>

@@ -1,0 +1,37 @@
+<!-- //品牌 -->
+
+<scroll-view>
+  <view class='first-search'>
+    <view class='search-box'>
+      <image src='/images/goods/search_icon_2.png' class="search-button" catchtap='toSearch'/>
+      <input type="text" class="search-input" bindinput='searchInput' placeholder="按照商品关键字搜索" bindconfirm='toSearch' />
+    </view>
+  </view>
+
+  <view class='flex' style='height:100%;margin-bottom:50px;'>
+     <!-- 左边 -->
+    <view class='classify-left'>
+      <block wx:for='{{goods_category_list}}' wx:key='' wx:for-item='category' wx:for-index='index'>
+        <view class="classify-title {{category.isSelect?'classify-title-active':''}}" catchtap='toSelect' data-id='{{category.category_id}}' data-index='{{index}}'>{{category.category_name}}</view>
+      </block>
+    </view>
+
+    <!-- 右边 -->
+    <view class='classify-right'>
+      <!-- <image src="{{classifyLogo}}" mode="widthFix"/> -->
+      <view class='goods-list'>
+        <block wx:for='{{goodsList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+          <view class='goods-list-item' catchtap='toGood' data-id='{{item.category_id}}'>
+            <image src="{{item.category_pic}}" mode="widthFix"/>
+            <view style='text-align:center;color:#333;line-height:20px;'>{{item.category_name}}</view>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+  
+
+</scroll-view> 
+
+
+

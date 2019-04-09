@@ -1,0 +1,59 @@
+<!-- pages/order/protocol/protocol.wxml -->
+<scroll-view>
+  <block wx:for='{{carry_datas}}' wx:for-item='xo' wx:key='index'>
+    <view class='overall' wx:if='{{is_now==1}}'>
+      <view class='o_left'>
+        <view style='color:#96989e;'>{{xo.askfor_time}}</view>
+        <!-- <view style='color:#96989e;'>（申请时间）</view> -->
+      </view>
+      <view style='margin: 14rpx 0;'>申请原因：{{xo.refund_reason}}</view>
+      <view style='margin: 14rpx 0;'>申请金额：{{xo.refund_require_money}}</view>
+      <view style='margin: 14rpx 0;'>申请数量：x {{xo.refund_require_num}}</view>
+      <view class='o_left' style='height:110rpx;border-top:1px solid #eaeaea;border-bottom:none;'>
+        <view class="see_hook">
+          <view class='li' wx:if='{{xo.refund_status==1}}'>状态：等待商家处理退款申请</view>
+          <view class='li' wx:if='{{xo.refund_status==2}}'>状态：等待商家退货</view>
+          <view class='li' wx:if='{{xo.refund_status==3}}'>状态：等待商家收货</view>
+          <view class='li' wx:if='{{xo.refund_status==4}}'>状态：您的申请已提交成功</view>
+          <view class='li' wx:if='{{xo.refund_status==5}}'>状态：退款成功</view>
+          <view class='li' wx:if='{{xo.refund_status==-1}}'>状态：卖家拒绝您的退款申请</view>
+          <view class='li' wx:if='{{xo.refund_status==-2}}'>状态：退款已关闭</view>
+          <view class='li' wx:if='{{xo.refund_status==-3}}'>状态：本次退款拒绝</view>
+        </view>
+        <view class="see_hook" style='height:68rpx;'>
+          <button catchtap='upspring' data-index='{{index}}'>查看详情</button>
+        </view>
+      </view>
+    </view>
+  </block>
+  <block wx:if='{{is_now==2}}'>
+    <view class='limit'>
+      <block>
+        <view class="moban" wx:for='{{Carry}}' wx:for-item='so' wx:key='index'>
+          <view style='height:80rpx'>
+            <view style='border-bottom:1px solid #eaeaea; line-height:80rpx'>
+              {{so.action_username!='admin'?Pro.name:'Bonnie&Clyde'}}
+            </view>
+          </view>
+          <!-- <view style='display: inline-block;' wx:if='{{so.refund_shipping_company}}'> 物流公司：{{so.refund_shipping_company}} 物流单号：{{so.carry_data.refund_shipping_code}}</view> -->
+          <view class='hidder' wx:if='{{so.refund_status==5 || so.refund_status==3 }}' style='border-bottom:1px solid #eaeaea; '>
+            <view wx:if='{{ so.refund_status==5 }}' style='margin: 20rpx 0; 20rpx'>
+              退款金额：{{Refund_require_money}}
+            </view>
+            <view wx:if='{{ so.refund_status==5 }}' style='margin: 20rpx 0; 20rpx;'>退款方式：微信支付</view>
+            <view wx:if='{{so.refund_status==3}}' style='margin: 20rpx 0; 20rpx'>
+              物流公司：{{Refund_shipping_company}}
+            </view>
+            <view wx:if='{{ so.refund_status==3}}' style='margin: 20rpx 0; 20rpx'>
+              物流单号：{{Refund_shipping_code}}
+            </view>
+          </view>
+          <view class='site'>
+            <view class='li' style='font-weight:700;'>{{so.action}}</view>
+            <view class="li" style="color:#999">{{so.action_time}}</view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </block>
+</scroll-view>

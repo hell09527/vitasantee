@@ -1,0 +1,59 @@
+<scroll-view>
+
+
+<!--等待标识  -->
+  <view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25'color='#fff' ></icon>
+    <view class="motify-inner">{{prompt}}</view>
+  </view>
+<!--等待标识  -->
+
+<!-- 
+  <block wx:if='{{is_login == 0}}'>
+    <image class='load_img' src='/images/member/5-121204193R0-50.gif'></image>
+  </block> -->
+
+  <view class="paySuccess">
+    <!-- <image src='/images/index/brand.png' mode='widthFix'></image>
+    <text class="title">恭喜你成为付费会员</text>
+    <text class="content">请选取一份礼物带走吧</text> -->
+    <image src="{{img3}}" mode='widthFix' style='width:100%;margin-bottom:20rpx;'></image>
+  </view> 
+
+  <view class="membership-container">
+    <view class="membership-gifts">
+      <block wx:for='{{giftList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+        <view class="gift-item" catchtap='checkAll' data-i="{{item.goods_id}}">
+          <image src="{{item.pic_cover_small}}" class="giftUrl" mode='widthFix'></image>
+          <view class="gift-detail">
+            <text class="detail-title">{{item.goods_name}}</text>
+            <text class="detail-content">{{item.content}}</text>
+            <view class="detail-price">
+              <del>￥{{item.promotion_price}}</del>
+              <image src='/images/goods/cartp2.png' mode='widthFix' wx:if="{{item.selected}}" class="selected"></image>
+            </view>
+          </view>
+        </view>
+      </block>
+
+    
+    </view>
+
+    <button class="toPayBtn" catchtap='showDialogBtn'>领取礼物</button>
+  </view>
+
+  <!--弹窗-->
+<view class="modal-mask" bindtap="hideModal" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+ <view class="modal-dialog" wx:if="{{showModal}}">
+ <view class="titl-box">
+  <view class="modal-title"><span>温馨提示</span></view>
+  <view class="gift_title">礼物选定后将无法调换</view>
+  <view class="gift_title">您确定选择这个吗？</view>
+  </view>
+  <view class="modal-footer">
+    <view class="btn-cancel" bindtap="onCancel" data-status="cancel">取消</view>
+    <view class="btn-confirm" bindtap="toGift" data-status="confirm">确认</view>
+  </view>
+</view> 
+   
+</scroll-view>

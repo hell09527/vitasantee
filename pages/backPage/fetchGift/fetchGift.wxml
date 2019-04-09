@@ -1,0 +1,46 @@
+<import src="/templates/dataLogin-template/dataLogin.wxml" />
+
+<scroll-view>
+
+<view class="nav">
+<view class="headPortrait">
+<image mode="widthFix"   src="{{goodsInfo.user_headimg}}"></image>
+<view class="headName">{{goodsInfo.member_name}}
+</view>
+</view>
+</view>
+<view class="body">
+<view class="body_title" style='padding:0 20px;'>送你一份黑科技礼物</view>
+<view class="cards">
+<image src="{{imgUrls}}" mode="widthFix"></image>
+</view>
+<view class="zhufu">祝福留言：{{goodsInfo.buyer_message}}
+</view>
+</view>
+<block wx:if="{{order_status==11}}">
+<view wx:if='{{unregistered==1 || tel==""}}'>
+<view class="footer">
+<button class="get" catchtap='Crossroad' >领取礼物</button>
+</view>
+</view>
+
+<view wx:if='{{unregistered==0 && tel!="" }}'>
+<view class="footer">
+<button class="get"  catchtap='triumph'>领取礼物</button>
+</view>
+</view>
+</block>
+<block wx:if="{{order_status==1}}">
+<view class="footer">
+<button class="get"  disabled='true'>礼物已领取</button>
+</view>
+</block>
+</scroll-view>
+<view class="yuan1"  catchtap='Backindex'>去送礼</view>
+<template is="dataLogin" data="{{showModal,Choice,layout}}" />
+
+<!-- //客服 -->
+           <!-- <button class="a new-btn buy-cart" open-type="contact" session-from="weapp" class="yuan" style='right:140rpx;'>
+                <view><image src="https://static.bonnieclyde.cn/tt.png"  mode='widthFix' ></image></view>
+            </button> -->
+

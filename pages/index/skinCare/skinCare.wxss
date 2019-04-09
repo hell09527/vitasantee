@@ -1,0 +1,49 @@
+/* pages/index/skinCare/skinCare.wxss */
+@import "/templates/top-template/top-template.wxss";
+@import "/templates/goods-list-template/goods-list-template.wxss";
+
+.com-content{
+  background: #f9d904;
+  margin-bottom: 100rpx;
+}
+.skin-container{
+  background: #fff;
+  padding:20rpx 0;
+}
+.content-title{
+  border:1px solid #e4e4e6;
+  height:72rpx;
+  display: flex;
+  margin:0 20rpx;
+  justify-content: space-around;
+}
+.title-item{
+  border-right: 1px solid #e4e4e6;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding:0 10rpx;
+  width: 33.3%;
+}
+.title-item>text{
+  color:#999;
+}
+.title-item-active>text{
+  color:#e40046;
+}
+.title-item-active>image{
+  transform-origin:center;
+  transform:rotate(180deg);
+}
+.title-item:last-child{
+  border-right: none;
+}
+.title-item>image{
+  width:24rpx;
+}
+
+.brand_goods{
+  padding:20rpx 5rpx;
+  display: table;
+}

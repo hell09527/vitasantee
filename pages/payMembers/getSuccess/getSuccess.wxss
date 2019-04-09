@@ -1,0 +1,66 @@
+/* pages/backPage/receiveSuccess/receiveSuccess.wxss */
+.heder{
+  width: 100%;
+  /* height: 188px; */
+  /* background-color: #ccc; */
+}
+.pic{
+ text-align: center;
+}
+.pic .img{
+   margin-top: 40.33px;
+  width: 120px;
+  height: 70px;
+margin-bottom: 20px;
+}
+.title_gift{
+  margin: 0 auto;
+ font-size: 14px;
+}
+.body{
+  padding: 10px 10px 4px 10px;
+}
+.body>text{
+  font-size: 18px;
+  color:#000;
+  display: block;
+  width:100%;
+  text-align: center;
+  margin:40rpx 0 80rpx;
+  font-weight: bold;
+}
+ .wait{
+   text-align: center;
+    height: 30px;
+    margin: 10rpx auto 0;
+  font-size: 14px;
+ }
+.btn-group{
+  display: flex;
+  justify-content: space-around;
+  position: relative;
+}
+.btn{
+  display: inline-block;
+  height:40px;
+  line-height: 40px;
+  font-size: 14px;
+  background: #000;
+  color:#fff;
+  border-radius: 0;
+  width:40%;
+  text-align: center;
+}
+.icon{
+  position: absolute;
+  left:42%;
+  width:40rpx;
+  height:40rpx;
+  border-radius: 50%;
+  background: #cc9933;
+  color:#000;
+  font-weight: bold;
+  top:-15rpx;
+  text-align: center;
+  z-index: 100;
+}

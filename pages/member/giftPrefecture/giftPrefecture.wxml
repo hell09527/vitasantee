@@ -1,0 +1,59 @@
+<scroll-view bindtap = "handletap" bindtouchstart = "handletouchtart" bindtouchend="handletouchend" bindtouchmove="handletouchmove">
+ <view class="hint">
+  <image src="{{img1}}" mode="widthFix"></image>
+  <!-- <image src="{{img2}}" mode="widthFix"></image> -->
+  <image src="{{img3}}" mode="widthFix" catchtap='toProject'></image>
+</view> 
+<view class="body">
+  <block wx:for='{{shop}}' wx:key='' wx:for-item='shops' wx:for-index='index'>
+    <view  class='all' catchtap='listClick'  data-x="{{index}}" data-title='{{shops.goods_name}}' data-types='{{shops.source_type}}' data-code='{{shops.material_code}}' data-url='/goods/goodsdetail/goodsdetail?goods_id={{shops.goods_id}}&&goods_name={{shops.goods_name}}&&fly=fly'>
+      <view class="all-box">
+        <image src="{{shops.pic_cover_big}}" mode="widthFix"></image>
+        <view class="shop-detail">
+          <text  decode="true" class="title">
+          <block wx:for='{{shops.gorup_list}}' wx:key='' wx:for-item='vo'>
+            <i class="goods_tab">{{vo.group_name}}</i>
+          </block>{{shops.goods_name}}</text>
+          <view class="price">
+            <text>￥{{shops.promotion_price}}</text>
+            <!-- <view class="package">包邮</view>   -->
+            <view style='text-decoration:line-through;color:#d7d7d7;font-size:12px;' wx:if="{{shops.market_price - shops.promotion_price > 0}}">￥{{shops.market_price}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
+
+<!--按钮  -->
+ 
+<view class="btn">
+  <button catchtap='Back_to' style='border-right:1px solid #fff'>发现更多惊喜</button>
+  <button catchtap='Record'>礼物记录</button>
+</view> 
+
+
+<!--弹窗-->
+<view class="modal-mask" bindtap="hideModal" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+<!-- <view class="modal-dialog" wx:if="{{showModal}}">
+  <view class="modal-title"><span>领取会员大礼</span></view>
+  <view class="gift_title">恭喜您成为尊贵会员,您还有一次免费送礼的机会没有使用!是否前往赠送? </view>
+  <view class="modal-footer">
+    <view class="btn-cancel" bindtap="onCancel" data-status="cancel">暂不赠送</view>
+    <view class="btn-confirm" bindtap="onConfirm" data-status="confirm">赠送礼物    </view>
+  </view> 
+</view>-->
+
+  <view class="modal-image" wx:if="{{showModal}}">
+  <image src="https://static.bonnieclyde.cn/WechatIMG380.png" mode="widthFix" class="close" bindtap="onCancel" data-status="cancel"></image>
+    <image src="https://static.bonnieclyde.cn/573-715.jpg" mode="widthFix" style='width:100%' bindtap="onConfirm" data-status="confirm"></image>
+  </view>
+
+
+<!-- //客服 -->
+           <button class="a new-btn buy-cart" open-type="contact" session-from="weapp" class="{{isHide==0?'yuan':'hide-kf'}}" style='bottom:100rpx'>
+                <view><image src="https://static.bonnieclyde.cn/tt.png"  mode='widthFix' ></image></view>
+                 <!-- <text class="ke_fu">客服</text> -->
+            </button>
+</scroll-view>
+

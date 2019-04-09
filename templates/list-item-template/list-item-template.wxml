@@ -1,0 +1,17 @@
+<!-- 极选师商品排行 -->
+
+<template name="listItemTemplate">
+  <!-- 第一 -->
+  <view class="sequence" style='color:#d0021b' wx:if='{{index==0}}'>{{index+1}}</view>
+  <!-- 第二 -->
+  <view class="sequence" style='color:#f57923' wx:elif='{{index==1}}'>{{index+1}}</view>
+  <!-- 第三 -->
+  <view class="sequence" style='color:#f9b649' wx:elif='{{index==2}}'>{{index+1}}</view>
+  <!-- 其他 -->
+  <view class="sequence" wx:else>{{index+1}}</view>
+  <!-- <view class="brand">{{text}}</view> -->
+  <view class="names">
+    <image class="img" src='{{pic_cover_small}}'></image>
+    <view class="w_book">{{goods_name}}</view>
+  </view>
+</template>

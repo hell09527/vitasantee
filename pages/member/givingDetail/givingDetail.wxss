@@ -1,0 +1,57 @@
+/* pages/member/givingDetail/givingDetail.wxss */
+.gift-item{
+  background: #fff;
+  margin-bottom: 10px;
+}
+.gift-detail{
+  display: flex;
+  justify-content: flex-start;
+  padding:10px;
+  border-bottom: 1px solid #f1f1f1;
+}
+.giftUrl{
+  width:180rpx;
+  height:180rpx;
+  display: block;
+  margin-right: 10px;
+}
+.gift-text{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  font-size: 12px;
+  line-height: 22px;
+}
+.item-status{
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 10px;
+}
+.order-status{
+  background: #fff;
+  width:100%;
+}
+.order-top{
+  border-bottom: 1px solid #f1f1f1;
+  padding: 10px 0;
+}
+.order-top:last-child{
+  border-bottom: none;
+}
+.order-item{
+  font-size: 14px;
+  line-height: 30px;
+  padding:0 10px;
+}
+
+.toPayBtn{
+  background: #000;
+  color:#fff;
+  border-radius: 0;
+  line-height: 50px;
+  text-align: center;
+  width:80%;
+  margin:30rpx auto 30rpx;
+}

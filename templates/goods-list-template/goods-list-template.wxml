@@ -1,0 +1,12 @@
+<!-- CB商品列表 -->
+<template name="goodsListTemplate">
+  <view class='brand_goods_detail' catchtap='toGood' data-id='{{goods_id}}'>
+              <image src="{{pic_cover_small}}" mode="widthFix"/>
+              <text class='activity_text'>{{goods_name}}</text>
+              <!-- <text class='activity_info'>收敛毛孔补水保湿收敛毛孔补水保湿</text> -->
+              <view class='brand_goods_price'>
+                <text>￥{{promotion_price}}</text>
+                <!-- <image src="{{!isActive?'https://static.vitasantee.com/%E6%94%B6%E8%97%8F@2x.png':'https://static.vitasantee.com/%E6%94%B6%E8%97%8F%20copy%202@2x.png'}}" mode="widthFix"  catchtap='toCollect' data-index='{{index}}'/> -->
+              </view>
+            </view>
+</template>

@@ -1,0 +1,66 @@
+<scroll-view>
+
+  <view class="body">
+    <view class="gift-item">
+      <block wx:for='{{giftDetail.order_goods}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+      <view class='a' catchtap='listClick' data-url='/goods/goodsdetail/goodsdetail?goods_id={{item.goods_id}}&&goods_name={{item.goods_name}}'>
+        <view class="gift-detail">
+          <image src="{{item.picture_info.pic_cover_small==''?0:item.picture_info.pic_cover_small}}" class="giftUrl" mode='widthFix'></image>
+          <view class="gift-text">
+            <text style='color:#8F8E94'>{{item.goods_name}}</text>
+            <text style='color:#8F8E94'>价格：￥{{item.price}}</text>
+            <text style='color:#8F8E94'>数量：{{item.num}}</text>
+          </view>
+        </view>
+         </view>
+      </block>
+      <view class="item-status">
+        <text style='color:#8F8E94'>共{{allNum}}件</text>
+        <view style='color:#8F8E94'>实际付款：<text style='color:#F44'>￥{{giftDetail.goods_money}}</text></view>
+      </view>
+    </view>
+
+    <view class="order-status">
+      <view class="order-top">
+        <view class="order-item">
+          <text style='color:#8F8E94'>礼包编号：</text>
+          <text>{{giftDetail.order_no}}</text>
+        </view>
+        <view class="order-item">
+          <text style='color:#8F8E94'>下单时间：</text>
+          <text>{{giftDetail.create_time}}</text>
+        </view>
+        <view class="order-item">
+          <text style='color:#8F8E94'>礼包状态：</text>
+          <text wx:if="{{giftDetail.order_status==0}}">待付款</text>
+          <text wx:if="{{giftDetail.order_status==1}}">待发货</text>
+          <text wx:if="{{giftDetail.order_status==2}}">已发货</text>
+          <text wx:if="{{giftDetail.order_status==3}}">已收货</text>
+          <text wx:if="{{giftDetail.order_status==4}}">已完成</text>
+          <text wx:if="{{giftDetail.order_status==5}}">已关闭</text>
+          <text wx:if="{{giftDetail.order_status==-1}}">退款中</text>
+          <text wx:if="{{giftDetail.order_status==-2}}">已退款</text>
+          <text wx:if="{{giftDetail.order_status==11}}">待领取</text>
+        </view>
+        <!-- <view class="order-item">
+          <text style='color:#8F8E94'>订单状态：</text>
+          <text>{{}}</text>
+        </view> -->
+      </view>
+      <!-- <view class="order-top">
+         <view class="order-item">
+          <text style='color:#8F8E94'>礼包编号：</text>
+          <text>098765432345</text>
+        </view>
+        <view class="order-item">
+          <text style='color:#8F8E94'>领取时间：</text>
+          <text>2018-06-14 16:48:16</text>
+        </view> 
+      </view> -->
+    </view>
+
+<!--待领取状态下的按钮  -->
+    <!-- <button class="toPayBtn" catchtap='toPay'>赠送给朋友</button>
+    <button class="toPayBtn" catchtap='toPay'>去支付</button> -->
+  </view>
+</scroll-view>

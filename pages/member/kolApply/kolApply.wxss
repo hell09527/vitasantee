@@ -1,0 +1,322 @@
+/* pages/member/kolApply/kolApply.wxss */
+page{
+  background: #fff;
+}
+.title-nav{
+  padding:20rpx 0;
+}
+.nav-text{
+  display: flex;
+  justify-content: space-around;
+  align-self: center;
+}
+.nav-text-item{
+  font-size: 12px;
+  color:#AAAAAA;
+}
+.nav-text-active{
+  color:#000;
+}
+.nav-circle{
+  margin:12rpx 80rpx 0;
+  display: flex;
+  justify-content: space-between;
+  align-self: center;
+  border-bottom: 1px solid #AAAAAA;
+  position: relative;
+  height: 12rpx;
+}
+.nav-circle-item{
+  width: 22rpx;
+  height: 22rpx;
+  border-radius: 50%;
+  border:1px solid #aaaaaa;
+  background: #fff;
+}
+.nav-circle-active{
+  border:1px solid #000;
+  background: #000;
+}
+
+/* 基本信息 */
+.basic-infor{
+  padding:20rpx 40rpx;
+  width:100%;
+}
+.table{
+  width:100%;
+}
+.table>view{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 90rpx;
+}
+.table-text{
+  width:140rpx;
+  font-size: 14px;
+  color:#000;
+  text-align: right;
+  margin-right: 60rpx;
+}
+.table-input{
+  flex: 1;
+  border-bottom: 1px solid #bbbbbb;
+  padding:0 10rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+}
+.section{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.radio{
+  margin-right: 30rpx;
+}
+.picker{
+  text-align: right;
+  height:1.4rem;
+}
+.addressText{
+  height: 100%;
+  width:100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  text-align: center;
+}
+.model-box{
+  background: rgba(0,0,0,0.6);
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height: 100%;
+  z-index: 20;
+}
+.picker-view {
+  width: 100%;
+  display: flex;
+  z-index:30;
+  background-color: #fff;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 0rpx;
+  left: 0rpx;
+  height: 40vh;
+}
+.picker-item {
+  line-height: 70rpx;
+  margin-left: 5rpx;
+  margin-right: 5rpx;
+  text-align: center;
+}
+.next-btn{
+  background: #000;
+  width:400rpx;
+  height:90rpx;
+  color:#fff;
+  margin:40rpx auto;
+}
+
+/* 经历爱好 */
+.hobby,.realname-box,.myInfor{
+  padding:20rpx 40rpx;
+  width:100%;
+}
+.hobby>view{
+  box-sizing: border-box;
+  margin:40rpx 0;
+}
+.hobby>view .table-text{
+  line-height: 30px;
+  font-size: 14px;
+  text-align: left;
+}
+.realname-card{
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  margin:30rpx 0;
+}
+.realname>view{
+  display: flex;
+  justify-content: space-around;
+  margin:30rpx 0;
+}
+.realname>view{
+  align-items: center;
+}
+.table-textarea{
+  height: 200rpx;
+  flex: 1;
+  width:100%;
+  border:1px solid #bbbbbb;
+  padding: 3px;
+  box-sizing: border-box;
+}
+.hobby-btn{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding:60rpx 0;
+}
+.hobby-preo-btn{
+  background: #fff;
+  border:1px solid #000;
+  color:#000;
+  line-height: 90rpx;
+  width:260rpx;
+  text-align: center;
+}
+.hobby-next-btn{
+  text-align: center;
+  color:#fff;
+  background: #000;
+  border:1px solid #000;
+  width:260rpx;
+  line-height:90rpx;
+  font-size:14px;
+  border-radius:0;
+}
+
+/* 实名制认证 */
+.realname-title{
+  color:#000;
+  font-size:14px;
+  line-height: 20px;
+}
+.titel-bottom{
+  font-size: 12px;
+  color:#AAAAAA;
+}
+.identityCard{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.identityCard_item_box{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  position: relative;
+  z-index: 10;
+}
+.identityCard_del{
+  position: absolute;
+  right: 20rpx;
+  bottom: 60rpx;
+  z-index: 100;
+  width:64rpx;
+  height: 64rpx;
+  margin-left: 40rpx;
+}
+.identityCard_item{
+  width:660rpx;
+  height: 360rpx;
+  margin-bottom: 40rpx;
+  display: flex;
+  align-items: center;
+}
+.FilePaths{
+  background: url('https://static.bonnieclyde.cn/%E7%85%A7%E7%89%87%E5%B1%95%E4%BD%8D%E5%9B%BE@2x.png') no-repeat;
+  background-size: 100% 100%;
+}
+.recitePaths{
+  background: url('https://static.bonnieclyde.cn/%E5%B1%95%E4%BD%8D%E5%9B%BE-2@2x.png') no-repeat;
+  background-size: 100% 100%;
+}
+.paths{
+  width:100%;
+  height:100%;
+}
+.imgs{
+  width:100%;
+  height: 100%;
+  line-height: 272rpx;
+  text-align: center;
+}
+
+/* 结算信息 */
+.bankCard{
+  flex:1;
+  width:660rpx;
+  height: 360rpx;
+  text-align: center;
+}
+.bankCard-image{
+  width:100%;
+  height:100%;
+}
+.backCard-text{
+  width:100%;
+  height:100%;
+  background: url('https://static.bonnieclyde.cn/%E5%B1%95%E4%BD%8D%E5%9B%BE-3@2x.png') no-repeat;
+  background-size: 100% 100%;
+}
+
+/* 自我介绍 */
+.myInfor>view{
+  margin:40rpx 0;
+}
+.myInfor-text{
+  line-height: 25px;
+}
+.myInfor-input{
+  width:100%;
+  border-bottom:1px solid #bbbbbb;
+  padding:0 10rpx;
+  line-height: 30px;
+}
+.myInfor-btn{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.article{
+  text-align: center;
+  margin: 140rpx auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.article .h3{
+  font-weight: normal;
+  color: #373737;
+  font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial,sans-serif;
+  font-size: 18px;
+}
+
+.article .p{
+  color: #000;
+  margin:40rpx 0;
+  width:400rpx;
+  font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial,sans-serif;
+}
+
+.pay-block image{
+  width:200rpx;
+}
+
+.article button{
+  display: inline-block;
+  border: 0;
+  background: #000;
+  color: #ffffff;
+  border-radius: 3px;
+  padding: 10px;
+  width: 80%;
+  font-size: 16px;
+  outline: none;
+  font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial,sans-serif;
+  margin: 15px 0;
+  line-height: 1.5;
+}

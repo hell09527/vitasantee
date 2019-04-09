@@ -1,0 +1,19 @@
+/* icon */
+.set_icon_box{
+  position: fixed;
+  right:40rpx;
+  bottom:60rpx;
+}
+.set_icon{
+  width:80rpx;
+  height: 80rpx;
+  padding:0;
+  background: transparent
+}
+.set_icon>image{
+  width:100%;
+  border-radius: 40rpx;
+}
+.icon_home{
+  margin-top: 30rpx;
+}

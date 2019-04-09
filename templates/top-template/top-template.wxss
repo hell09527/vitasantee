@@ -1,0 +1,56 @@
+.first-search{
+  padding: 10px 20rpx;
+  background: #e40046;
+}
+.search-box{
+  position: relative;
+  z-index: 10;
+  width:100%;
+  border-radius: 45rpx;
+  height:33px;
+  border:1px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding:0 20rpx;
+  background:#fff;
+}
+.search-button{
+  width:32rpx;
+  height:32rpx;
+  margin-right: 20rpx;
+}
+.search-input{
+  border:0;
+  background: transparent;
+  color:#000;
+  font-size: 14px;
+  width:100%;
+}
+
+/* 商品分类标题 */
+.goods-detail-nav{
+  white-space:nowrap;
+  box-sizing: border-box;
+  background: #fff;
+  /* box-shadow: 0px 0px 20px rgba(0,0,0,0.1); */
+}
+.nav-item{
+  display: inline-block;
+  font-size:14px;
+  color:#005882;
+  border:1px solid #005882;
+  padding:0 40rpx;
+  line-height: 48rpx;
+  text-align: center;
+  border-radius: 50rpx;
+  transform: all 0.5s;
+  margin:18rpx 0 18rpx 14rpx;
+}
+.nav-item-active{
+  border:1px solid #005882;
+  background: #005882;
+  border-radius: 50rpx;
+  color:#fff;
+  font-weight: 500;
+}

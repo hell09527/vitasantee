@@ -1,0 +1,50 @@
+<scroll-view>
+
+
+<!--等待标识  -->
+  <view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25'color='#fff' ></icon>
+    <view class="motify-inner">{{prompt}}</view>
+  </view>
+<!--等待标识  -->
+
+  <view class="member-container">
+
+   <view class="logo" >
+   <image src="https://static.bonnieclyde.cn/527-%E9%A6%96%E9%A1%B5-01_02.jpg" mode="widthFix" style="width:750rpx;"> </image>
+  </view>
+    <!-- <view class="pay-way">
+      <view class="pay-wap-line">
+        <text>购买方式</text>
+        <text>付费购买</text>
+      </view>
+      <view class="pay-wap-line">
+        <text>购买期限</text>
+        <text>一年</text>
+      </view>
+      <view class="pay-wap-line">
+        <text>应付金额</text>
+        <text style="font-weight:bold">￥299.00</text>
+      </view>
+      <view class="pay-btn" catchtap='toOpen'>
+        <view>立即开通</view>
+      </view>
+    </view> -->
+    <view class="body">
+      <view>
+        <block wx:for="{{firstImg}}" wx:for-item="item" wx:key='' wx:for-index='index'>
+          <image catchtap='toDetail' src="{{item.imgUrl}}" style='width:100%;display:block' mode="widthFix" data-id="{{item.goods_id}}" data-title="{{item.title}}"></image>
+        </block>
+      </view> 
+
+      <view class="gift-box">
+        <block wx:for="{{nextImg}}" wx:for-item="item" wx:key='' wx:for-index='index'>
+          <image src="{{item.imgUrl}}" catchtap='toDetail' style='display:block' mode="widthFix" data-id="{{item.goods_id}}" data-title="{{item.title}}"></image>
+        </block>
+      </view> 
+      <!-- <image  catchtap='toOpen' src="{{memberInfo.img}}" style='width:100%;display:block;margin-bottom:50px;' mode="widthFix" ></image> -->
+    </view>
+    <button class="btn" catchtap='toOpen'>￥{{member_money
+}}/年 | 抢先开通</button>
+  </view>
+</scroll-view>

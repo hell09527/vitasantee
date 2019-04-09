@@ -1,0 +1,33 @@
+<scroll-view>
+  <view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25' color='#FFF'></icon>
+    <view class="motify-inner">{{prompt}}</view>
+  </view>
+
+  <view class="side-nav {{address_list.length==0?'hide':''}}">
+    <block wx:for='{{address_list}}' wx:key='id' wx:for-item='address' wx:for-index='key'>
+      <view class="address-item" catchtap='selectAddress'  data-id='{{address.id}}' data-key="{{key}}">
+        <view style='color:#333;font-size:14px;margin:10rpx 0;'>{{address.consigner}}  
+          <text style='color:#999;'> | </text> {{address.mobile}}
+          <text class='defaultAddress' wx:if="{{address.is_default==1}}">默认</text>
+        </view>
+        <view style='color:#333;font-size:12px;'>{{address.address_info}} {{address.address}}</view>
+        <view class='address-btn'>
+          <view catchtap='aClick' data-url='/member/updatememberaddress/updatememberaddress?id={{address.id}}'>编辑</view>
+          <view catchtap='delAddress' data-id='{{address.id}}' data-key="{{key}}" data-default='{{address.is_default}}'>删除</view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <image class="no-address {{address_list.length==0?'':'hide'}}" src="/images/member/member_none_address.png" mode='aspectFit'></image>
+  <view class="addr-box {{address_list.length==0?'':'hide'}}">
+	  <view class="p addr-tip">你还没有添加收货地址，添加一个吧!</view>
+  </view>
+
+  <view class="footer_wx">
+    <view class="btn-save" catchtap='aClick' data-url='/member/addmemberaddress/addmemberaddress' data-key='' data-id=''>新增收货地址</view>
+    <view class="btn-wx"  data-key='' data-id='' catchtap='daoefr'>获取微信地址</view> 
+  </view>
+ 
+</scroll-view>

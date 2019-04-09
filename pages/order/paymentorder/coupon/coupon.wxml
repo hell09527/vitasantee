@@ -1,0 +1,9 @@
+<view class="ul" wx:for='{{elment}}' wx:key=''  wx:for-item='goods'>
+<view class="li">
+<view  class="a"catchtap='listClick'  data-url="/order/paymentorder/paymentorder?card_id={{goods.card_id}}&&price={{goods.price}}&&token={{goods.token}}&&useof=1" data-cardid="{{goods.card_id}}"  data-price="{{goods.price}}" data-token="{{goods.token}}"  >
+<image src="{{goods.card_image_url}}" mode="widthFix"></image>
+</view>
+
+</view>
+<!-- catchtap='skip' -->
+</view>

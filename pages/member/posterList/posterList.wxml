@@ -1,0 +1,75 @@
+<!--pages/member/posterList/posterList.wxml-->
+<scroll-view class="therefore">
+<!-- //海报列表渲染 -->
+  <view > 
+      <view class='body'>
+        <!-- <view class='goods-title'>NB</view> -->
+        <view class='posterlis'>
+                 <block wx:for='{{category_goods}}' wx:key='' wx:for-item='shops' wx:for-index='index'>
+          <view class='goods_all'  catchtap='listClick' data-index='{{index}}' data-id='{{shops.id}}'>
+            <view class="all-box">
+              <image src='{{shops.code_pic}}'
+ mode='widthFix' lazy-load='true'></image>
+</view>
+          </view>
+        </block>
+        </view>    
+
+      </view>
+  </view>
+      
+    <view wx:if="{{category_goods[0]==undefined && category_goods}}"> 
+       <view class='dashed' >
+        您还没有定制过海报！
+      </view>
+  </view>
+
+<!-- <button style="background:red;" hover-class="green">123</button> -->
+<!-- add定制海报 -->
+<view class='fixaction' catchtap='Addposter'>
+<view class="add">
+ <view class='Utype'>
+   <image class='Uicon' src='https://static.bonnieclyde.cn/photo@2x.png'></image>
+     定制海报 
+     </view> 
+
+</view>
+</view>
+<!-- //大图片 -->
+<!-- catchtap='popupClose' -->
+<view class="mimi" wx:if="{{reveal}}" ></view>
+<view   class="blocks" wx:if="{{reveal}}">
+<scroll-view  scroll-y  style="height:{{windowHeight}}px; z-index:99" >
+
+<swiper   autoplay='{{false}}'   interval="2000" duration="1000"  circular  style='height: {{OrifinHeight}}px' current='{{visualI}}' bindchange='onSlideChangeEnd'>
+<block wx:for='{{category_goods}}' wx:key='' wx:for-item='shops' wx:for-index='index' >
+<swiper-item >
+<image src='{{shops.code_pic}}' mode='widthFix' style="width:100%;"  catchtap='exitMoswl'></image>
+</swiper-item>
+</block>
+</swiper>
+
+</scroll-view>
+  <view class="contain"> 
+  <view class="inline" catchtap='delImgs'>
+    <view class='Utype'>
+    <image class='Uicon' src='https://static.bonnieclyde.cn/Trash@2x.png'></image>
+        删除图片
+      </view> 
+    </view>
+  <view class="inline" catchtap='Savelocal'>
+     <view class='Utype'>
+    <image class='Uicon' src='https://static.bonnieclyde.cn/down@2x.png'></image>
+        下载到相册
+      </view> 
+    </view>
+  <view class="inline" catchtap='exitMoswl'>
+       <view class='Utype'>
+    <image class='Uicon' src='https://static.bonnieclyde.cn/back@2x.png'></image>
+        返回列表
+      </view> 
+    </view>
+  </view>
+
+</view>
+</scroll-view>

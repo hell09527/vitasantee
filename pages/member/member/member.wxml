@@ -1,0 +1,141 @@
+
+<scroll-view>
+  <!-- 个人信息 -->
+  <view class='userInfo'>
+    <view class="flex userInfo-detail" wx:if='{{unregistered==1 || tel==""}}'>
+        <button class="login" catchtap='Crossroad'>
+        <image src='https://static.vitasantee.com/WechatIMG1.png' mode="widthFix"/>
+        </button>
+        <button class="level" catchtap='Crossroad'>点击头像登录</button>
+    </view>
+
+    <view class='flex userInfo-detail' wx:if='{{unregistered==0 && tel!=""}}' catchtap='listClick' data-url='member/personaldata/personaldata'>
+      <image src="{{member_info.user_info.user_headimg}}" mode="widthFix"/>
+      <view class='userInfo-name'>
+        <view>{{member_info.member_name}}</view>
+        <!-- <text>会员LV.1</text> -->
+      </view>
+    </view>
+    <view></view>
+    <!-- <image src="https://static.vitasantee.com/2A8BD77F-ADB4-4F6F-A55D-D405F17464BA@2x.png" mode="widthFix" class='userInfo-QC'/> -->
+  </view>
+
+  <!-- 积分、优惠券、收藏、我的订单 -->
+  <view class='order-box'>
+    <!-- 积分、优惠券、收藏 -->
+    <view class='coupon-box'>
+      <!-- 积分 -->
+      <view class='item-box'>
+        <view class='box-border' catchtap='listClick' data-url=''></view>
+        <view class='box-text'>
+          <view style='color:#005882;font-size:22px;'>{{member_info.point}}</view>
+          <view style='color:#999;font-size:14px;'>积分</view>
+        </view>
+      </view>
+      <!-- 优惠券 -->
+      <view class='item-box' catchtap='listClick' data-url='member/membercoupon/membercoupon'>
+        <view class='box-border'></view>
+        <view class='box-text'>
+          <view style='color:#005882;font-size:22px;'>{{memberCouponCount}}</view>
+          <view style='color:#999;font-size:14px;'>优惠券</view>
+          <!-- <view class='box-float'>今日+10</view> -->
+        </view>
+      </view>
+      <!-- 收藏 -->
+      <view class='item-box' catchtap='listClick' data-url='member/mycollection/mycollection'>
+        <view class='box-border'></view>
+        <view class='box-text'>
+          <view style='color:#005882;font-size:22px;'>{{goodsFavoritesCount}}</view>
+          <view style='color:#999;font-size:14px;'>收藏</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 签到 -->
+    <!-- <view class='signIn-box'>
+      <view class='signIn-box-left'>
+        <image src="https://static.vitasantee.com/1C1A5934-38DB-4201-BEBC-7E16C20A576A@2x.png" mode="widthFix"/>
+        <text>每日签到赢积分当钱花</text>
+      </view>
+      <image src="https://static.vitasantee.com/F0BD2DB6-E795-441D-ADBD-F34EA5BDE436@2x.png" mode="widthFix"/>
+    </view> -->
+
+    <!-- 我的订单 -->
+    <view class='order-list'>
+      <view class='order-title'>
+        <view style='color:#333;font-weight:500;font-size:16px;'>我的订单</view>
+        <view class='flex' catchtap='listClick' data-url='order/myorderlist/myorderlist'>查看全部订单
+          <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" mode="widthFix" class='more'/>
+        </view>
+      </view>
+      <view class='order-container'>
+        <view class='order-item' catchtap='listClick' data-url='order/myorderlist/myorderlist?status=1'>
+          <view class="tips {{unpaidOrder>0?'':'hide'}}">{{unpaidOrder}}</view>
+          <image src="https://static.vitasantee.com/1.png" mode="widthFix"/>
+          <text>待付款</text>
+        </view>
+        <view class='order-item' catchtap='listClick' data-url='order/myorderlist/myorderlist?status=2'>
+          <view class="tips {{shipmentPendingOrder>0?'':'hide'}}">{{shipmentPendingOrder}}</view>
+          <image src="https://static.vitasantee.com/3.png" mode="widthFix"/>
+          <text>待发货</text>
+        </view>
+        <view class='order-item' catchtap='listClick' data-url='order/myorderlist/myorderlist?status=3'>
+          <view class="tips {{goodsNotReceivedOrder>0?'':'hide'}}">{{goodsNotReceivedOrder}}</view>
+          <image src="https://static.vitasantee.com/2.png" mode="widthFix"/>
+          <text>待收货</text>
+        </view>
+        <view class='order-item' catchtap='listClick' data-url='order/myorderlist/myorderlist?status=4'>
+          <view class="tips hide">1</view>
+          <image src="https://static.vitasantee.com/4.png" mode="widthFix"/>
+          <text>待评价</text>
+        </view>
+        <view class='order-item' catchtap='listClick' data-url='order/myorderlist/myorderlist?status=5'>
+          <view class="tips {{refundOrder>0?'':'hide'}}">{{refundOrder}}</view>
+          <image src="https://static.vitasantee.com/5.png" mode="widthFix"/>
+          <text>订单售后</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 列表 -->
+  <view class='userInfo-list'>
+    <view class='list-item' catchtap='listClick' data-url='member/personaldata/personaldata'>
+      <view>
+        <image src="https://static.vitasantee.com/personal@2x.png" mode="widthFix"/>
+      </view>
+      <view class='list-item-detail'>
+        <text>个人资料</text>
+        <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" mode="widthFix" style='width:16rpx;'/>
+      </view>
+    </view>
+    <view class='list-item' catchtap='listClick' data-url='member/memberaddress/memberaddress?flag=1'>
+      <view>
+        <image src="https://static.vitasantee.com/idress@2x.png" mode="widthFix"/>
+      </view>
+      <view class='list-item-detail'>
+        <text>收货地址</text>
+        <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" mode="widthFix" style='width:16rpx;'/>
+      </view>
+    </view>
+    <view class='list-item' catchtap='listClick' data-url='member/newmypath/newmypath'>
+      <view>
+        <image src="https://static.vitasantee.com/mark@2x.png" mode="widthFix"/>
+      </view>
+      <view class='list-item-detail'>
+        <text>我的足迹</text>
+        <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" mode="widthFix" style='width:16rpx;'/>
+      </view>
+    </view>
+    <!-- <view class='list-item' catchtap='listClick' data-url=''>
+      <view>
+        <image src="https://static.vitasantee.com/valuate@2x.png" mode="widthFix"/>
+      </view>
+      <view class='list-item-detail'>
+        <text>我的评价</text>
+        <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" mode="widthFix" style='width:16rpx;'/>
+      </view>
+    </view> -->
+  </view>
+
+</scroll-view>

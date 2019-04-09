@@ -1,0 +1,322 @@
+ 
+<!-- 引入tempalte  -->
+<import src="/templates/dataChoose-template/dataChoose-template.wxml" />
+<import src="/templates/list-item-template/list-item-template.wxml" />
+ 
+ <view class="cf-container" data-reactid="2">
+    <view class="cf-edge" data-reactid="3"></view>
+    <view class="cf-content" data-reactid="4">
+          <view class="cf-tab-item {{_no=='0'?'select':''}}" catchtap='topNav' data-id="0"><view class='a'>分润统计</view></view>
+      <view class="cf-tab-item {{_no=='1'?'select':''}}" catchtap='topNav' data-id="1"><view class='a'>商品排行</view></view>
+
+      <view class="cf-tab-item {{_no=='2'?'select':''}}" catchtap='topNav' data-id="2"><view class='a'>订单统计</view></view>
+      <view class="cf-tab-item {{_no=='3'?'select':''}}" catchtap='topNav' data-id="3"><view class='a'>小程序码</view></view>
+    </view>
+  </view>
+<block>
+  <block>
+    <view wx:if='{{_no== 0}}' class="slick">
+      <view class='bcg-box'>
+        <view class="bcg">
+          <view class='headimg'>
+            <image src='{{user_headimg}}' mode='widthFix' />
+          </view>
+          <view class='stat-num'>
+            <block wx:for='{{star_grade}}' wx:key>
+              <image src='/images/member/star.png' mode='widthFix' />
+            </block>
+            <block wx:for='{{3-star_grade}}' wx:key>
+              <image src='/images/member/no-star.png' mode='widthFix' />
+            </block>
+          </view>
+          <view class="yu_title">
+            <view class="yu_s">可提现金额</view>
+            <view class="show_yuan">￥{{balance}}</view>
+          </view>
+          <view class="x_fen">
+            <view class="li" style='border-right:1px solid rgba(0,0,0,0.3);'
+>待入账金额
+              <view class="price">￥{{unsettled_separation_sum}}</view>
+            </view>
+            <view class="li" style='border-right:1px solid rgba(0,0,0,0.3)'>本季度销售额
+              <view class="price"> ￥{{quarter_goods_money_sum}}</view>
+            </view>
+            <view class="li">本季度订单数
+              <view class="price">{{quarter_order_number_count}}</view>
+            </view>
+          </view>
+        </view> 
+        <image src='{{user_headimg}}' mode='widthFix' class='headimg-background' wx:if='{{user_headimg}}'/>
+        <view class='kol_name' wx:if='{{user_headimg}}'>
+          {{member_name}}
+        </view>
+      </view> 
+          <view class='deposit' catchtap='toTiXian'>我要提现</view>
+      <view class='big_coin'>
+        <!-- <view class='coin'>{{star_reward}}</view> -->
+        <view class='coin'>{{separation_sum}}</view>
+        <view class='coin'>{{member_count}}</view>
+        <view class='coin'>{{goods_money_sum}}</view>
+        <view class='coin'>{{order_number_count}}</view>
+      </view>
+
+      <view class='dish_name'>
+        <!-- <view class='namey'>星级奖励比例</view> -->
+         <view class='namey'>累计赚取金额</view>
+        <view class='namey'>绑定会员</view>
+        <view class='namey'>累计销售额</view>
+        <view class='namey'>累计订单数</view>
+      </view>
+          
+      <view class='moneyBox'>
+        <!-- <view class='xuans'>
+          <view class='c_money'>
+            <image src='/images/member/issueMonay.png' mode='widthFix'/>
+            <view>账户余额 ￥{{balance}}</view>
+          </view>
+          <view class='edu' catchtap='toTiXian'>
+          <text>前往提现</text>
+          <image class="direction" src='https://static.bonnieclyde.cn/WechatIMG240.png'></image> </view>
+        </view> -->
+        
+        <view class='xuans'>
+          <view class='c_money'>
+            <image src='/images/member/additionalMonay.png' mode='widthFix'/>  
+            <view>极选师规则说明</view>
+          </view>
+          <view class='edu' catchtap='open'>
+          <text>查看详情</text>
+          <image class="direction {{temp?'rotate':''}}" src='https://static.bonnieclyde.cn/WechatIMG240.png'></image> </view>
+        </view>
+      </view>
+
+      <!-- 极选师规则 -->
+      <view class="template {{ temp ? 'open':''}}">
+        <view class="explains">普通会员通过极选师推广链接购买商品，极选师将获得商品售出价格指定比例的分润。</view>
+        <!-- 表格解释部分  start-->
+        <view class="tables">
+          <view class="trs bg-w">
+            <view class="th">专有名词</view>
+            <view class="th_pop">解释</view>
+          </view>
+          <block wx:for="{{TistData}}" wx:key="{{code}}">
+            <view class="trs bg-g">
+              <view class="tds">{{item.code}}</view>
+              <view class="be_come">{{item.text}}</view>
+            </view>
+          </block>
+        </view>
+        <!-- 表格解释部分  end-->
+        <!-- 分润时长  start--> 
+        <view class="Benefit_times" style="margin-bottom:40rpx;">
+          <view class='headline'>分润时长</view>
+          <view class='head_text'>1. 订单已付款后，订单分润状态进入待入账；</view>
+          <view class='head_text'>2. 订单状态为已收货/已完成，订单分润状态仍然为待入账；</view>
+          <view class='head_text'>3. 当此订单已发货超过15日，订单分润状态转变为可提现；</view>
+          <view class='head_text'>4. 极选师在小程序申请提现，分润金额自动到账微信零钱</view>
+          <view class='headline'>分润计算方式：</view>
+          <view class='head_text'>商品实际售价 x 商品分润比例 = 最终所得分润金额</view>
+        </view>
+        <!-- 分润时长  end--> 
+        <!-- 极选师星级制 start-->
+        <view class='Star_system'>
+          <view class='headline'>极选师星级制</view>
+          <view class='head_text'>极选师向新会员/普通会员推广商品，新用户/普通用户通过极选师的小程序分享卡片/小程序码进入小程序，并产生消费，用户购买商品的金额转化为极选师的累计商品成交金额。</view>
+          <view class='head_text'>考核期内，极选师的累计商品成交金额达到当前星级的升星额度，则自动上升一个星级。</view>
+          <view class='head_text'>考核结算时，不同星级的极选师将会获得星级额外奖励。</view>
+          <view class=" tables  Star_table ">
+            <view class="tb bg-w">
+              <view class="th">极选师星级</view>
+              <view class="th">升星标准(元)</view>
+              <view class="th">星级奖励比例</view>
+            </view>
+            <block wx:for="{{CistData}}" wx:key="{{code}}" wx:for-item='item'>
+              <view class="tb bg-g">
+                <view class="td">{{item.star}}</view>
+                <view class="td">{{item.standard}}</view>
+                <view class="td">{{item. proportion}}</view>
+              </view>
+            </block>
+          </view>
+        </view>
+        <!-- 极选师星级制 end-->
+        <!-- 星级奖励计算规则 start-->
+        <view class='regulation'>
+          <view class='headline'>星级奖励计算规则</view>
+          <view class='head_text'>(超出升级标准的部分金额 - 星级升级标准金额) * 星级奖励比例 = 星级额外奖励最终金额</view>
+          <view class='head_text'>假设极选师考核期内升到了二星级，则考核日，极选师获得星级奖励金额 = 一星级奖励金额 + 二星级奖励金额</view>
+          </view>
+          <!-- 星级奖励计算规则 end-->
+          <!-- 极选师推荐制 start-->
+          <view class="recommend">
+            <view class='headline'>极选师推荐制</view>
+            <view class='head_text'>极选师可以推荐普通会员成为签约极选师。</view>
+          </view>
+          <!-- 极选师推荐制 end-->
+          <!-- 极选师提现 start-->
+          <view class="recommend">
+            <view class='headline'>极选师提现</view>
+            <view class='head_text'>极选师可以在小程序内自主发起提现申请，申请提交成功后，自动到账微信零钱。</view>
+            <view class='head_text'>1. 拥有极选师权限的微信号必须已通过实名认证；</view>
+            <view class='head_text'>2.同一个极选师，单笔单日限额2000元；</view>
+            <view class='head_text'>3. 平台每日最多为同一个极选师提现10次。</view>
+            <view class='head_text'>4. 提现分润自动到账。</view>
+          </view>
+          <!-- 极选师提现 end-->
+        </view>
+
+
+      </view> 
+    </block>
+                            <!-- 分润规则说明  end -->
+  <!-- 商品排行 -->
+  <view  wx:if='{{_no== 1}}' class="slick"> 
+  <view class="all" >
+    <view class='top_shop_box'>
+      <view class="top_shop {{isTopClick==1?'top_shop_click':''}}" catchtap='isTopClick' data-index='1'>商品推荐排行榜</view>
+      <view class="top_shop {{isTopClick==2?'top_shop_click':''}}" catchtap='isTopClick' data-index='2'>商品销售排行榜</view>
+    </view>
+    <view class="table">
+      <!-- <view class="bg-w">
+        <view class="sequence">排名</view>
+        <view class="brand">品牌</view>
+        <view class="name">名称</view>
+        <view class="ratio">分润</view>
+      </view> -->
+
+      <!-- 商品推荐排行榜 -->
+      <block wx:for="{{listData}}" wx:key="{{code}}"wx:for-item='item' wx:for-index='index' wx:if="{{isTopClick==1}}">
+        <view class="tr" catchtap='skipClick' data-url='/goods/goodsdetail/goodsdetail?goods_id={{item.goods_id}}&&goods_name={{item.goods_name}}'>
+          <template is="listItemTemplate" data="{{...item,index}}" />
+          <!-- 第一 -->
+          <view class="ratio" style='color:#d0021b' wx:if='{{index==0}}'>
+            <text>分润</text>
+            <text>{{item.fraction}}</text>
+          </view>
+          <!-- 第二 -->
+          <view class="ratio" style='color:#f57923' wx:elif='{{index==1}}'>
+            <text>分润</text>
+            <text>{{item.fraction}}</text>
+          </view>
+          <!-- 第三 -->
+          <view class="ratio" style='color:#f9b649' wx:elif='{{index==2}}'>
+            <text>分润</text>
+            <text>{{item.fraction}}</text>
+          </view>
+          <!-- 其他 -->
+          <view class="ratio" wx:else>
+            <text>分润</text>
+            <text>{{item.fraction}}</text>
+          </view>
+        </view>
+      </block>
+
+
+      <!-- 商品销售排行榜 -->
+
+      <block wx:for="{{saveData}}" wx:key="{{code}}"wx:for-item='item' wx:for-index='index' wx:if="{{isTopClick==2}}">
+        <view class="tr" catchtap='skipClick' data-url='/goods/goodsdetail/goodsdetail?goods_id={{item.goods_id}}&&goods_name={{item.goods_name}}'>
+          <template is="listItemTemplate" data="{{...item,index}}" />
+          <!-- 第一 -->
+          <view class="ratio" style='color:#d0021b' wx:if='{{index==0}}'>
+            <text>销量</text>
+            <text>{{item.sales}}</text>
+          </view>
+          <!-- 第二 -->
+          <view class="ratio" style='color:#f57923' wx:elif='{{index==1}}'>
+            <text>销量</text>
+            <text>{{item.sales}}</text>
+          </view>
+          <!-- 第三 -->
+          <view class="ratio" style='color:#f9b649' wx:elif='{{index==2}}'>
+            <text>销量</text>
+            <text>{{item.sales}}</text>
+          </view>
+          <!-- 其他 -->
+          <view class="ratio" wx:else>
+            <text>销量</text>
+            <text>{{item.sales}}</text>
+          </view>
+        </view>
+      </block>
+
+      </view>
+    </view>
+  </view>
+  
+  <view wx:if='{{_no== 2}}' class="slick">
+    <view class="ck_blue">
+      <template is="dataChooseTemplate" data="{{datetime,nowData}}" />
+      <!-- <view class="ck-tab-item  {{ck=='1'?'tabck':''}}" catchtap='orders' data-id="1">
+        <view class='a'>本周</view>
+      </view>
+      <view class="ck-tab-item {{ck=='2'?'tabck':''}}" catchtap='orders' data-id="2">
+        <view class='a'>本月</view>
+      </view> -->
+    </view> 
+    <view style='background:#fff'>
+      <block wx:for='{{order_list}}' wx:key='order_id' wx:for-item='order' wx:for-index='index'>
+        <view class="lie_bi">
+          <view class="iem">
+            <view class="orders">{{order.order_no}}</view>
+            <view class="orders">{{order.create_time}}</view>
+          </view >
+          <view class="box">
+            <block wx:for='{{order.order_item_list}}' wx:key='' wx:for-item='goods' wx:for-index='key'>
+              <view class="particulars">
+                <view class='shop_detail'>
+                  <image class="shop_src" src="{{goods.picture.pic_cover_small==''?0:goods.picture.pic_cover_small}}" binderror='errorImg' data-index='{{index}}' data-key='{{key}}'></image>
+                  <view class="shop_name">
+                    <view class="shop-title">{{goods.goods_name}}</view>
+                    <text class="j_e">X{{goods.num}}</text>
+                    <view class="sta">状态:{{order.status_name}}</view>
+                  </view>
+                  <view class="number">￥{{goods.goods_money}}</view>
+                </view>
+                <view class="num">
+                  <block wx:if="{{order.order_status==4}}">
+                    <view class="sta">分润已入账</view>
+                  </block>
+                  <block wx:if="{{order.order_status==2||order.order_status==3}}">
+                    <view class="sta" wx:if="{{order.expect_time}}">分润大约{{order.expect_time}}前到账</view>
+                  </block>
+                  <block wx:else>
+                    <view class="sta"></view>
+                  </block>
+
+                  <view class="L_f">
+                    <view class="run">分润比例  {{goods.fraction}}</view>
+                    <view class="runs">直接分润金额 ￥{{goods.direct_separation}}</view>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
+      </block>
+    </view>
+
+  </view>
+      
+</block>  
+
+
+<!-- 小程序码 -->
+  <block>
+    <view wx:if='{{_no== 3}}' class="slick">
+      <view class="all" >
+        <view class='top_shop_box'>
+          <view class="top_shop {{isCode==1?'top_shop_click':''}}" catchtap='isCode' data-index='1'>小程序推荐码</view>
+          <view class="top_shop {{isCode==2?'top_shop_click':''}}" catchtap='isCode' data-index='2'>极选师邀请码</view>
+        </view>
+        <view class="table">
+          <view class="nav_qr" wx:if='{{isCode==1}}'>
+            <image src="{{imgU}}" bindload='imgLoad'  catchtap='preivewImg' data-index='{{index}}' data-img='{{imgU}}' mode='widthFix'  style="width:100%" class="fde"/>   
+          </view>
+          <view class="nav_qr" wx:if='{{isCode==2}}'>
+            <image src="{{applyCode}}" bindload='imgLoad'  catchtap='preivewImg' data-index='{{index}}' data-img='{{applyCode}}' mode='widthFix'  style="width:100%" class="fde"/>
+          </view>
+        </view>
+     </view>
+  </view> 
+</block>

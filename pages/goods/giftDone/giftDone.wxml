@@ -1,0 +1,135 @@
+<scroll-view>
+    <view class="motify {{prompt==''?'hide':''}}">
+        <icon class="i show_type warning" type='warn' size='25' color='#FFF'></icon>
+        <view class="motify-inner">{{prompt}}</view>
+    </view>
+
+     <view class="cart-detail" wx:for='{{box_list}}' wx:key='' wx:for-item='list' wx:for-index='i'>     
+      <view class='store-title' data-parent-shopid="0">
+        <view class="h2 title">
+          <image class="custom-store-img" src='/images/goods/shop-img.png'></image>
+            店铺名称：Bonnie&Clyde
+        </view>
+          <view class="cart_ed">
+            <block wx:if='{{edit == 0}}'>
+              <view class="a" id="cart_edit" data-shopid="0" catchtap='cartEdit' data-edit='1'>编辑</view>
+            </block>
+            <block wx:if='{{edit == 1}}'>
+              <view class="a" id="edit_success0" catchtap='cartEdit' data-edit='0'>完成</view>
+            </block>
+          </view>
+      </view>
+      <view class="cart-prolist">
+        <view class="ul cart-prolist-ul" wx:for='{{list}}' wx:key='box_id' wx:for-item='box' wx:for-index='k'>
+          <view class="li cart-list-li flex" data-shopid="0">
+            <image class="checkbox" catchtap='selectCart' data-index='{{i}}' data-key='{{k}}' data-status='{{box.status}}' src='/images/goods/{{box.status==1?"cartp2.png":"cartp1.png"}}'></image>
+            <view class="product flex">
+              <view class="pic">
+                <view class='a' catchtap='goodsDetail' data-id='{{box.goods_id}}' data-name='{{box.goods_name}}'>
+                  <image src="{{box.picture_info.pic_cover_small==''?0:box.picture_info.pic_cover_small}}" binderror='errorImg' data-index='{{i}}' data-key='{{k}}' alt="商品图片"></image>
+                </view>
+              </view>
+              <view class="info">
+                  <view class='a' catchtap='goodsDetail' data-id='{{box.goods_id}}' data-name='{{box.goods_name}}'>
+                    <text class='name' decode="true">
+                      <text class="goods-type-icon" wx:if="{{box.source_type == 2}}">跨境商品</text>
+                      <!-- <text class="goods-type-icon" wx:if="{{box.source_type == 1}}">一般贸易</text> -->{{box.goods_name}}</text>
+                  </view>
+                <view class='sku span' wx:if='{{box.sku_name!=""}}'>规格：{{box.sku_name}}</view>
+                <view class="number">
+                  <!-- {{box.promotion_price}}此价格并非原价也可能是会员价也可能是促销价 -->
+                  <view class='span' name="goods_price" wx:if='{{is_vip==0}}'>¥{{box.promotion_price}}</view>
+                  <view class='vip_price' wx:if='{{is_vip==1}}' style='color:#CC9933' name="vip_price">¥ {{box.promotion_price}}</view>
+                </view>
+                <view class="edit_num">
+                  <view class="span ui-number">
+                    <view class="decrease" data-type='minus' data-index='{{i}}' data-key='{{k}}' style="border-right:1px solid #ccc;" data-id='{{box.box_id}}' catchtap='numAdjust'>-</view>
+                    <input class="num" value="{{box.num}}" data-index='{{i}}' data-key='{{k}}' data-id='{{box.box_id}}' bindblur='inputAdjust'/>
+                    <view class="increase" data-type='add' data-index='{{i}}' data-key='{{k}}' style="border-left:1px solid #ccc;" data-id='{{box.box_id}}' catchtap='numAdjust'>+</view>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <block wx:if="{{box_list.length != 0 && box_list != undefined}}">
+        <view class="fixed bottom">
+            <view class="btn_wrap btn_wrap_static">
+                <view class="btn ttn_server" id="div_selected">
+                    <view class='div'>
+                        <image src='/images/goods/{{check_all==1?"cartp2.png":"cartp1.png"}}' mode='widthFix'
+                               catchtap='checkAll'></image>
+                    </view>
+                    <view class='span' id="sel_text">全选</view>
+                </view>
+                <view class='hidden' id="price_info" style="{{edit==1?'':'visibility:unset;'}}">
+              <block wx:if="{{is_vip==0}}">
+               合计：
+             <view class='span' id="orderprice" class="price">¥{{total_price}}</view>
+             </block>
+             <block wx:if="{{is_vip==1}}">
+             合计：
+             <view class='span' style='color:#CC9933' id="orderprice" class="price">¥{{total_price}}</view>
+           </block>
+                </view>
+
+                <view class="btn btn_buy {{is_checked==0?'delete':'next'}}"
+                      catchtap='{{edit==1?"deleteCart":"settlement"}}'>
+                    <block wx:if='{{edit == 1}}'>
+                        <view class='span {{edit==1?"":"hide"}}' id="settlement">删除</view>
+                    </block>
+                    <block wx:if='{{edit == 0}}'>
+                        <view class='span {{edit==0?"":"hide"}}' id="settlement">结算</view>
+                    </block>
+
+                </view>
+            </view>
+        </view>
+    </block>
+    <block wx:else>
+        <view class="cart-none" id="cart-none" style="">
+            <view class="i cart-big">
+                <image src='/images/goods/cart-big.png' mode='widthFix'></image>
+            </view>
+            <view class="p text">您的礼物盒还没有商品！</view>
+            <view class="a btn" catchtap="aIndex" data-url='/pages/member/giftPrefecture/giftPrefecture'>发现更多惊喜</view>
+        </view>
+
+    </block>
+
+
+</scroll-view>
+
+<!--<button class="show-btn" bindtap="showDialogBtn">弹窗</button>-->
+<!--弹窗-->
+<view class="modal-mask" bindtap="hideModal" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+<view class="modal-dialog" wx:if="{{showModal}}">
+    <view class="modal-title">
+        <span>您选中的商品包含国际跨境商品</span>
+        <view class="modal-title-desc">需要和其它商品分开结算</view>
+    </view>
+
+    <view class="modal-content">
+        <radio-group class="radio-group" bindchange="inputChange">
+            <view class="flex-wrp" style="flex-direction:column;">
+                <view class="flex-item bc_green">
+                    <label class="radio">
+                        <radio color="black" value="2" checked/> 跨境商品{{carts_2_info.total_num}}件 共计 ¥ {{carts_2_info.total_price}}
+                    </label>
+                </view>
+
+                <view class="flex-item bc_red">
+                    <label class="radio">
+                        <radio color="black" value="1" /> 普通商品{{carts_1_info.total_num}}件 共计 ¥ {{carts_1_info.total_price}}
+                    </label>
+                </view>
+            </view>
+        </radio-group>
+    </view>
+    <view class="modal-footer">
+        <view class="btn-cancel" bindtap="onCancel" data-status="cancel">取消</view>
+        <view class="btn-confirm" bindtap="onConfirm" data-status="confirm">确定</view>
+    </view>
+</view>

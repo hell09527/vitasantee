@@ -1,0 +1,123 @@
+
+<import src="/templates/goods-list-template/goods-list-template.wxml" />
+
+<view>
+  <view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25' color='#FFF'></icon>
+    <view class="motify-inner">{{prompt}}</view>
+  </view>
+  <view id="index_content">
+    <!--列表页内容start-->
+    <section class="category-content-section">
+      <!-- 商品列表 -->
+      <view class="goods-list-grid openList">
+        <view class="blank-div"></view>
+        <view id="goods_list">
+          <view class="tablelist-append clearfix">
+            <view class="p {{goods_list.length==0?'':'hide'}}">
+              <image src="/images/goods/wap_nodata.png" mode='widthFix'/>
+              <br/>Sorry！没有找到您想要的商品……
+            </view>
+            <view class='body'>
+              <block wx:for='{{goods_list}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+                <template is="goodsListTemplate" data="{{...item,index}}" />
+              </block>
+            </view>
+          </view>
+        </view>
+      </view>
+      <!-- 筛选条件 -->
+      <!-- 筛选条件 -->
+      <view class="shade-div"></view>
+      <view class="screening_condition">
+        <view class="head-title">
+          <view class="mui-title">筛选</view>
+        </view>
+        <view class="ul conditions">
+          <!-- 品牌筛选 -->
+          <!-- 属性筛选 -->
+          <!-- 规格筛选 -->
+          <!-- 价格筛选 -->
+        </view>
+        <view class="bottom-area">
+          <view class="a reset">重置</view>
+          <view class="a confirm_screen">确认</view>
+        </view>
+      </view>
+      <!-- 选择分类start -->
+      <view class="data-category-select-layer">
+        <view class="ul primary_classification">
+          <view class="li active">全部分类</view>
+          <view class='li' data-category-id="2">ewr</view>
+          <view class='li' data-category-id="1">礼物</view>
+        </view>
+        <view class="ul two_stage_classification">
+          <view class='li' data-pid="2" data-category-id="6">
+            <view class='a'>二级分类</view>
+          </view>
+          <view class='li' data-pid="1" data-category-id="3">
+            <view class='a'>131</view>
+          </view>
+        </view>
+      </view>
+      <!-- 选择分类end -->
+      <!-- 排序start -->
+      <view class="filtrate-more sale-num">
+        <view class="span filtrate-sort"><view class="a">默认 </view></view>
+        <view class="span filtrate-sort"><view class="a" data-order-type="ng.sales" data-sort="asc">销售量 </view></view>
+        <view class="span filtrate-sort"><view class="a" data-order-type="ng.is_new" data-sort="desc">新品 </view></view>
+        <view class="span filtrate-sort"><view class="a" data-order-type="ng.promotion_price" data-sort="desc">价格 </view></view>
+      </view>
+      <!-- 排序end -->
+    </section>
+  </view>
+  <view class="mask {{sBuy==1?'':'hide'}}" id="mask"></view>
+  <view class='span hide' id="addcart_way">
+    <view class='i'></view>
+  </view>
+  <view animation="{{animationData}}" class="s-buy {{sBuy==1?'':'hide'}}" id="s_buy">
+    <view class="popup hide" id="popup"></view>
+    <view class="ul s-buy-ul">
+      <view class="li s-buy-pro">
+        <view class="span pro-img">
+          <!-- 商品SKU图片 -->
+          <image src='{{goods_info.img_list[0].pic_cover_micro}}' class="js-thumbnail"></image>
+        </view>
+        <view class="pro-info">
+          <view class="p name">{{goods_info.goods_name}}</view>
+          <view class="p pro-price" id="price">￥{{promote_price}}</view>
+        </view>
+        <view class="i icon-close" id="icon_close" catchtap='sBuyClose'></view>
+      </view>
+    </view>
+    <view class="hr with-margin-l"></view>
+    <view class="ul s-buy-ul specification" id="specification">
+      <block  wx:for='{{spec_list}}' wx:key='' wx:for-index='key' wx:for-item='spec'>
+        <view class="li s-buy-li">
+          <view class="left">{{spec.spec_name}}：</view>
+          <view class="right" name="specvals">
+            <block wx:for='{{spec.value}}' wx:for-item='sku' wx:for-index='k' wx:key=''>
+              <view class="span select {{sku.status==1?'current':''}}" catchtap='skuSelect' data-key="{{key}}" data-k='{{k}}' data-picture-id="0">{{sku.spec_value_name}}</view>
+            </block>
+          </view>
+        </view>
+        <view class="hr with-margin-l {{key==spec_list.length-1?'hide':''}}"></view>
+      </block>
+      <view class="hr with-margin-l"></view>
+      <view class="li s-buy-li">
+        <view class="left" style="float:left;">购买数量：</view>
+        <view class="right">
+          <view class="span reduce quantity-minus-disabled" catchtap='goodsNumAdjust' data-type='minus'>-</view>
+          <input class="number" name="quantity" autocomplete="off" bindinput='goodsNumAdjustCheck' value="{{goodsNum}}" min="1" max="277" id="num"/>
+          <view class="span add" catchtap='goodsNumAdjust' data-type='add'>+</view>
+        </view>
+        <view class='span last-goods' id="Stock">剩余{{stock}}件</view>
+      </view>
+    </view>
+    <view class="ul s-buy-ul">
+      <view class="s-buy-btn">
+        <view class="a btn {{stock==0?'disabled':''}}" id="submit_ok" catchtap="{{stock==0?'nullStock':'addCart'}}" tag="buyBtn1">加入购物车</view>
+      </view>
+    </view>
+  </view>
+</view>

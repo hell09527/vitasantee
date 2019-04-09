@@ -1,0 +1,63 @@
+{
+	"description": "项目配置文件。",
+	"setting": {
+		"urlCheck": true,
+		"es6": true,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true,
+		"autoAudits": false,
+		"uglifyFileName": true
+	},
+	"compileType": "miniprogram",
+	"libVersion": "2.4.2",
+	"appid": "wxc5a426c09ac5cebc",
+	"projectname": "CB_test04",
+	"isGameTourist": false,
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"currentL": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": 3,
+			"list": [
+				{
+					"id": -1,
+					"name": "666",
+					"pathName": "pages/member/withdrawal/withdrawal",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "666",
+					"pathName": "pages/member/withdrawal/withdrawal",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "登录",
+					"pathName": "pages/member/resgin/resgin",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "限时抢购",
+					"pathName": "pages/index/discount/discount"
+				}
+			]
+		}
+	}
+}

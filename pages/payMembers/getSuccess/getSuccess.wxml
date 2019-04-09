@@ -1,0 +1,24 @@
+
+
+<scroll-view>
+<view class="heder">
+<view class="pic">
+<image   class="img"   src="https://static.bonnieclyde.cn/202-110.png" mode='widthFix'>
+
+</image>
+<view class="title_gift">礼物准备就绪</view>
+</view>
+
+<view class="wait">已火速送往您手中</view>
+</view>
+<view class="body">
+  <text wx:if="{{isGift==1}}">* 您有一次免费送礼的机会</text>
+  <view class="btn-group">
+      <text class="icon"  wx:if="{{isGift==1}}">1</text>
+      <button class="btn" catchtap='toGoGiving'>
+      前往送礼
+      </button>
+      <button class="btn" catchtap='toIndex'>发现更多惊喜</button>
+  </view>
+</view>
+</scroll-view>

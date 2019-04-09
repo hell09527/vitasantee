@@ -1,0 +1,25 @@
+<scroll-view>
+
+  <view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25'color='#fff' ></icon>
+    <view class="motify-inner">{{prompt}}</view>
+  </view>
+  <block wx:if='{{is_login == 0}}'>
+    <image class='load_img' src='/images/member/5-121204193R0-50.gif'></image>
+  </block>
+  <view class="com-content">
+  <view class="fix">
+   <image src="https://static.bonnieclyde.cn/527-%E9%A6%96%E9%A1%B5-01_02.jpg" mode="widthFix" style="width:750rpx"> </image>
+  </view>
+ <block wx:for='{{database}}' wx:key='' wx:for-item='shop' wx:for-index='index'>
+
+ <view class='{{index==0?"heder":" "}} a'
+ data-back="{{shop.isBack}}"
+  data-has="{{shop.hasTarget}}"  data-x="{{index}}" catchtap='listClick' data-url='/goods/goodsdetail/goodsdetail?goods_id={{shop.goodsId}}&&goods_name={{shop.goodsTitle}}'>
+ <image src='{{shop.imgUrl}}' mode="widthFix" style="width:750rpx;">
+ </image>
+ </view>
+</block>
+</view>
+   
+</scroll-view>

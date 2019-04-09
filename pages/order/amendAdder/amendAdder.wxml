@@ -1,0 +1,39 @@
+<view style='padding-top:40rpx;'>
+
+<view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25'color='#fff' ></icon>
+    <view class="motify-inner">{{prompt}}</view>
+  </view>
+  
+  <view wx:if='{{member_address.mobile}}' class='no-address' catchtap='amendAddress'>
+    <image src="/images/member/icon_address.png" style='margin:0 40rpx;'></image>
+    <view>
+      <view>
+        <view>收货人信息：{{member_address.consigner}} {{member_address.mobile}}</view>
+      </view>
+      <view>收货地址：{{member_address.address_info}}　{{member_address.address}}</view>
+    </view>
+  </view>
+
+  <view class='no-address' wx:else catchtap='amendAddress'>
+    <image src='/images/order/order_address.jpg'/>
+    <text>点击选择新收货信息</text>
+  </view>
+
+  <view class='original-address'>
+    <view class='original-title'>
+      <image src="/images/member/icon_address.png"></image>
+      <text>当前使用收货信息：</text>
+    </view>
+    <view class='original-detail'>
+      <view>{{originalAddress.name}}  {{originalAddress.mobile}}</view>
+      <view>{{originalAddress.province_name}}  {{originalAddress.city_name}}  {{originalAddress.district_name}}</view>
+      <view>{{originalAddress.address}}</view>
+    </view>
+  </view>
+
+  <view class='submit-btn'>
+    <view style='background:#fff;border-top:1px solid #e5e5e5;' catchtap='toBack'>返回</view>
+    <view style='background:#101010;color:#fff;border-top:1px solid #101010' catchtap='toSubmit'>提交修改</view>
+  </view>
+</view>

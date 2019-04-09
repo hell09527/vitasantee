@@ -1,0 +1,44 @@
+/* pages/member/resgin/resgin.wxss */
+page{
+  background: #fff;
+}
+.containBox{
+  position: fixed;
+  top:0;
+  left:0;
+  height:100%;
+  width:100%;
+}
+.box{
+  position: absolute;
+  left:50%;
+  top:10%;
+  transform: translateX(-50%);
+}
+.box>image{
+  display: block;
+  width:236rpx;
+  margin:0 auto 100rpx;
+}
+.wechatLogin{
+  background: #e40046;
+  color:#fff;
+  text-align: center;
+  height:84rpx;
+  width:560rpx;
+  line-height: 84rpx;
+  font-size: 16px;
+  margin-bottom: 40rpx;
+  border-radius: 42rpx;
+}
+.phoneLogin{
+  background: #005882;
+  border-radius: 42rpx;
+  color:#fff;
+  text-align: center;
+  height:84rpx;
+  width:560rpx;
+  line-height: 84rpx;
+  font-size: 16px;
+  margin-bottom: 40rpx;
+}

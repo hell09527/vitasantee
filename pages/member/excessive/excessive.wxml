@@ -1,0 +1,9 @@
+<scroll-view>
+
+<view class="tu">
+<image   class="lis"    src="http://p6yljnwkf.bkt.clouddn.com/022421D3-816B-4471-A16F-0FD5CB8C8B24@2x.png"></image>
+</view>
+<view class="prosperity">恭喜您注册成功</view>
+<view class="jump">将自动为您跳转到个人中心</view>
+ <image  class="ims"  src="http://p6yljnwkf.bkt.clouddn.com/Bonnie%20Clyde%20LOGO-01.png"></image>
+</scroll-view>

@@ -1,0 +1,117 @@
+.tab{
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tab-item{
+  line-height: 40px;
+  width:50%;
+  color:#707070;
+  font-size: 14px;
+  text-align: center;
+  border-bottom: 2px solid #BBBBBB;
+}
+.select{
+  color:#000;
+   border-bottom: 2px solid #000;
+}
+
+.gift-item{
+  background: #fff;
+  padding:5px 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+.item-nav{
+  font-size: 12px;
+  line-height: 20px;
+  border-bottom: 1px solid #f1f1f1;
+  display: flex;
+  justify-content: space-between;
+}
+.item-content{
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #f1f1f1;
+}
+.gift-detail{
+  display: flex;
+  justify-content: flex-start;
+  padding:10px 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+.giftUrl{
+  width:180rpx;
+  height:180rpx;
+  display: block;
+  margin-right: 10px;
+}
+.gift-text{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+  font-size: 12px;
+}
+.item-status{
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding:10px 0;
+}
+.hint{
+  font-size: 12px;
+  padding:10rpx 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.checkWL{
+  background: #000;
+  color:#fff;
+  font-size: 14px;
+  line-height: 30px;
+  text-align: center;
+  margin:10rpx 0;
+  display: inline-block;
+  width:100px;
+  margin-right: 10px;
+  padding:0;
+  border-radius: 0;
+}
+.noList{
+  margin-top: 8px;
+  padding:30px 10px 50px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.noList>image{
+  width:80px;
+  height:80px;
+  display: block;
+  margin-bottom: 20px;
+}
+.noList>text{
+  color:#999;
+  font-size: 12px;
+}
+
+.i.gift{
+  font-size: 12px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  display: inline-block;
+  color: #FFF;
+  background-color: #de533c;
+  height: 16px;
+  line-height: 16px;
+  overflow: hidden;
+  font-style: normal;
+  margin-left: 5px;
+  position: relative;
+  top: 3px;
+}

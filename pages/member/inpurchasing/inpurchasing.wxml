@@ -1,0 +1,47 @@
+<view class="motify {{prompt==''?'hide':''}}">
+  <icon class="i show_type warning" type='warn' size='25' color='#FFF'></icon>
+  <view class="motify-inner">{{prompt}}</view>
+</view>
+<!-- 广告位 -->
+<block>
+  <view  wx:if='{{brand_pic?brand_pic:""}}' class="slick">
+    <image  lazy-load="true"  src="{{brand_pic}}" bindload='imgLoad' mode='widthFix' class="fde"/>
+  </view>
+</block>
+<view class="goods-list-grid openList">
+	<view class="blank-div"></view>
+	<view id="goods_list">
+		<view class="tablelist-append clearfix" style="overflow: hidden;">
+      <view class='body'>
+        <!-- <view class='goods-title'>NB</view> -->
+        <block wx:for='{{insideList}}' wx:key='' wx:for-item='goods' wx:for-index='index'>
+          <view class='goods_all' catchtap='aClick' data-code='{{goods.material_code}}' data-url="/goods/goodsdetail/goodsdetail?goods_id={{goods.goods_id}}&&goods_name={{goods.goods_name}}">
+            <view class="all-box">
+              <image src="{{goods.pic_cover_small}}" data-index='{{index}}' lazy-load="true" mode='widthFix' binderror='goodsImgError'></image>
+              <view class="shop-detail">
+                <text  decode="true" class="title">
+                    <block wx:for='{{goods.group_query}}' wx:key='' wx:for-item='group'>
+                      <view class='i goods_tab'>{{group.group_name}}</view>
+                    </block>{{goods.goods_name}} 
+                </text>
+                <view class="shop-detail-price">
+                  <text>￥{{goods.inside_price}}</text>
+                  <view style='text-decoration:line-through;color:#d7d7d7;font-size:12px;' wx:if="{{goods.market_price - goods.promotion_price > 0}}">￥{{goods.market_price}}</view>
+                  <!-- <block wx:if='{{goods.shipping_fee == 0}}'>
+                    <view class='i shipping_fee'>包邮</view>
+                  </block> -->
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+      <!-- <block wx:if='{{goods_list[0] == undefined && goods_list }}'>
+        <view class="nothing-data" align="center">
+          <image src="/images/goods/wap_nodata.png" mode='widthFix'/>
+          <view class='hit'>正在为您寻找商品</view>
+        </view>
+      </block> -->
+    </view>
+	</view>
+</view>

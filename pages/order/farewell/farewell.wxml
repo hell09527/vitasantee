@@ -1,0 +1,111 @@
+
+
+<scroll-view class='{{mask_status==1?"noscroll":""}}'>
+    <view class="motify {{prompt==''?'hide':''}}">
+        <icon class="i show_type warning" type='warn' size='25' color='#FFF'></icon>
+        <view class="motify-inner">{{prompt}}</view>
+    </view>
+<!-- 礼物盒商品列表 -->
+<view>
+   <block wx:for='{{order_info.itemlist}}' wx:key='' wx:for-item='goods' wx:for-index='index'> 
+<view class="gift_shop">
+<view class="pic">
+<view class="a" style='display:block;'>
+<image  class="img"  catchtap='goodsDetail' data-id='{{goods.goods_id}}'  src="{{goods.picture_info.pic_cover_small}}" binderror='errorImg' data-index='{{index}}' mode='widthFix'></image>
+</view>
+</view>
+<view class="show_data">
+<text decode="true" class="data_title">{{goods.goods_name}}</text>
+<view class="k_d">
+<view class="data_meny" style="color:red">¥{{goods.price}}</view>
+<!-- <view class="buy_lia">销售量: 80</view> -->
+</view>
+<view class="data_nums"> x {{goods.num}}</view>
+</view>
+</view>
+</block>
+</view>
+<!-- line -->
+<view class="line"></view>
+<!-- <view class="show_num">礼物盒内共1件礼物</view> -->
+<view class="mind">
+<view class="zhufu">写句祝福,传达心意       </view>
+<view class="xin">(仅限输入140字)</view>
+</view>
+<view class="section"> 
+<!-- placeholder='祝好！' -->
+  <textarea  bindinput='change_gift'  rows="3" cols="20"  value="{{leavemessage}}" placeholder='送你一份黑科技好礼！'/>
+</view>
+
+    <!-- 身份证信息 -->
+    <block wx:if="{{order_source_type == 2}}">
+        <view class="item-options" wx:if="{{ card_no != '' }}"
+              class="js-order-address c-bt express-panel js-edit-address express-panel-edit">
+            <view class="ul express-detail" style="margin:0">
+                <view class="card-need-desc">因海关清关需要, 请填写收货人真实姓名和身份证号</view>
+                <!--<image class="sur" src="https://static.bonnieclyde.cn/card.png"></image>-->
+                <view class='a' wx:if="{{!edit_card}}">
+                    <view class="li card-detail">
+                        <text class="span">姓名：{{card_name}}</text>
+                    </view>
+                    <view class="li card-detail">
+                        <text style="float: left;"> 身份证号：{{encry_no}}</text>
+                        <text catchtap="edit_card" class="goods-type-icon" style="float: right"> 修改 </text>
+                    </view>
+                </view>
+
+                <view class="a" wx:else>
+                    <view class="li card-detail">
+                        <view>
+                            <text class='span'>姓名:</text>
+                            <input class="card-input" type="text" bindinput='change_card_name' placeholder="收货人的真实姓名" value="{{card_name}}" maxlength='15'/>
+                        </view>
+                    </view>
+                    <view class="li card-detail">
+                        <text class='span'>身份证号:</text>
+                        <input class="card-input" type="idcard" bindblur="change_card_no" placeholder="身份证号" value="{{card_no}}" maxlength='18'/>
+                        <text catchtap="save_card" class="goods-type-icon">  保存 </text>
+                        <!--<text catchtap="cancel_save" class="goods-type-icon cancel-btn-bg"> 取消 </text>-->
+                    </view>
+                    <!--<view class="li card-detail" style="text-align: center;">-->
+                    <!--</view>-->
+                </view>
+            </view>
+        </view>
+
+        <view class="item-options" wx:else
+              class="js-order-address c-bt express-panel js-edit-address express-panel-edit">
+            <view class="ul express-detail" style="margin:0">
+                <view class="card-need-desc">因海关清关需要, 请填写收货人真实姓名和身份证号</view>
+                <!--<image class="sur" src="https://static.bonnieclyde.cn/card.png"></image>-->
+                <view class="a">
+                    <view class="li card-detail">
+                        <view>
+                            <view class='span'>姓名:</view>
+                            <input class="card-input" type="text" focus="{{card_fouce}}" bindinput='change_card_name' placeholder="收货人的真实姓名" value="{{card_name}}" maxlength='15'/>
+                        </view>
+                    </view>
+                    <view class="li card-detail">
+                        <view class='span'>身份证号:</view>
+                        <input class="card-input" type="idcard" bindblur="change_card_no" placeholder="身份证号" value="{{card_no}}"  maxlength='18'/>
+                        <text catchtap="save_card" class="goods-type-icon" style="float:right;"> 保存 </text>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <view class="dividing-line"><!-- 分隔行 --></view>
+    </block>
+    <view class="right">
+     <view class="span">¥ </view>
+        <view class="Totalprice">{{pay_money}}</view>
+    </view>
+    <view class="cou_pon" wx:if="{{coupon_money>0}}">(优惠券已抵¥{{coupon_money}})</view>
+   
+    <!-- parachuting -->
+  <button class="button_s" catchtap='commitOrder'>结算</button>
+
+
+
+
+</scroll-view>

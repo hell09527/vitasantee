@@ -1,0 +1,12 @@
+<!--pages/index/hotProduct/hotProduct.wxml-->
+<import src="/templates/new-product-template/new-product-template.wxml" />
+<import src="/templates/HomeOrShare-icon-template/HomeOrShare-icon-template.wxml" />
+
+<view class='hot_goods_list'>
+  <block wx:for="{{goodsList}}" wx:key="" wx:for-index='index' wx:for-item='item'>
+    <template is="newProductTemplate" data="{{...item,index}}" />
+  </block>
+</view>
+
+
+<template is="HomeOrShareIconTemplate" />

@@ -1,0 +1,78 @@
+<scroll-view>
+  <view class="body">
+    <view class="gift-item">
+      <block wx:for='{{giftDetail.order_goods}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+      <view class='a' catchtap='listClick' data-url='/goods/goodsdetail/goodsdetail?goods_id={{item.goods_id}}&&goods_name={{item.goods_name}}'>
+        <view class="gift-detail">
+          <image src="{{item.picture_info.pic_cover_small==''?0:item.picture_info.pic_cover_small}}" class="giftUrl" mode='widthFix'></image>
+          <view class="gift-text">
+            <text style='color:#8F8E94'>{{item.goods_name}}</text>
+            <!-- <text style='color:#8F8E94'>价格：￥{{item.price}}</text> -->
+            <text style='color:#8F8E94'>数量：{{item.num}}</text>
+          </view>
+        </view>
+        </view>
+      </block>
+      <view class="item-status">
+        <text style='color:#8F8E94'>共{{allNum}}件</text>
+      </view>
+    </view>
+    <view class="address">
+      <view class="address-info">
+        <view>收货信息：{{giftDetail.receiver_name}} {{giftDetail.receiver_mobile}}</view>
+        <view>收货地址：{{giftDetail.address}}</view>
+      </view>
+      <view class="wl-info">
+         <!-- <text>物流信息：圆通快递 98765432345</text>  -->
+         <text></text>
+        <!-- <text class="checkBtn">查看物流 ></text> -->
+      </view>
+    </view>
+    <view class="givingMan">
+      <!-- <view class="time" style='color:#8F8E94'>2018-06-15 16:58:25</view> -->
+      <view class="info">
+        <!-- <image src="http://video.ushopal.com/gift.png" mode='widthFix'></image> -->
+        <text>{{giftDetail.user_name}} 赠予你</text>
+      </view>
+      <view class="message">留言：{{giftDetail.buyer_message}}</view>
+    </view>
+    <view class="order-status">
+      <view class="order-top">
+        <view class="order-item">
+          <text style='color:#8F8E94'>礼包编号：</text>
+          <text>{{giftDetail.order_no}}</text>
+        </view>
+        <view class="order-item">
+          <text style='color:#8F8E94'>下单时间：</text>
+          <text>{{giftDetail.create_time}}</text>
+        </view>
+        <view class="order-item">
+          <text style='color:#8F8E94'>礼包状态：</text>
+          <text wx:if="{{giftDetail.order_status==0}}">待付款</text>
+          <text wx:if="{{giftDetail.order_status==1}}">待发货</text>
+          <text wx:if="{{giftDetail.order_status==2}}">已发货</text>
+          <text wx:if="{{giftDetail.order_status==3}}">已收货</text>
+          <text wx:if="{{giftDetail.order_status==4}}">已完成</text>
+          <text wx:if="{{giftDetail.order_status==5}}">已关闭</text>
+          <text wx:if="{{giftDetail.order_status==-1}}">退款中</text>
+          <text wx:if="{{giftDetail.order_status==-2}}">已退款</text>
+          <text wx:if="{{giftDetail.order_status==11}}">待领取</text>
+        </view>
+      </view>
+      <!-- <view class="order-top">
+        <view class="order-item">
+          <text style='color:#8F8E94'>礼包编号：</text>
+          <text>098765432345</text>
+        </view>
+        <view class="order-item">
+          <text style='color:#8F8E94'>礼包状态：</text>
+          <text>已领取</text>
+        </view>
+        <view class="order-item">
+          <text style='color:#8F8E94'>领取时间：</text>
+          <text>2018-06-14 16:48:16</text>
+        </view>
+      </view> -->
+    </view>
+  </view>
+</scroll-view>

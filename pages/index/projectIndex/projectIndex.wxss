@@ -1,0 +1,268 @@
+.logo{
+  width:100%;
+}
+page{
+  background: #fff;
+
+}
+/* .alls{
+  position: relative;
+} */
+.project-container{
+  /* padding-top: 20rpx; */
+  margin:0;
+}
+.project-image{
+  display: block;
+  height:auto;
+  /* margin:0 40rpx; */
+}
+.project-image image{
+  display: block;
+  height:auto;
+}
+.project-title>text{
+  display: block;
+  text-align: center;
+}
+
+.project-content{
+  font-size: 14px;
+  line-height: 20px;
+  padding:10px 20px;
+}
+
+.project-content-text{
+  font-size: 14px;
+  color:#101010;
+  text-align: center;
+  margin:20rpx 0;
+}
+
+.project-content-btn{
+  display: flex;
+  justify-content: space-between;
+  margin:20rpx 0;
+}
+.project-content-btn>button{
+  font-size: 12px;
+  width: 240rpx;
+  line-height: 60rpx;
+  border: 1px solid #101010;
+  border-radius: 0;
+}
+
+.center-line{
+text-align:center;
+position:relative;
+height:60px;
+margin:40rpx 0 10rpx;
+padding: 0 20rpx;
+}
+
+.center-line>text{
+  font-size: 14px;
+  color:#101010;
+  padding:0 20rpx;
+  background: #fff;
+  position: relative;
+  z-index: 100;
+  line-height: 60rpx;
+}
+
+.center-line>br{
+  position: absolute;
+  top:50%;
+  transform: translateY(-50%);
+  background: #999;
+  height: 1px;
+  z-index: 1;
+  width:100%;
+}
+
+.body{
+  padding:10rpx 0;
+  box-sizing: border-box;
+  display: table;
+  width:100%;
+  margin-bottom: 45px;
+}
+.shop-detail-price{
+  display: flex;
+  justify-content: flex-start;
+  padding:10rpx 0 0;
+  align-items: center;
+}
+.shop-detail-price>text{
+  color:#f20;
+  margin-right: 10px;
+}
+.all{
+  width:50%;
+  float: left;
+  box-sizing: border-box;
+}
+.all:nth-child(2n)>.all-box{
+  margin:0 10rpx 10rpx 5rpx;
+}
+.all-box{
+  margin:0 5rpx 10rpx 10rpx;
+  background: #fff;
+  box-sizing: border-box;
+}
+.all-box>image{
+  width:100%;
+  height:360rpx;
+  display: block;
+}
+
+swiper{
+  height:520rpx;
+  margin:20rpx 0;
+}
+
+.shuffing{
+  text-align: center;
+  width:100%;
+  position: relative;
+}
+.shuffing-item{
+  position: absolute;
+  width:100%;
+  left:50%;
+  top:50%;
+  transform: translateX(-50%) translateY(-50%);
+  height:520rpx;
+  transition: all 0.3s;
+  margin:0 20rpx;
+}
+.shuffing-item-next{
+  width:85%;
+  height:85%;
+  transform:translateX(-140%) translateY(-50%);
+  transition: all 0.3s;
+}
+.shuffing-item-preo{
+  width:85%;
+  height:85%;
+  transform:translateX(40%) translateY(-50%);
+  transition: all 0.3s;
+}
+.shuffing-item>image{
+  width:100%;
+  height:100%;
+}
+.shuffing-mask{
+  position: absolute;
+  bottom: 0;
+  width:100%;
+  line-height: 60rpx;
+  background: rgba(0,0,0,0.6);
+  color:#fff;
+  display: flex;
+  justify-content: space-between;
+  padding:0 20rpx;
+}
+
+
+.indexShop-swiper{
+  position: fix;
+  bottom: 0;
+  margin:20rpx 0 40rpx;
+  height:292rpx;
+  white-space:nowrap;
+}
+.shop-shuffing-item{
+  height:292rpx;
+  width:540rpx;
+   padding:0 10rpx; 
+  display: inline-block;
+  position: relative;
+}
+.shop-shuffing-item:first-child,.shop-shuffing-item:last-child{
+  width:550rpx;
+}
+
+.shop-shuffing-item:first-child{
+  padding-left: 20rpx;
+}
+.shop-shuffing-item:last-child{
+  padding-right: 20rpx;
+}
+.shop-shuffing-item>image{
+  width:100%;
+  height:100%;
+}
+
+.lase-shuffing-mask{
+  position: absolute;
+  bottom: 0;
+  width:520rpx;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  background: linear-gradient(transparent,rgba(0,0,0,0.5));
+  color:#fff;
+  padding:0 20rpx;
+  font-size: 14px;
+  height: 110rpx;
+  align-items: center;
+}
+.lase-shuffing-mask>text{
+  width:80%;
+  line-height: 40rpx;
+  text-align:left;
+  display: block; 
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space:pre-line;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.lase-shuffing-mask>image{
+  width:18rpx;
+  height:34rpx;
+}
+
+.shop-detail{
+  padding:10px;
+}
+.btn-bottom{
+  background: #fff;
+  font-size: 16px;
+  height: 80rpx;
+  line-height: 80rpx;
+  align-items: center;
+  width: 100%;
+  margin:0 auto;
+  border-radius: 0;
+  display: flex;
+  justify-content:flex-end;
+  color:#000;
+  padding:0 30rpx;
+  border: 1px solid transparent; 
+  outline: none;   
+}
+.btn-bottom image{
+  width:16px;
+  height: 16px;
+  margin-right: 15rpx;
+}
+.btn-bottom::after {
+  border: none;
+}
+
+.title{
+  font-size: 12px;
+  line-height: 18px;
+  height:36px;
+  display: -webkit-box; 
+-webkit-line-clamp: 2; 
+-webkit-box-orient: vertical; 
+overflow: hidden;
+}
+.rur{
+width:100%;
+}

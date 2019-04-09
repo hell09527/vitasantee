@@ -1,0 +1,7 @@
+<!--pages/member/withdrawalSuccess/withdrawalSuccess.wxml-->
+<scroll-view>
+  <view class='containerBox'>
+    <image src='https://static.bonnieclyde.cn/%E5%AE%8C%E6%88%90_%E7%94%BB%E6%9D%BF%201%20copy@2x.png' mode='widthFix'/>
+    <text>您的提现申请已成功,请自行前往微信零钱明细查看</text>
+  </view>
+</scroll-view>

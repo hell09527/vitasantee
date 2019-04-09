@@ -1,0 +1,49 @@
+/* pages/order/amendAdder/amendAdder.wxss */
+.no-address{
+  border:1px solid #e5e5e5;
+  margin: 0 20rpx 40rpx;
+  display: flex;
+  height: 100px;
+  align-items: center;
+  justify-content: flex-start;
+}
+.no-address>image{
+  width:24px;
+  height:24px;
+  margin:0 60rpx 0 40rpx;
+}
+.original-address{
+  padding:0 80rpx;
+}
+.original-title{
+  height: 80rpx;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 14px;
+  color:#999;
+}
+.original-title>image{
+  width:24px;
+  height:24px;
+}
+.original-detail>view{
+  font-size: 14px;
+  color:#999;
+  line-height: 50rpx;
+}
+.submit-btn{
+  color:#333;
+  position: fixed;
+  bottom: 0;
+  width:100%;
+  display: flex;
+}
+.submit-btn>view{
+  width:50%;
+  line-height: 45px;
+  text-align: center;
+}
+.address{
+  
+}
