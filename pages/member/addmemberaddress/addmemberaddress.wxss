@@ -26,9 +26,12 @@ page{
 }
 .address-info .span{
   width:180rpx;
+  padding-top: 8px;
 }
 .address-info textarea{
   padding:4rpx;
+  height: 200rpx;
+  margin:0;
 }
 
 .div-item-active{

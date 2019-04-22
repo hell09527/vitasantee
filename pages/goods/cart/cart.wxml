@@ -52,13 +52,13 @@
               </view>
               <view class="info">
                 <view class='name' data-id='{{cart.goods_id}}' data-name='{{cart.goods_name}}' >
-                    <text class="goods-type-icon" wx:if="{{cart.source_type == 2}}">跨境商品</text>{{cart.goods_name}}
+                  <text class="goods-type-icon" wx:if="{{cart.source_type == 2}}">跨境商品</text>{{cart.goods_name}}
                 </view>
                 <view class='sku span' wx:if='{{cart.sku_name!=""}}'>规格：{{cart.sku_name}}</view>
                 <view class="number"data-id='{{cart.goods_id}}' data-name='{{cart.goods_name}}'>
                   <!-- {{box.promotion_price}}此价格并非原价也可能是会员价也可能是促销价 -->
                   <view class='span' name="goods_price" wx:if='{{showStatus==0}}' style='font-size:14px;'>
-                    ¥{{cart.promotion_price}}
+                    销售价:¥{{cart.promotion_price}}
                   </view>
 
                   <!-- <view wx:if='{{distributor_type==1 && edit == 0}}' name="goods_price">
@@ -89,8 +89,11 @@
                   </view>
                      <!-- 付费会员的价格 -->
                   <view class='vip_price' wx:if='{{is_vip==1 && distributor_type!=1}}' style='color:#CC9933' name="vip_price">
-                    ¥ {{cart.promotion_price}}
+                    销售价:¥ {{cart.promotion_price}}
                   </view>
+                  <view  class='interior' style="color:red;font-size: 12px;" name="goods_price" wx:if='{{cart.is_inside==1}}'>
+                    内购价: ¥{{cart.interior_price}}
+                    </view>
 
                 </view>
                 
@@ -147,8 +150,14 @@
         </view>
         <view class='hidden' id="price_info" style="{{edit==1?'':'visibility:unset;'}}">
           <block wx:if="{{is_vip==0}}">
-            <text>合计：</text>
-            <view class='span' id="orderprice" class="price">¥{{total_price}}</view>
+            <view>
+              <text>合计：</text>
+              <view class='span' id="orderprice" class="price">¥{{total_price}}</view>
+            </view>
+            <view wx:if='{{inside_price>0}}'>
+              <text>内购合计：</text>
+              <view class='span' id="orderprice" class="price">¥{{inside_price}}</view>
+            </view>
           </block>
           <block wx:if="{{is_vip==1}}">
             <text>合计：</text>
@@ -212,13 +221,13 @@
         </view>
         <view class="flex-item bc_red" wx:if='{{check_3_carts.length>0}}'>
           <label class="radio">
-            <radio color="black" value="3" />
+            <radio color="#e40046" value="3" />
             内购跨境商品{{carts_3_info.total_num}}件 共计 ¥ {{carts_3_info.total_price}}
           </label>
         </view>
         <view class="flex-item bc_red" wx:if='{{check_4_carts.length>0}}'>
           <label class="radio">
-            <radio color="black" value="4" />
+            <radio color="#e40046" value="4" />
             内购普通商品{{carts_4_info.total_num}}件 共计 ¥ {{carts_4_info.total_price}}
           </label>
         </view>

@@ -4,7 +4,7 @@
   <view class='first-search'>
     <view class='search-box'>
       <image src='/images/goods/search_icon_2.png' class="search-button" catchtap='toSearch'/>
-      <input type="text" class="search-input" bindinput='searchInput' placeholder="按照商品关键字搜索" bindconfirm='toSearch' />
+      <input type="text" class="search-input" bindinput='searchInput' placeholder="按照商品关键字搜索" bindconfirm='toSearch' placeholder-style='color:#cccdd0'/>
     </view>
   </view>
 

@@ -1,7 +1,8 @@
 <import src="../../../wxParse/wxParse.wxml" />
 <!-- 引入tempalte -->
-<import src="/templates/dataLogin-template/dataLogin.wxml" />
-<scroll-view>
+<scroll-view bindtouchstart = "handletouchtart" bindtouchend="handletouchend" bindtouchmove="handletouchmove">
+     <!-- 制作   -->
+  <canvas canvas-id="producer"  style="width:100%;margin:0 auto; height:{{UrlH}}px;" ></canvas>
 <view class='{{maskShow==1?"noscroll":""}}' style="overflow:hidden;">
     <view class="motify {{prompt==''?'hide':''}}">
         <icon class="i show_type warning" type='warn' size='25' color='#FFF'></icon>
@@ -85,36 +86,32 @@
                 <text decode="true">{{goods_info.goods_name}}</text>
             </view>
             <text  decode="true"  class="p goods-introduction">{{goods_info.introduction}}</text>
-            <button class="span give-the-thumbs-up" open-type="share">
+            <button class="span give-the-thumbs-up" catchtap="proChoose">
                 <image src='/images/goods/icon_share.png' class="i fa fa-thumbs-up" mode='scaleToFill'></image>
                 分享
             </button>
         </view>
         <view class="price_wrap">
-            <view class="span price" wx:if='{{is_employee==1&&is_inside_sell==1}}'>
-                ￥{{parseInt(goods_info.promotion_price)< parseInt(goods_info.inside_price)?goods_info.promotion_price:goods_info.inside_price}}
+
+            <view class='flex'>
+                <view class="price"> ￥{{parseInt(goods_info.promotion_price)< parseInt(goods_info.price)?goods_info.promotion_price:goods_info.price}}</view>
                 <block wx:if='{{sum==1}}'>
-                    <text class="sos" id="priceTitle" wx:if="{{goods_info.market_price - goods_info.price > 0}}">
+                    <view class="sos" id="priceTitle" wx:if="{{goods_info.market_price - goods_info.price > 0}}">
                         ￥{{goods_info.market_price}}
-                    </text>
+                    </view>
                 </block>
+            </view>
                 <!-- <block wx:if='{{goods_info.point_exchange_type == 1}}'>
                     <view class='span point'>+{{goods_info.point_exchange}}积分</view>
                 </block> -->
-            </view>
-            <view class="span price" wx:else>
-                ￥{{parseInt(goods_info.promotion_price)< parseInt(goods_info.price)?goods_info.promotion_price:goods_info.price}}
-                <block wx:if='{{sum==1}}'>
-                    <text class="sos" id="priceTitle" wx:if="{{goods_info.market_price - goods_info.price > 0}}">
-                        ￥{{goods_info.market_price}}
-                    </text>
-                </block>
                 <!-- <block wx:if='{{goods_info.point_exchange_type == 1}}'>
                 <view class='span point'>+{{goods_info.point_exchange}}积分</view>
               </block> -->
-            </view>
             <view class="span flag" style='color:#CC9933' id="priceDis" wx:if="{{goods_info.vip_price>0}}">
-                会员价:￥{{goods_info.vip_price}}
+                会员价:<text>￥{{goods_info.vip_price}}</text> 
+            </view>
+            <view class="span flag" wx:if='{{is_employee==1&&is_inside_sell==1}}'>
+                内购价: <text>￥{{parseInt(goods_info.promotion_price)< parseInt(goods_info.inside_price)?goods_info.promotion_price:goods_info.inside_price}}</text>
             </view>
         </view>
         <!-- 限购 -->
@@ -233,7 +230,7 @@
     </view>
         <image class="expressage" style='width:100%;' 
         wx:if="{{ goodsDetailImg!=0}}"src='{{goodsDetailImg}}' mode='widthFix' ></image>
-          <view class="hr divider-line"></view>
+          <!-- <view class="hr divider-line"></view> -->
     <!-- 已选择 -->
     <block wx:if='goods_info.goods_pintuan == undefined'>
         <block wx:if='{{goods_info.goods_pintuan.is_open != 1}}'>
@@ -243,7 +240,6 @@
                 <view class="span selected">{{sku_info.sku_name}} 　{{goodsNum}}件</view>
                 <image class="i jiantou" src='/images/goods/assistant_right.png'></image>
             </view>
-            <view class="hr with-margin-l"></view>
         </block>
     </block>
     <view class="DMSbuy" wx:if='{{goods_info.goods_group_list.length>0}}'>
@@ -410,54 +406,73 @@
     </block>
     <!-- 商品评价 -->
     <block wx:if="{{comments_list[0]!=undefined}}">
-        <view class="evaluation-container">
-        <view class="tab-module-title">商品评价</view>
+      <view class="evaluation-container">
+        <view class="tab-module-title flex" style='justify-content: space-between;'>
+          <view style='font-size:14px;'>评价</view>
+          <view style='font-size:14px;'>52 <text style="color:#96989e">位会员好评推荐</text></view>
+        </view>
         <view class="hr with-margin-l"></view>
-            <scroll-view class="evaluation-box" scroll-x>
-            <block wx:for="{{comments_list}}" wx:key='' wx:for-item='comment' wx:for-index='index' wx:if="{{index<5}}">
-              <view class="evaluation-comments" catchtap='moreEvaluation' data-type='0'>
-                <view class="evaluation-info-box">  
-                  <!-- 评价人信息 -->
-    <view class="evaluation-userinfo">
-                      <image src="{{comment.user_img}}" class="headimg" lazy-load='true' binderror='errorHeadImg'
-                            data-index='0'></image>
-                      <view class="span nickname">{{comment.member_name}}</view>
-                  </view>
-    <!-- 初次评价 -->
-    <view class="evaluation-content">{{comment.content}}</view> 
-                </view>
-    <!-- 评价图片 -->
-    <view class="ul evaluation-pics" wx:if="{{comment.image[0]}}">
-                 <view class="comment-imgAll">{{comment.image.length}}张</view>
-                        <view class='li'>
-                            <image src="{{comment.image[0]}}" class="comment-pic"/>
-                        </view>
-                </view>  
-               </view> 
-             </block> 
-             <view class="comment-more" catchtap='moreEvaluation' data-type='0'>
-              <text>更多评论</text>
-              <hr/>
-              <text>See more</text>
-            </view> 
-    </scroll-view>
-    <view class="check-more">
-                <button catchtap='moreEvaluation' data-type='0'>查看更多评价</button>
+        <view class='evaluation-detail'>
+          <view class='evaluation-title'>
+            <view catchtap='moreEvaluation' data-type='0' class='{{comments_type==0?"current":""}}'>全部({{evaluates_count.evaluate_count}})</view>
+            <view catchtap='moreEvaluation' data-type='4' class='{{comments_type==4?"current":""}}'>图片({{evaluates_count.imgs_count}})</view>
+            <view catchtap='moreEvaluation' data-type='1' class='{{comments_type==1?"current":""}}'>好评({{evaluates_count.praise_count}})</view>
+            <view catchtap='moreEvaluation' data-type='2' class='{{comments_type==2?"current":""}}'>中评({{evaluates_count.center_count}})</view>
+            <view catchtap='moreEvaluation' data-type='3' class='{{comments_type==3?"current":""}}'>差评({{evaluates_count.bad_count}})</view>
+          </view>
+          <block wx:for="{{comments_list}}" wx:key='' wx:for-item='comment' wx:for-index='index' wx:if="{{index<2}}">
+            <view class='evaluation-item' catchtap='moreEvaluation' data-type='0'>
+              <view class="evaluation-userinfo">
+                <image src="{{comment.user_img}}" mode="widthFix"></image>
+                <view class="nickname">{{comment.member_name}}</view>
+              </view>
+              <view class="evaluation-content">{{comment.content}}</view>
+              <view class="flex" style='justify-content:flex-start;flex-wrap: wrap;margin-top:10rpx;'>
+                <block wx:for="{{comment.image}}" wx:key='' wx:for-item='item' wx:for-index='i' wx:if="{{index<4}}">
+                <image src="{{item}}" class="comment-pic" mode='aspectFill'/>
+              </block> 
+              </view>
             </view>
-   </view>  
-      </block> 
+          </block>
+        </view>
+
+        <view class="check-more" catchtap='moreEvaluation' data-type='0'>
+          <view style='margin-right:10rpx;font-size:14px;'>查看全部</view>
+          <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" class="more" mode="widthFix"></image>
+        </view>
+      </view>  
+    </block> 
       <block wx:else>
         <view class="evaluation-container">
             <view class="evaluation-title">
-                暂无评价 (
-                <view class='em'>0</view>
-                )
+                暂无评价 (0)
             </view>
         </view>
     </block>  
     <view class="hr divider-line"></view>  
+
+    <!-- 品牌推荐 -->
+    <block wx:if="{{recommended_goods[0]!=undefined}}">
+      <view class="evaluation-container">
+        <view class='tab-module-title'>你可能还想看</view>
+        <view class="hr with-margin-l"></view>
+        <scroll-view class="recommended-box" scroll-x>
+          <block wx:for="{{recommended_goods}}" wx:key='' wx:for-item='item' wx:for-index='index' wx:if="{{index<10}}">
+            <view class='recommended-goods-item'  catchtap='toGood' data-id='{{item.goods_id}}'>
+              <image src="{{item.pic_cover_small}}" mode="widthFix"/>
+              <text class='activity_text'>{{item.goods_name}}</text>
+              <view class='brand_goods_price'>
+                <text>￥{{item.promotion_price}}</text>
+              </view>
+            </view>
+          </block> 
+        </scroll-view>
+      </view>
+    <view class="hr divider-line"></view>  
+    </block>
     <!-- 商品属性 -->
     <block wx:if="{{goods_info.goods_attribute_list[0]!=undefined}}">
+      <view class="evaluation-container">
         <view class="tab-module-title">商品属性</view>
         <view class="hr with-margin-l"></view>
         <view class="detail_info_wrap p-attribute" id="p-attribute">
@@ -470,10 +485,12 @@
                 </block>
             </view>
         </view>
+      </view>
         <view class="hr divider-line"></view>
     </block>
     <!-- <block wx:if='{{selectType == "video"}}'>  </block> -->
     <block wx:if='{{detail_id != 0}}'>
+      <view class="evaluation-container">
         <view class="tab-module-title">商品详情</view>
         <view class="hr with-margin-l"></view>
         <view class="detail_info_wrap" id="p-detail">
@@ -510,6 +527,7 @@
                 <template is="wxParse" data="{{wxParseData:description.nodes}}" />
             </view>
         </view>
+      </view>
     </block>
     <block wx:if='{{copyRight.default_logo != "" && copyRight.technical_support != ""}}'>
         <view class="footer">
@@ -764,7 +782,33 @@
         </view>
         <view class="{{isIphoneX?'Lise':''}}"></view>
     </view>
-  <template is="dataLogin" data="{{showModal,Choice,layout}}" />
   
 </view>
+
+<!-- 分享弹出框 +  制作海报 -->
+  <view class="mask " wx:if="{{TT}}" id="mask" catchtap='popupClose'></view>
+  <view class="orienation" wx:if="{{TT}}" animation='{{animation}}'>
+  <button open-type="share"  >分享给好友</button>
+  <button catchtap="producer">制作海报</button>
+  <button catchtap='popupClose'>取消</button>
+  </view>  
+      
+<!-- catchtap='popupClose' -->
+ <view class="mask " wx:if="{{TCL}}" id="mask" ></view>
+ <view class="exhibition" wx:if="{{TCL}}" style="top:100rpx;left:125rpx;" >
+  <image  lazy-load="true" src="{{compound_Img}}"   style="width:500rpx;"  mode='widthFix'></image>
+   <view class="ng">
+       <view class="l" catchtap='popupClose'>关闭</view>
+       <view  wx:if='{{!Again}}'class="l sssss" style='border-left: 1px solid #ccc;' catchtap='Save'>保存图片</view>
+       <view wx:else class="l     xxxxxx" style='border-left: 1px solid #ccc;' catchtap='Againadd'>保存图片</view>
+        
+   </view>
+  </view> 
+
+
+  <!-- //客服 -->
+           <button class="a new-btn buy-cart" open-type="contact" session-from="weapp" class="{{isHide==0?'yuan':'hide-kf'}}  cks {{isIphoneX?'yuanLise':''}}">
+                <view><image src="https://static.bonnieclyde.cn/tt.png"  mode='widthFix' ></image></view>
+                 <!-- <text class="ke_fu">客服</text> -->
+            </button>
 </scroll-view>

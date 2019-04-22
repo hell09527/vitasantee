@@ -1,0 +1,13 @@
+<!--pages/member/membershipCard/membershipCard.wxml-->
+<view style='padding:40rpx;'>
+  <view class='card-box'>
+    <image src='https://static.vitasantee.com/WechatIMG6.png' mode="widthFix"></image>
+    <view class='card-detail'>
+      <view style='margin-bottom:16rpx;font-size:24px;letter-spacing:2px;'>620 111 171 835 201 0</view>
+      <view>
+        <view style='margin-bottom:5rpx;'>世有桃花孤零</view>
+        <view>会员LV.1</view>
+      </view>
+    </view>
+  </view>
+</view>

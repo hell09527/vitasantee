@@ -10,6 +10,7 @@
     "pages/goods/presentGift/presentGift",
     "pages/goods/shareRepertoire/shareRepertoire",
     "pages/member/member/member",
+    "pages/member/membershipCard/membershipCard",
     "pages/logs/logs",
     "pages/backPage/backPage",
     "pages/backPage/fetchGift/fetchGift",

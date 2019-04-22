@@ -1,9 +1,15 @@
 <!-- 引入tempalte -->
 <import src="/templates/top-template/top-template.wxml" />
 <import src="/templates/goods-list-template/goods-list-template.wxml" />
+<import src="/templates/goodsScreening-template/goodsScreening-template.wxml" />
 <!-- <import src="/templates/coupon-mask-template/coupon-mask-template.wxml" /> -->
 
-<view class="scroll-view">
+<!-- <view class="weui-loadmore" wx:if='{{isRefreshing}}'>
+  <view class="weui-loading"></view>
+  <view class="weui-loadmore-tips">正在刷新...</view>
+</view> -->
+
+<scroll-view class="scroll-view" bindtouchstart = "handletouchtart" bindtouchend="handletouchend" bindtouchmove="handletouchmove">
   <form bindsubmit='songGift' report-submit="true">
 
     <!-- 等待标识 -->
@@ -15,7 +21,7 @@
     <view class="com-content">
 
       <!-- 公共头部 -->
-      <template is="topTemplate" data="{{category_list,scrollLeft,select}}" />
+      <template is="topTemplate" data="{{category_list,scrollLeft,select,isInput}}" />
 
       <!-- <block wx:for="{{category_list}}" wx:key="*this" wx:for-index='index'> -->
         <view class="item-ans {{currentTab==0?'':'hide'}}">
@@ -48,7 +54,7 @@
                     <view class='recommended_title_text'>
                       <text style='color:#005882'>新品</text>推荐
                     </view>
-                    <view class='recommended_title_top' style='color:#005882'>New</view>
+                    <!-- <view class='recommended_title_top' style='color:#005882'>New</view> -->
                   </view>
                   <view class='flex' catchtap='toNewProduct'>更多
                     <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" class="more" mode="widthFix" />
@@ -69,7 +75,7 @@
                   <view style='position: relative;'>
                     <view class='recommended_title_text'>
                       <text style='color:#e40046'>热卖</text>推荐</view>
-                    <view class='recommended_title_top' style='color:#e40046;right:-14px;'>Hot</view>
+                    <!-- <view class='recommended_title_top' style='color:#e40046;right:-14px;'>Hot</view> -->
                   </view>
                   <view class='flex' catchtap='toHotProduct'>更多
                     <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" class="more" mode="widthFix" />
@@ -93,7 +99,7 @@
                   <view style='position: relative'>
                     <view class='recommended_title_text'>
                       <text style='color:#e40046'>限时</text>推荐</view>
-                    <view class='recommended_title_top' style='color:#e40046'>Sale</view>
+                    <!-- <view class='recommended_title_top' style='color:#e40046'>Sale</view> -->
                   </view>
                 </view>
                 <view class='timeLimit-box'>
@@ -195,15 +201,8 @@
           </view>
         </view>
 
-        <view class="item-ans {{currentTab>0?'':'hide'}}">
-          <view class="content-title hide">
-            <block wx:for='{{titleList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
-              <view class="title-item {{item.select==1?'':'title-item-active'}}" catchtap='titleCheck' data-id='{{index}}'>
-                <text>{{item.name}}</text>
-                <image src="{{item.select==1?'https://static.vitasantee.com/B740D975-6827-4391-84F2-3877ABD6D46E@2x.png':'https://static.vitasantee.com/967EC88C-B7B6-448B-AD30-1375B28B4A26@2x.png'}}" mode="widthFix" />
-              </view>
-            </block>
-          </view>
+        <view class="item-ans {{currentTab>0?'':'hide'}}" style='background:#fff;'>
+          <template is="goodsScreeningTemplate" data="{{brandSelect,recommendSelect,goodsSelect,brand,source_type,sort,brandName}}" />
           <!-- 内容主体 -->
           <view class='skin-container'>
             <!-- 商品列表 -->
@@ -224,12 +223,18 @@
 
   </form>
 
-</view>
+  <!-- //客服 -->
+           <button class="a new-btn buy-cart" open-type="contact" session-from="weapp" class="{{isHide==0?'yuan':'hide-kf'}}  cks">
+                <view><image src="https://static.bonnieclyde.cn/tt.png"  mode='widthFix' ></image></view>
+                 <!-- <text class="ke_fu">客服</text> -->
+            </button>
+
+</scroll-view>
 
 <!-- 新人提示 -->
-<view class='collect-prompt' wx:if='{{is_login==1}}'>
-  <view class='prompt-text'>点击“·•·”添加到我的小程序，
-  <view class='prompt-close' catchtap='toClosePrompt'>X</view>微信首页下拉即可快速访问店铺</view>
+<view class='collect-prompt' wx:if='{{is_login==1}}' catchtap='toClosePrompt'>
+  <view class='prompt-text'>点击“<image src="https://static.vitasantee.com/99999.png" mode="widthFix" style='width:25px;'/>”添加到我的小程序，微信首页下拉即可快速访问店铺</view>
+  <view class='prompt-close'>X</view>
   <view class='prompt-nav'></view>
 </view>
 

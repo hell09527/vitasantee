@@ -2,7 +2,11 @@
 <template name="goodsListTemplate">
   <view class='brand_goods_detail' catchtap='toGood' data-id='{{goods_id}}'>
               <image src="{{pic_cover_small}}" mode="widthFix"/>
-              <text class='activity_text'>{{goods_name}}</text>
+              <text decode="true" class='activity_text'>
+                <block wx:if='{{source_type==2}}' wx:key='' wx:for-item='vo'>
+                  <text class="i goods_tab">跨境</text>
+                </block>{{goods_name}}
+              </text>
               <!-- <text class='activity_info'>收敛毛孔补水保湿收敛毛孔补水保湿</text> -->
               <view class='brand_goods_price'>
                 <text>￥{{promotion_price}}</text>

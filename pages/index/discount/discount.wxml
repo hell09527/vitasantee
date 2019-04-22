@@ -37,4 +37,4 @@
 </view>
 
 <!-- 分享与回到首页 -->
-<template is="HomeOrShareIconTemplate" />
+<!-- <template is="HomeOrShareIconTemplate" /> -->

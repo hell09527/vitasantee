@@ -228,6 +228,7 @@ Page({
       success: function (res) {
         let code = res.code;
         let total_price = 0.00;
+        let inside_price=0.00;
         if (code == 0) {
           let data = res.data;
           console.log(data)
@@ -247,10 +248,17 @@ Page({
               } else {
                 data[index][key].status = 1;
               }
-              console.log(data)
-              let promotion_price = parseFloat(data[index][key].promotion_price);
+              // console.log(data)
+              
               let num = parseInt(data[index][key].num);
               if (data[index][key].status == 1) {
+                let promotion_price;
+                if (data[index][key].is_inside == 0) {
+                  promotion_price = parseFloat(data[index][key].promotion_price);
+                } else {
+                  promotion_price = parseFloat(data[index][key].interior_price);
+                  inside_price = parseFloat(inside_price) + parseFloat(data[index][key].interior_price * num)
+                }
                 total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
               }
 
@@ -273,6 +281,7 @@ Page({
             Base: siteBaseUrl,
             cart_list: data,
             total_price: total_price.toFixed(2),
+            inside_price: inside_price.toFixed(2),
             //check_all: 1,
             edit: 0,
             is_checked: 1
@@ -640,14 +649,23 @@ Page({
           new_cart_list[i][k].num = num;
           //新数组添加选中状态
           total_price = 0.00;
+          let inside_price=0.00;
           for (let index in cart_list) {
             for (let key in cart_list[index]) {
               new_cart_list[index][key].status = cart_list[index][key].status;
               new_cart_list[index][key].promotion_price = cart_list[index][key].promotion_price
-              let promotion_price = parseFloat(cart_list[index][key].promotion_price);
+              let promotion_price = parseFloat(new_cart_list[index][key].promotion_price);
               let num = parseInt(new_cart_list[index][key].num);
 
               if (new_cart_list[index][key].status) {
+                let promotion_price;
+                let num = parseInt(new_cart_list[index][key].num);
+                if (new_cart_list[index][key].is_inside == 0) {
+                  promotion_price = parseFloat(new_cart_list[index][key].promotion_price);
+                } else {
+                  promotion_price = parseFloat(new_cart_list[index][key].interior_price);
+                  inside_price = parseFloat(inside_price) + parseFloat(new_cart_list[index][key].interior_price * num)
+                }
                 total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
 
               }
@@ -672,6 +690,7 @@ Page({
                 that.setData({
                   cart_list: new_cart_list,
                   total_price: total_price.toFixed(2),
+                  inside_price: inside_price.toFixed(2),
                 })
                 app.restStatus(that, 'numAdjustFlag');
               } else {
@@ -736,11 +755,19 @@ Page({
           // console.log(num)
           //新数组添加选中状态
           total_price = 0;
+          let inside_price = 0.00;
           for (let index in cart_list) {
             for (let key in cart_list[index]) {
               new_cart_list[index][key].status = cart_list[index][key].status;
-              let promotion_price = parseFloat(new_cart_list[index][key].promotion_price);
+
+              let promotion_price;
               let num = parseInt(new_cart_list[index][key].num);
+              if (new_cart_list[index][key].is_inside == 0) {
+                promotion_price = parseFloat(new_cart_list[index][key].promotion_price);
+              } else {
+                promotion_price = parseFloat(new_cart_list[index][key].interior_price);
+                inside_price = parseFloat(inside_price) + parseFloat(new_cart_list[index][key].interior_price * num)
+              }
               total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
             }
           }
@@ -764,6 +791,7 @@ Page({
                 that.setData({
                   cart_list: new_cart_list,
                   total_price: total_price.toFixed(2),
+                  inside_price:inside_price.toFixed(2),
                 })
               } else {
                 app.showBox(that, '操作失败');
@@ -814,19 +842,27 @@ Page({
                 cart_list = res.data;
                 //新数组添加选中状态
                 let total_price = 0.00;
+                let inside_price = 0.00
 
                 for (let index in cart_list) {
                   for (let key in cart_list[index]) {
                     cart_list[index][key].status = 0;
-                    cart_list[index][key].isInput = 0;
-                    let promotion_price = parseFloat(cart_list[index][key].promotion_price);
+                    cart_list[index][key].isInput = 1;
+                    let promotion_price;
                     let num = parseInt(cart_list[index][key].num);
+                    if (cart_list[index][key].is_inside == 0) {
+                      promotion_price = parseFloat(cart_list[index][key].promotion_price);
+                    } else {
+                      promotion_price = parseFloat(cart_list[index][key].interior_price);
+                      inside_price = parseFloat(inside_price) + parseFloat(cart_list[index][key].interior_price * num)
+                    }
                     total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
                   }
                 }
 
                 that.setData({
                   cart_list: cart_list,
+                  inside_price: inside_price.toFixed(2),
                   total_price: total_price.toFixed(2),
                 })
 
@@ -943,7 +979,7 @@ Page({
             } else {
               carts_3 += ',' + cart_id;
             }
-            total_price_3 += parseFloat(cart_list[index][key].num) * parseFloat(cart_list[index][key].price)
+            total_price_3 += parseFloat(cart_list[index][key].num) * parseFloat(cart_list[index][key].interior_price)
             total_num_3 += cart_list[index][key].num
             cart_3.push(cart_list[index][key]);
           } else if (cart_list[index][key].source_type == 1 && cart_list[index][key].is_inside == 1) {
@@ -956,7 +992,7 @@ Page({
             } else {
               carts_4 += ',' + cart_id;
             }
-            total_price_4 += parseFloat(cart_list[index][key].num) * parseFloat(cart_list[index][key].price)
+            total_price_4 += parseFloat(cart_list[index][key].num) * parseFloat(cart_list[index][key].interior_price)
             total_num_4 += cart_list[index][key].num
             cart_4.push(cart_list[index][key]);
           }
@@ -1291,7 +1327,7 @@ Page({
     for (let i in cart_list) {
       del_id += cart_list[i][index].cart_id;
     }
-    // console.log(del_id)
+    console.log(del_id)
     app.sendRequest({
       url: 'api.php?s=goods/cartDelete',
       data: {
@@ -1299,6 +1335,7 @@ Page({
       },
       success: function (res) {
         let code = res.data;
+        console.log(code)
         if (code > 0) {
           app.sendRequest({
             url: 'api.php?s=goods/cart',
@@ -1309,25 +1346,33 @@ Page({
                 cart_list = res.data;
                 //新数组添加选中状态
                 let total_price = 0.00;
+                let inside_price = 0.00;
                 for (let index in cart_list) {
                   for (let key in cart_list[index]) {
                     cart_list[index][key].status = 1;
-                    cart_list[index][key].isInput = 1
-                    let promotion_price = parseFloat(cart_list[index][key].promotion_price);
+                    cart_list[index][key].isInput =1;
+                    let promotion_price;
                     let num = parseInt(cart_list[index][key].num);
+                    if (cart_list[index][key].is_inside == 0) {
+                      promotion_price = parseFloat(cart_list[index][key].promotion_price);
+                    } else {
+                      promotion_price = parseFloat(cart_list[index][key].interior_price);
+                      inside_price = parseFloat(inside_price) + parseFloat(cart_list[index][key].interior_price * num)
+                    }
                     total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
+                  }
+                }
            
 
+                    console.log(cart_list)
                 that.setData({
                   cart_list: cart_list,
                   check_all: 1,
                   is_checked: 1,
                   total_price: total_price.toFixed(2),
+                  inside_price: inside_price.toFixed(2),
                 })
-                that.keep_unselected();
                 app.showBox(that, '操作成功');
-              }
-            }
           
         } else {
           app.showBox(that, '操作失败');

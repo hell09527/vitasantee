@@ -135,7 +135,7 @@
                                 </view>
                             </view>
                             <view class="left-col">
-                                <view class='p' class="c-gray-darker">{{goods.sku_name}}</view>
+                                <view class="c-gray-darker" style='font-size:12px;'>{{goods.sku_name}}</view>
                             </view>
                         </view>
                     </view>

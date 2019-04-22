@@ -1,0 +1,51 @@
+<!-- 日期选择器 -->
+
+<template name="goodsScreeningTemplate">
+  <view class="content-title">
+    <view class="title-item {{!goodsSelect?'':'title-item-active'}}" catchtap='toGoodsCheck'>
+      <text>{{source_type==0?'全部商品':source_type==1?'大贸':'跨境'}}</text>
+      <image src="{{!goodsSelect?'https://static.vitasantee.com/B740D975-6827-4391-84F2-3877ABD6D46E@2x.png':'https://static.vitasantee.com/967EC88C-B7B6-448B-AD30-1375B28B4A26@2x.png'}}" mode="widthFix" />
+    </view>
+
+      <view class="secondClass flex {{goodsSelect?'':'hide'}}">
+        <text catchtap='toScreen' data-type='0' class="{{source_type==0?'text-active':''}}">全部商品</text>
+        <text catchtap='toScreen' data-type='1' class="{{source_type==1?'text-active':''}}">大贸</text>
+        <text catchtap='toScreen' data-type='2' class="{{source_type==2?'text-active':''}}">跨境</text>
+      </view>
+
+    <view class="title-item {{!recommendSelect?'':'title-item-active'}}" catchtap='recommendCheck'>
+      <text>{{sort==0?'推荐':sort==1?'新品':sort==2?'价格升序':'价格降序'}}</text>
+      <image src="{{!recommendSelect?'https://static.vitasantee.com/B740D975-6827-4391-84F2-3877ABD6D46E@2x.png':'https://static.vitasantee.com/967EC88C-B7B6-448B-AD30-1375B28B4A26@2x.png'}}" mode="widthFix" />
+    </view>
+
+      <view class="secondClass flex {{recommendSelect?'':'hide'}}">
+          <text catchtap='toScreen' data-sort='0' class="{{sort==0?'text-active':''}}">推荐</text>
+          <text catchtap='toScreen' data-sort='1' class="{{sort==1?'text-active':''}}">新品</text>
+          <text catchtap='toScreen' data-sort='2' class="{{sort==2?'text-active':''}}">价格升序</text>
+          <text catchtap='toScreen' data-sort='3' class="{{sort==3?'text-active':''}}">价格降序</text>
+      </view>
+
+
+
+    <view class="title-item {{!brandSelect?'':'title-item-active'}}" catchtap='toBrandCheck'>
+      <text>{{brandName!=''?brandName:'品牌'}}</text>
+      <image src="{{!brandSelect?'https://static.vitasantee.com/B740D975-6827-4391-84F2-3877ABD6D46E@2x.png':'https://static.vitasantee.com/967EC88C-B7B6-448B-AD30-1375B28B4A26@2x.png'}}" mode="widthFix" />
+    </view>
+
+      <view class="secondClass flex {{brandSelect?'':'hide'}}">
+        <block wx:for='{{brand}}' wx:key='' wx:for-item='item' wx:for-index='index' wx:if='{{brand.length>0}}'>
+          <view catchtap='toCheckBrand' data-index='{{index}}' class='secondClass-item'>
+            <image class="checkbox" src='/images/goods/{{item.select==1?"cartp2.png":"cartp1.png"}}'></image>
+            <text class="{{item.select==1?'text-active':''}}">{{item.brand_name}}</text>
+          </view>
+        </block>
+        <text wx:if='{{brand.length==0}}'>空</text>
+        <view class='brandBtn flex'>
+          <view catchtap='toBrandCheck'>取消</view>
+          <view catchtap='toScreen'>确定</view>
+        </view>
+      </view>
+
+      <view class="checkMask {{brandSelect||recommendSelect||goodsSelect?'':'hide'}}" catchtap='toCancelMask'></view>
+  </view>
+</template>

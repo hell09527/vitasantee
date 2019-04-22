@@ -9,24 +9,20 @@ Page({
     prompt: '',
     defaultImg: app.globalData.defaultImg,
     category_id: 0,
-    goods_list: {}, //商品列表
+    category_goods: {}, //商品列表
     search_text: '', //搜索内容
-    titleList: [{
-      name: '综合排序',
-      select: 1,
-    },
-    {
-      name: '品牌类型',
-      select: 1,
-    },
-    {
-      name: '功效筛选',
-      select: 1,
-    },
-    ],
     category_list: [],  //分类列表
     currentTab: 0, //预设当前项的值
     page: 1,
+    goodsSelect: false,   //全部商品状态
+    recommendSelect: false,   //推荐状态
+    brandSelect: false,    //品牌选择状态
+    brandId: [],    //选择品牌的id数组
+    brandName: '',   //选择品牌的name字符串
+    brandNameArr: [],  //选择品牌的name数组
+    source_type: 0,   //0：全部商品，1：大贸，2：跨境
+    sort: 0,   //0：推荐，1：新品，2：价格升序，3：价格降序
+    isInput: 1,
   },
 
   /**
@@ -42,20 +38,25 @@ Page({
     category_id = undefined ? '' : category_id;
 
     app.sendRequest({
-      url: 'api.php?s=goods/goodsList',
+      url: 'api.php?s=goods/categoryGoodsList',
       data: {
         category_id: category_id,
-        page: page
+        page_index: page,
+        source_type:0,
+        sort:0,
+        brand_id:[],
       },
       success: function (res) {
         let code = res.code;
         let data = res.data;
         if (code == 0) {
           let goods_list = data.goods_list;
-          let next_page = that.data.next_page++;
           let goodsCategoryList = data.goodsCategoryList;
           var category_list = [];
-
+          let brand = data.category_brands;
+          for (let index in brand) {
+            brand[index].select = 0;
+          }
           for (let index in goodsCategoryList) {
             if (goodsCategoryList[index].category_id == first_id) {
               category_list = goodsCategoryList[index].child_list
@@ -76,26 +77,26 @@ Page({
           let screen = 0;
           if (goods_list != undefined) {
             page++;
-            if (goods_list[0] != undefined && category_id != 0 && category_id != '' && category_id != undefined) {
-              screen = 1;
-            }
           }
 
           that.setData({
-            goods_list: goods_list,
+            category_goods: goods_list,
             goodsCategoryList: goodsCategoryList,
             category_list,
             category_id,
-            category_brands: data.category_brands,
-            category_price_grades: data.category_price_grades,
-            next_page: next_page,
-            screen: screen,
-            page: page,
+            brand,
           })
           console.log(res);
 
         }
       },
+    })
+  },
+
+  //搜索框点击
+  toInput: function () {
+    this.setData({
+      isInput: 0,
     })
   },
 
@@ -114,67 +115,247 @@ Page({
       category_list[i].select = 1;
     }
     category_list[cur].select = 2;
-
-    this.setData({
-      category_list: category_list,
-      page: 1,
-      goods_list: [],
-    })
-    this.toGoods(id, 1)
-  },
-
-  // 分类点击获取列表
-
-  toGoods: function (id, page) {
-    var that = this;
-    var category_goods = that.data.category_goods;
-
     app.sendRequest({
-      url: 'api.php?s=goods/goodsList',
+      url: 'api.php?s=goods/categoryGoodsList',
       data: {
         category_id: id,
-        page: page
+        page_index: 1,
+        source_type: 0,
+        sort: 0,
+        brand_id: [],
       },
       success: function (res) {
         let code = res.code;
         let data = res.data;
         if (code == 0) {
-          let goods_list = data.goods_list;
-          let next_page = that.data.next_page++;
-          let goodsCategoryList = data.goodsCategoryList;
-          var category_list = [];
-
-          if (goods_list[0] != undefined) {
-
-            //图片处理
-            for (let index in goods_list) {
-              let img = goods_list[index].pic_cover_small;
-              goods_list[index].pic_cover_small = app.IMG(img);
-            }
-
-            let screen = 0;
-            if (goods_list != undefined) {
-              page++;
-              if (goods_list[0] != undefined && id != 0 && id != '' && id != undefined) {
-                screen = 1;
-              }
-            }
-
-            that.setData({
-              goods_list: goods_list,
-              next_page: next_page,
-              screen: screen,
-              page: page,
-              isNoGoods: false,
-            })
-          } else {
-            that.setData({
-              isNoGoods: true,
-            })
+          let brand = data.category_brands;
+          for (let index in brand) {
+            brand[index].select = 0;
           }
+          that.setData({
+            brand,
+          })
         }
       },
     })
+    this.setData({
+      category_list: category_list,
+      page: 1,
+      category_id: id,
+      category_goods: [],
+      brandSelect: false,
+      goodsSelect: false,
+      recommendSelect: false,
+      brandName: '',
+      brandNameArr: [],
+      source_type: 0,
+      sort: 0,
+    })
+    this.toGoods(id, 1, 0, 0, [])
+  },
+
+  // 分类点击获取列表
+
+  toGoods: function (id, page, type, sort, brandId) {
+    var that = this;
+    var category_goods = that.data.category_goods;
+    // 获取商品分类标题点击的商品
+    app.sendRequest({
+      url: "api.php?s=goods/categoryGoodsList",
+      data: {
+        category_id: id,
+        page_index: page,
+        source_type: type,
+        sort: sort,
+        brand_id: brandId,
+      },
+      method: 'POST',
+      success: function (res) {
+        let new_category_goods = res.data.goods_list;
+        if (new_category_goods[0] != undefined) {
+          page++;
+          category_goods = category_goods.concat(new_category_goods)
+          // console.log(category_goods)
+
+          for (let key in category_goods) {
+            let img = category_goods[key].pic_cover_small;
+            category_goods[key].pic_cover_small = app.IMG(img);
+          }
+          that.setData({
+            category_goods: category_goods,
+            page: page,
+            isNoGoods: false,
+          })
+        } else {
+          that.setData({
+            isNoGoods: true,
+          })
+        }
+      }
+    });
+  },
+
+
+  // 全部商品导航点击
+  toGoodsCheck: function () {
+    var that = this;
+    var goodsSelect = this.data.goodsSelect;
+    var brand = this.data.brand;
+    var brandNameArr = this.data.brandNameArr;
+    for (let key in brand) {
+      brand[key].select = 0
+    }
+    if (brandNameArr.length > 0) {
+      for (let key in brand) {
+        for (let index in brandNameArr) {
+          if (brand[key].brand_name == brandNameArr[index]) {
+            console.log(brand[key].brand_name, brandNameArr[index])
+            brand[key].select = 1
+          }
+        }
+      }
+    }
+    this.setData({
+      goodsSelect: !goodsSelect,
+      recommendSelect: false,
+      brandSelect: false,
+      brand,
+    })
+  },
+  // 推荐导航点击
+  recommendCheck: function () {
+    var that = this;
+    var recommendSelect = this.data.recommendSelect;
+    var brandNameArr = this.data.brandNameArr;
+    var brand = this.data.brand;
+    for (let key in brand) {
+      brand[key].select = 0
+    }
+    if (brandNameArr.length > 0) {
+      for (let key in brand) {
+        for (let index in brandNameArr) {
+          if (brand[key].brand_name == brandNameArr[index]) {
+            brand[key].select = 1
+          }
+        }
+      }
+    }
+    this.setData({
+      recommendSelect: !recommendSelect,
+      goodsSelect: false,
+      brandSelect: false,
+      brand,
+    })
+  },
+  // 品牌导航点击
+  toBrandCheck: function () {
+    var that = this;
+    var brandSelect = this.data.brandSelect;
+    var brandNameArr = this.data.brandNameArr;
+    var brand = this.data.brand;
+    for (let key in brand) {
+      brand[key].select = 0
+    }
+    if (brandNameArr.length > 0) {
+      for (let key in brand) {
+        for (let index in brandNameArr) {
+          if (brand[key].brand_name == brandNameArr[index]) {
+            brand[key].select = 1
+          }
+        }
+      }
+    }
+    this.setData({
+      brandSelect: !brandSelect,
+      goodsSelect: false,
+      recommendSelect: false,
+      brand,
+    })
+  },
+  // 点击遮罩层
+  toCancelMask: function () {
+    var brand = this.data.brand;
+    var brandNameArr = this.data.brandNameArr;
+    for (let key in brand) {
+      brand[key].select = 0
+    }
+
+    if (brandNameArr.length > 0) {
+      for (let key in brand) {
+        for (let index in brandNameArr) {
+          if (brand[key].brand_name == brandNameArr[index]) {
+            brand[key].select = 1
+          }
+        }
+      }
+    }
+    this.setData({
+      brandSelect: false,
+      goodsSelect: false,
+      recommendSelect: false,
+      brand,
+    })
+  },
+
+  // 选择品牌
+  toCheckBrand: function (e) {
+    var that = this;
+    var index = e.currentTarget.dataset.index;
+    var brand = this.data.brand;
+    if (brand[index].select == 1) {
+      brand[index].select = 0;
+    } else {
+      brand[index].select = 1;
+    }
+    // console.log(name,brandId, brandNameArr);
+    this.setData({
+      brand: brand,
+    })
+  },
+
+  // 点击筛选
+  toScreen: function (e) {
+    var that = this;
+    var source_type = this.data.source_type;
+    var sort = this.data.sort;
+    var brandId = [];
+    let category_id = that.data.category_id;
+    var brandName = this.data.brandName;
+    var brand = this.data.brand;
+    var brandNameArr = [];
+    if (e.currentTarget.dataset.type) {
+      var new_source_type = e.currentTarget.dataset.type;
+      source_type = new_source_type;
+      that.setData({
+        source_type,
+      })
+    } else if (e.currentTarget.dataset.sort) {
+      var new_sort = e.currentTarget.dataset.sort;
+      sort = new_sort;
+      that.setData({
+        sort,
+      })
+    }
+    for (let key in brand) {
+      if (brand[key].select == 1) {
+        brandId.push(brand[key].brand_id);
+        brandNameArr.push(brand[key].brand_name);
+      }
+    }
+
+    console.log(brandNameArr, brandId)
+    brandName = brandNameArr.join(',');
+    that.setData({
+      category_goods: [],
+      brandSelect: false,
+      goodsSelect: false,
+      recommendSelect: false,
+      brandNameArr,
+      brandName,
+      brandId,
+    })
+    // console.log(category_id, source_type, sort, brandId)
+    this.toGoods(category_id, 1, source_type, sort, brandId)
   },
 
 
@@ -227,7 +408,13 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    let that = this;
+    let category_id = that.data.category_id;
+    let page = that.data.page;
+    var source_type = this.data.source_type;
+    var sort = this.data.sort;
+    var brandId = this.data.brandId;
+    this.toGoods(category_id, page, source_type, sort, brandId);
   },
 
   /**
@@ -236,16 +423,16 @@ Page({
   errorImg: function (e) {
     let that = this;
     let index = e.currentTarget.dataset.index;
-    let goods_list = that.data.goods_list;
+    let category_goods = that.data.category_goods;
     let defaultImg = that.data.defaultImg;
     let base = that.data.Base;
     let parm = {};
-    let img = goods_list[index].pic_cover_small;
+    let img = category_goods[index].pic_cover_small;
 
     if (defaultImg.is_use == 1) {
       let default_img = defaultImg.value.default_goods_img;
       if (img.indexOf(default_img) == -1) {
-        let parm_key = "goods_list[" + index + "].pic_cover_small";
+        let parm_key = "category_goods[" + index + "].pic_cover_small";
 
         parm[parm_key] = default_img;
         that.setData(parm);

@@ -21,7 +21,8 @@ Page({
     evaluationAgainFlag: 0,
     aClickFlag: 0,
     payFlag: 0,
-    address:[],   //收货地址
+    address: [],   //收货地址
+    isHide: 0,
   },
 
   /**

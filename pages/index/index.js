@@ -23,15 +23,15 @@ Page({
     ], //限时抢购
     //商品列表
     titleList: [{
-        name: '综合排序',
+        name: '活动',
         select: 1,
       },
       {
-        name: '品牌类型',
+        name: '排序',
         select: 1,
       },
       {
-        name: '功效筛选',
+        name: '品牌',
         select: 1,
       },
     ],
@@ -39,7 +39,7 @@ Page({
     scrollLeft: 0, //tab标题的滚动条位置
     winHeight: "", //窗口高度
     indicatorDots: true,
-    is_login: app.globalData.unregistered,
+    is_login: 0,
     maskStatus: 0,
     exponent: '',
     model: false,
@@ -50,15 +50,23 @@ Page({
     // category_goods: [], //分类商品
     isCouponMask: true, //优惠券弹框
     swiperCurrent:0,
-    // isNoGoods:true,  //分类没有商品
+    goodsSelect:false,   //全部商品状态
+    recommendSelect: false,   //推荐状态
+    brandSelect: false,    //品牌选择状态
+    brandName: '',   //选择品牌的name字符串
+    brandNameArr:[],   //选中品牌的名称数组
+    source_type:0,   //0：全部商品，1：大贸，2：跨境
+    sort:0,   //0：推荐，1：新品，2：价格升序，3：价格降序
+    isInput:1,
+    isHide:0,
+    // hasMoreData: true,
+    // isRefreshing: false,
+    // isLoadingMoreData: false
   },
 
 
   onLoad: function(options) {
     let that = this;
-    this.setData({
-      is_login: app.globalData.unregistered,
-    })
     // 极选师分润
     if (options.uid) {
       // 这个字段是转发过后承载uid     identifying
@@ -81,12 +89,12 @@ Page({
       times++;
       let token = app.globalData.token;
       if (token != '') {
-        app.showBox(that, '登陆成功');
+        // app.showBox(that, '登陆成功');
         that.setData({
-          maskStatus: 0
+          maskStatus: 0,
         })
         clearInterval(load_timer);
-      } else if (times == 15) {
+      } else if (times==15){
         app.showBox(that, '登录超时...');
         that.setData({
           maskStatus: 0,
@@ -97,9 +105,10 @@ Page({
     }, 1000);
 
 
+   
     if (app.globalData.token && app.globalData.token != '') {
       //判断是否是付费会员的接口
-      that.SY_reuse();
+      that.SY_reuse(); 
     } else {
       app.employIdCallback = employId => {
         if (employId != '') {
@@ -139,11 +148,38 @@ Page({
     }
     category_list[cur].select = 2;
 
+    app.sendRequest({
+      url: "api.php?s=/index/branchPro",
+      data: {
+        category_id: id,
+        page_index: 1,
+        source_type: 0,
+        sort: 0,
+        brand_id: [],
+      },
+      method: 'POST',
+      success: function (res) {
+        let brand = res.data.category_brands;
+        for (let index in brand) {
+          brand[index].select = 0;
+        }
+        that.setData({
+          brand,
+        })
+      }
+    });
     this.setData({
       category_list: category_list,
       category_id: id,
       page: 1,
       category_goods: [],
+      brandSelect: false,
+      goodsSelect: false,
+      recommendSelect: false,
+      brandName: '',
+      brandNameArr: [],
+      source_type:0,
+      sort: 0,
     })
     if (this.data.currentTab == cur) {
       return false;
@@ -152,12 +188,12 @@ Page({
         currentTab: cur
       })
     }
-    this.toGoods(id, 1)
+    this.toGoods(id, 1, 0, 0, [])
   },
 
   // 分类点击获取列表
 
-  toGoods: function(id, page) {
+  toGoods: function (id, page, type,sort,brandId) {
     var that = this;
     var category_goods = that.data.category_goods;
     // 获取商品分类标题点击的商品
@@ -166,6 +202,9 @@ Page({
       data: {
         category_id: id,
         page_index: page,
+        source_type:type,
+        sort:sort,
+        brand_id: brandId,
       },
       method: 'POST',
       success: function(res) {
@@ -207,7 +246,12 @@ Page({
     })
   },
 
-
+//搜索框点击
+  toInput:function(){
+    this.setData({
+      isInput: 0,
+    })
+  },
 
   // 搜索
   searchInput: function(e) {
@@ -226,18 +270,166 @@ Page({
     }
   },
 
-  // 标题导航点击
-  titleCheck: function(e) {
+  // 全部商品导航点击
+  toGoodsCheck: function() {
     var that = this;
-    var list = this.data.titleList;
-    var index = e.currentTarget.dataset.id;
-    for (var i = 0; i < list.length; i++) {
-      list[i].select = 1;
+    var goodsSelect = this.data.goodsSelect;
+    var brand = this.data.brand;
+    var brandNameArr = this.data.brandNameArr;
+    for (let key in brand) {
+      brand[key].select = 0
     }
-    list[index].select = 2;
+    if (brandNameArr.length > 0) {
+      for (let key in brand) {
+        for (let index in brandNameArr) {
+          if (brand[key].brand_name == brandNameArr[index]) {
+            console.log(brand[key].brand_name, brandNameArr[index])
+            brand[key].select = 1
+          }
+        }
+      }
+    }
     this.setData({
-      titleList: list
+      goodsSelect: !goodsSelect,
+      recommendSelect:false,
+      brandSelect:false,
+      brand,
     })
+  },
+  // 推荐导航点击
+  recommendCheck: function () {
+    var that = this;
+    var recommendSelect = this.data.recommendSelect;
+    var brandNameArr = this.data.brandNameArr;
+    var brand = this.data.brand;
+    for (let key in brand) {
+      brand[key].select = 0
+    }
+    if (brandNameArr.length > 0) {
+      for (let key in brand) {
+        for (let index in brandNameArr) {
+          if (brand[key].brand_name == brandNameArr[index]) {
+            brand[key].select = 1
+          }
+        }
+      }
+    }
+    this.setData({
+      recommendSelect: !recommendSelect,
+      goodsSelect: false,
+      brandSelect: false,
+      brand,
+    })
+  },
+  // 品牌导航点击
+  toBrandCheck: function () {
+    var that = this;
+    var brandSelect = this.data.brandSelect;
+    var brandNameArr = this.data.brandNameArr;
+    var brand = this.data.brand;
+    for (let key in brand) {
+      brand[key].select = 0
+    }
+    if (brandNameArr.length > 0) {
+      for (let key in brand) {
+        for (let index in brandNameArr) {
+          if (brand[key].brand_name == brandNameArr[index]) {
+            brand[key].select = 1
+          }
+        }
+      }
+    }
+    this.setData({
+      brandSelect: !brandSelect,
+      goodsSelect: false,
+      recommendSelect: false,
+      brand,
+    })
+  },
+  // 点击遮罩层
+  toCancelMask: function () {
+    var brand = this.data.brand;
+    var brandNameArr = this.data.brandNameArr;
+    for (let key in brand) {
+      brand[key].select = 0
+    }
+
+    if (brandNameArr.length > 0) {
+      for (let key in brand) {
+        for (let index in brandNameArr) {
+          if (brand[key].brand_name == brandNameArr[index]) {
+            brand[key].select = 1
+          }
+        }
+      }
+    }
+    this.setData({
+      brandSelect: false,
+      goodsSelect: false,
+      recommendSelect: false,
+      brand,
+    })
+  },
+
+  // 选择品牌
+  toCheckBrand: function (e) {
+    var that = this;
+    var index = e.currentTarget.dataset.index;
+    var brand = this.data.brand;
+    if (brand[index].select == 1){
+      brand[index].select = 0;
+    } else {
+      brand[index].select = 1;
+    }
+    // console.log(name,brandId, brandNameArr);
+    this.setData({
+      brand:brand,
+    })
+  },
+
+  // 点击筛选
+  toScreen: function (e) {
+    var that = this;
+    var source_type = this.data.source_type;
+    var sort = this.data.sort;
+    var brandId = [];
+    let category_id = that.data.category_id;
+    var brandName = this.data.brandName;
+    var brand = this.data.brand;
+    var brandNameArr = [];
+    if (e.currentTarget.dataset.type) {
+      var new_source_type = e.currentTarget.dataset.type;
+      source_type = new_source_type;
+      that.setData({
+        source_type,
+      })
+    } else if (e.currentTarget.dataset.sort) {
+      var new_sort = e.currentTarget.dataset.sort;
+      sort = new_sort;
+      that.setData({
+        sort,
+      })
+    }
+    for (let key in brand) {
+      if(brand[key].select==1){
+        brandId.push(brand[key].brand_id);
+        brandNameArr.push(brand[key].brand_name);
+      }
+    }
+
+    console.log(brandNameArr, brandId)
+    brandName = brandNameArr.join(',');
+    that.setData({
+      category_goods: [],
+      brandSelect: false,
+      goodsSelect: false,
+      recommendSelect: false,
+      brandNameArr,
+      brandName,
+      brandId,
+    })
+    // console.log(category_id, source_type, sort, brandId)
+    this.toGoods(category_id, 1, source_type, sort, brandId)
   },
 
   // 跳转热卖推页
@@ -269,7 +461,7 @@ Page({
     var url = e.currentTarget.dataset.url;
     if (url) {
       wx.navigateTo({
-        url: '/pages/' + url,
+        url: '/' + url,
       })
     } else {
       wx.navigateTo({
@@ -333,6 +525,9 @@ Page({
 
   onShow: function() {
     let that = this;
+    this.setData({
+      search_text:'',
+    })
   },
 
   toClosePrompt:function(){
@@ -720,7 +915,6 @@ Page({
     });
 
     // 获取品牌推荐
-    //  获取往期话题
     app.sendRequest({
       url: "api.php?s=/goods/getPublicGoods",
       data: {},
@@ -733,7 +927,22 @@ Page({
         })
       }
     });
+
+    console.log(app.globalData.unregistered)
+    if (app.globalData.unregistered==0){
+      that.setData({
+        is_login: 0,
+      })
+    } else {
+      that.setData({
+        is_login: 1,
+      })
+    }
+
+    
+    wx.stopPullDownRefresh()
   },
+  
 
   swiperChange: function (e) {
     // console.log(e.detail.current)
@@ -784,7 +993,10 @@ Page({
       let category_id = that.data.category_id;
       let category_list = that.data.category_list;
       let page = that.data.page;
-      this.toGoods(category_id, page);
+      var source_type = this.data.source_type;
+      var sort = this.data.sort;
+      var brandId = this.data.brandId;
+      this.toGoods(category_id, page, source_type, sort, brandId);
     }
   },
 
@@ -834,6 +1046,39 @@ Page({
       d[key] = 0;
       that.setData(d);
     }
+  },
+
+  onPullDownRefresh:function(){
+    var that=this;
+    // if (this.data.isRefreshing || this.data.isLoadingMoreData) {
+    //   return
+    // }
+    // this.setData({
+    //   isRefreshing: true,
+    //   hasMoreData: true
+    // })
+    this.indexInit(that)//数据请求
+  },
+
+
+  // 页面滚动事件//滑动开始事件
+  handletouchtart: function (event) {
+    this.setData({
+      isHide: 1
+    })
+  },
+  // 滑动移动事件
+  handletouchmove: function () {
+    this.setData({
+      isHide: 1
+    })
+  },
+  //滑动结束事件
+  handletouchend: function (event) {
+    // console.log(event, 222222)
+    this.setData({
+      isHide: 0
+    })
   },
 
 })

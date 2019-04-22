@@ -19,22 +19,25 @@
 .evaluation-container .evaluation-type {
   margin: 10px 0;
   overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .evaluation-container .evaluation-type .li {
-  float: left;
-  background-color: #FEE;
-  color: #666;
-  margin: 6px 3px;
-  padding: 5px 5px;
+  padding:0 20rpx;
+  height:25px;
+  border-radius: 13px;
+  margin:0 18rpx 14rpx 0;
+  background: #fbd9e3;
+  color:#333;
+  font-size: 14px;
+  line-height: 25px;
   text-align: center;
-  border-radius: 8px;
-  -moz-border-radius: 10px;
-  font-size: 12px;
 }
 
 .evaluation-container .evaluation-type .li.current {
-  background-color: #FF0036;
+  background-color: #e40046;
   color: #FFF;
 }
 

@@ -89,11 +89,6 @@ App({
   // 判断是否登录
   isLogin: function (unregistered){
     console.log(unregistered)
-    if (unregistered == 1){
-      wx.navigateTo({
-        url: '/pages/member/resgin/resgin',
-      })
-    }
   },
 
   onShow: function (options) {

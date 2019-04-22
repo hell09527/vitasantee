@@ -16,24 +16,19 @@
 		<view class="evaluation-container" wx:else>
       <view class="ul evaluation-type js-product-evaluation">
         <view class='li {{comments_type==0?"current":""}}' catchtap='evaluationType' data-type='0'>
-          全部
-          <view class='em'>({{evaluates_count.evaluate_count}})</view>
+          全部({{evaluates_count.evaluate_count}})
         </view>
         <view class='li {{comments_type==4?"current":""}}' catchtap='evaluationType' data-type='4'>
-          图片
-          <view class='em'>({{evaluates_count.imgs_count}})</view>
+          图片({{evaluates_count.imgs_count}})
         </view>
         <view class='li {{comments_type==1?"current":""}}' catchtap='evaluationType' data-type='1'>
-          好评
-          <view class='em'>({{evaluates_count.praise_count}})</view>
+          好评({{evaluates_count.praise_count}})
         </view>
         <view class='li {{comments_type==2?"current":""}}' catchtap='evaluationType' data-type='2'>
-          中评
-          <view class='em'>({{evaluates_count.center_count}})</view>
+          中评({{evaluates_count.center_count}})
         </view>
         <view class='li {{comments_type==3?"current":""}}' catchtap='evaluationType' data-type='3'>
-          差评
-          <view class='em'>({{evaluates_count.bad_count}})</view>
+          差评({{evaluates_count.bad_count}})
         </view>
       </view>
 

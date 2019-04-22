@@ -3,7 +3,7 @@
 button{
   width:90%;
   color: #FFF;
-  background: #E03115;
+  background: #e03115;
   font-size: 15px;
   border: none;
   line-height: 40px;

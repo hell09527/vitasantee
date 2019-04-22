@@ -101,7 +101,7 @@
             <block wx:for='{{order.member_operation}}' wx:key='' wx:for-item='button'>
               <view class="[radius round] a" catchtap='{{button.no}}' data-id='{{order.order_id}}' data-no='{{order.out_trade_no}}' style='background-color:{{button.color}};border-color:{{button.color}}'>{{button.name}}</view>
             </block>
-            <view wx:if='{{order.order_status==1}}' class="[radius round] a" catchtap='amendAddress' data-no='{{order.order_no}}' data-index='{{index}}' style='background-color:#000;border-color:#000'>修改地址</view>
+            <view wx:if='{{order.order_status==1}}' class="[radius round] a" catchtap='amendAddress' data-no='{{order.order_no}}' data-index='{{index}}' style='background-color:#e40046;border-color:#e40046'>修改地址</view>
           </view>
         </view>
       </block>

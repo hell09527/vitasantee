@@ -1,5 +1,5 @@
 
-<scroll-view>
+<scroll-view bindtouchstart = "handletouchtart" bindtouchend="handletouchend" bindtouchmove="handletouchmove">
   <!-- 个人信息 -->
   <view class='userInfo'>
     <view class="flex userInfo-detail" wx:if='{{unregistered==1 || tel==""}}'>
@@ -17,7 +17,7 @@
       </view>
     </view>
     <view></view>
-    <!-- <image src="https://static.vitasantee.com/2A8BD77F-ADB4-4F6F-A55D-D405F17464BA@2x.png" mode="widthFix" class='userInfo-QC'/> -->
+    <!-- <image src="https://static.vitasantee.com/QR%20code@2x.png" mode="widthFix" class='userInfo-QC' catchtap='listClick' data-url='member/membershipCard/membershipCard'/> -->
   </view>
 
   <!-- 积分、优惠券、收藏、我的订单 -->
@@ -137,5 +137,9 @@
       </view>
     </view> -->
   </view>
-
+<!-- //客服 -->
+           <button class="a new-btn buy-cart" open-type="contact" session-from="weapp" class="yuan cks">
+                <view><image src="https://static.bonnieclyde.cn/tt.png"  mode='widthFix' ></image></view>
+                 <!-- <text class="ke_fu">客服</text> -->
+            </button>
 </scroll-view>

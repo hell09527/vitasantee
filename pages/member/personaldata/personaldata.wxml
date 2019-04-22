@@ -39,5 +39,5 @@
       </view>
     </view>
   </view>
-  <button style='margin:60rpx auto;width:400rpx;background:#000;border:none;color:#fff;line-height:90rpx;font-size:16px;height:90rpx;' catchtap='toInpurchasing' wx:if='{{is_employee==1&&isInside==1}}'>进入内购</button>
+  <button style='margin:60rpx auto;width:400rpx;background:#e40046;border:none;color:#fff;line-height:90rpx;font-size:16px;height:90rpx;' catchtap='toInpurchasing' wx:if='{{is_employee==1&&isInside==1}}'>进入内购</button>
 </scroll-view>

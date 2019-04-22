@@ -32,7 +32,7 @@
         <view class="moban" wx:for='{{Carry}}' wx:for-item='so' wx:key='index'>
           <view style='height:80rpx'>
             <view style='border-bottom:1px solid #eaeaea; line-height:80rpx'>
-              {{so.action_username!='admin'?Pro.name:'Bonnie&Clyde'}}
+              {{so.action_username!='admin'?Pro.name:'维美善特'}}
             </view>
           </view>
           <!-- <view style='display: inline-block;' wx:if='{{so.refund_shipping_company}}'> 物流公司：{{so.refund_shipping_company}} 物流单号：{{so.carry_data.refund_shipping_code}}</view> -->

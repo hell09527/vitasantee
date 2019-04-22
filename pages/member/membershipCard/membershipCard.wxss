@@ -1,0 +1,14 @@
+/* pages/member/membershipCard/membershipCard.wxss */
+.card-box{
+  position: relative;
+}
+.card-box image{
+  width:100%;
+  border-radius: 5px;
+}
+.card-detail{
+  position: absolute;
+  left:40rpx;
+  top:190rpx;
+  color:#fff;
+}

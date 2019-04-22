@@ -9,4 +9,4 @@
 </view>
 
 
-<template is="HomeOrShareIconTemplate" />
+<!-- <template is="HomeOrShareIconTemplate" /> -->

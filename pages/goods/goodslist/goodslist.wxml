@@ -1,25 +1,19 @@
 <import src="/templates/top-template/top-template.wxml" />
 <import src="/templates/goods-list-template/goods-list-template.wxml" />
+<import src="/templates/goodsScreening-template/goodsScreening-template.wxml" />
 
 <view class="com-content">
   <!-- 公共头部 -->
-  <template is="topTemplate" data="{{category_list,scrollLeft,select}}" />
+  <template is="topTemplate" data="{{category_list,scrollLeft,select,isInput}}" />
 
 
   <view class="item-ans">
     <!-- 内容主体 -->
     <view class='skin-container'>
-      <view class='content-title hide'>
-        <block wx:for='{{titleList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
-          <view class="title-item {{item.select==1?'':'title-item-active'}}" catchtap='titleCheck' data-id='{{index}}'>
-            <text>{{item.name}}</text>
-            <image src="{{item.select==1?'https://static.vitasantee.com/B740D975-6827-4391-84F2-3877ABD6D46E@2x.png':'https://static.vitasantee.com/967EC88C-B7B6-448B-AD30-1375B28B4A26@2x.png'}}" mode="widthFix" />
-          </view>
-        </block>
-      </view>
+      <template is="goodsScreeningTemplate" data="{{brandSelect,recommendSelect,goodsSelect,brand,source_type,sort,brandName}}" />
       <!-- 商品列表 -->
       <view class='brand_goods'>
-        <block wx:for='{{goods_list}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+        <block wx:for='{{category_goods}}' wx:key='' wx:for-item='item' wx:for-index='index'>
           <template is="goodsListTemplate" data="{{...item,index}}" />
         </block>
         <view class="p {{isNoGoods?'':'hide'}}" style='margin:40px auto;text-align:center;'>

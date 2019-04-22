@@ -41,11 +41,11 @@
   color:#005882;
   border:1px solid #005882;
   padding:0 40rpx;
-  line-height: 48rpx;
+  line-height: 24px;
   text-align: center;
   border-radius: 50rpx;
   transform: all 0.5s;
-  margin:18rpx 0 18rpx 14rpx;
+  margin:9px 0 9px 14rpx;
 }
 .nav-item-active{
   border:1px solid #005882;

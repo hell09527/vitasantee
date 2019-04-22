@@ -29,7 +29,7 @@ scroll-view{
   display: inline-block;
 }
 .userInfo-QC{
-  width:80rpx;
+  width:60rpx;
 }
 
 .order-box{

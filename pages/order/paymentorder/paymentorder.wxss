@@ -130,6 +130,7 @@ cover-view{
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
+  font-size: 14px;
 }
 
 .clearfix:after{
@@ -626,7 +627,7 @@ cover-view{
   justify-content: flex-start;
 }
 
-#noaddress cover-image{
+#noaddress image{
   width: 46px;
   height: 40px;
   margin-right: 10px;

@@ -1,6 +1,6 @@
 @import "/templates/goods-list-template/goods-list-template.wxss";
 @import "/templates/top-template/top-template.wxss";
-
+@import "/templates/goodsScreening-template/goodsScreening-template.wxss";
 .com-content{
   /* background: #EA566A; */
   padding-bottom: 100rpx;
@@ -305,7 +305,7 @@ top: -1px;
   -webkit-box-orient: vertical; 
   overflow: hidden;
   white-space:pre-line;
-  /* height:80rpx;  */
+  height:34px; 
 }
 .activity_info{
   font-size: 12px;
@@ -783,39 +783,7 @@ swiper-container{
 .skin-container{
   padding:0 0 20rpx;
 }
-.content-title{
-  background: #fff;
-  border:1px solid #e4e4e6;
-  height:72rpx;
-  display: flex;
-  margin:20rpx;
-  justify-content: space-around;
-}
-.title-item{
-  border-right: 1px solid #e4e4e6;
-  height: 72rpx;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding:0 10rpx;
-  width: 33.3%;
-}
-.title-item>text{
-  color:#999;
-}
-.title-item-active>text{
-  color:#e40046;
-}
-.title-item-active>image{
-  transform-origin:center;
-  transform:rotate(180deg);
-}
-.title-item:last-child{
-  border-right: none;
-}
-.title-item>image{
-  width:24rpx;
-}
+
 
 .brand_goods{
   padding:20rpx 5rpx;

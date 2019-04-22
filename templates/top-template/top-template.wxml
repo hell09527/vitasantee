@@ -6,7 +6,8 @@
       <view class='first-search'>
         <view class='search-box'>
           <image src='/images/goods/search_icon_2.png' class="search-button" catchtap='toSearch'/>
-          <input type="text" class="search-input" bindinput='searchInput' placeholder="按照商品关键字搜索" bindconfirm='toSearch' />
+          <view  wx:if='{{isInput==1}}' catchtap='toInput' style='width:100%;color:#cccdd0;font-size:14px;'>按照商品关键字搜索</view>
+          <input type="text" class="search-input" bindinput='searchInput' placeholder="" bindconfirm='toSearch' focus='{{true}}' wx:else/>
         </view>
       </view>
 

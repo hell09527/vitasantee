@@ -69,7 +69,24 @@ Page({
     point: 0,
     layout: false,
     Token: '',
-    isInput:1,
+    TT: false, //选择莫态框‘
+    TCL: false, //选择莫态框‘
+    base_img: 'https://static.vitasantee.com/logo.png',//基于标准海报图片
+    codeUrl: '',// 二维码图片
+    shop_img: '', // 商品主图
+    compound_Img: '',//合成图片
+    UrlH: '',//canvas高度
+    Again: false,
+    isInput: 1,
+    isHide: 0,   //客服
+    evaluates_count: {
+      evaluate_count: 0,
+      imgs_count: 0,
+      praise_count: 0,
+      center_count: 0,
+      bad_count: 0
+    },    //评论筛选
+    comments_type:0,
   },
   //测试数据
   last: function () {
@@ -131,7 +148,22 @@ Page({
       unregistered: app.globalData.unregistered
     });
 
+    wx.getSystemInfo({
+      success(res) {
+        let windowWidth = res.windowWidth;//当前手机屏幕的宽度
+        let windowHeight = res.windowHeight - 50;
+        let screenWidth = res.windowWidth;
+        let screenHeight = res.windowHeight;
+        console.log(windowWidth)
+        console.log(windowHeight)
+        that.setData({
+          windowWidth: windowWidth,
+          windowHeight,
+          screenWidth,
+        })
+      }
 
+    })
 
     if (goods_name) {
       wx.setNavigationBarTitle({
@@ -261,7 +293,8 @@ Page({
     //判断是否是付费会员
     let is_vip = app.globalData.is_vip;
     that.setData({
-      is_vip
+      is_vip,
+      TT: false,
     })
     if (app.globalData.distributor_type != 0) {
 
@@ -281,19 +314,63 @@ Page({
       }
     }
 
+    if (app.globalData.token == '') {
+      app.sendRequest({
+        url: "api.php?s=Distributor/getDistributorGoodsWxCode",
+        data: {
+          distributor_type: 0,
+          goods_id: that.data.goods_id
+        },
+        success: function (res) {
+          let data = res.data;
+          that.setData({
+            codeUrl: data,
+          })
 
-
-
-
+        }
+      })
+    }
 
     if (app.globalData.token && app.globalData.token != '') {
       //判断是否是付费会员的接口
       that.XXS_reuse();
+      let originS = that.data.distributor_type;
+      // 制作二维码
+      app.sendRequest({
+        url: "api.php?s=Distributor/getDistributorGoodsWxCode",
+        data: {
+          distributor_type: originS,
+          goods_id: that.data.goods_id
+        },
+        success: function (res) {
+          let data = res.data;
+          that.setData({
+            codeUrl: data,
+          })
+
+        }
+      })
     } else {
       app.employIdCallback = employId => {
         if (employId != '') {
           //判断是否是付费会员的接口
           that.XXS_reuse();
+          let originS = that.data.distributor_type;
+          // 制作二维码
+          app.sendRequest({
+            url: "api.php?s=Distributor/getDistributorGoodsWxCode",
+            data: {
+              distributor_type: originS,
+              goods_id: that.data.goods_id
+            },
+            success: function (res) {
+              let data = res.data;
+              that.setData({
+                codeUrl: data,
+              })
+
+            }
+          })
         }
 
       }
@@ -319,7 +396,18 @@ Page({
         let data = res.data;
         if (code == 0) {
           let vip_price = data.vip_price;
+          var recommended_goods = data.goodsList.similarOne;
           let goodsDetailImg = data.goodsDetailImg;
+
+          // 品牌推荐商品
+          if (data.goodsList.similarOne.length < 10){
+            recommended_goods = recommended_goods.concat(data.goodsList.similarTwo);
+            if (recommended_goods.length<10){
+              recommended_goods = recommended_goods.concat(data.goodsList.similarThree);
+            }
+
+            recommended_goods.pic_cover_small = app.IMG(recommended_goods.pic_cover_small);
+          }
           if (goodsDetailImg) {
 
           } else {
@@ -364,6 +452,9 @@ Page({
           }
           //商品图片处理
           let imgUrls = data.img_list;
+
+          //制作海报的商品主图
+          let shop_img = imgUrls[0].pic_cover_big;
           for (let index in imgUrls) {
             let img = imgUrls[index].pic_cover_mid;
             imgUrls[index].pic_cover_mid = app.IMG(img);
@@ -406,8 +497,10 @@ Page({
             goodsNum: goodsNum,
             brand_id: brand_id,
             sum,
+            shop_img,
             is_inside_sell,
-            goodsDetailImg   //极选师推荐图片
+            goodsDetailImg,  //极选师推荐图片
+            recommended_goods,
           });
 
           //限时折扣计时
@@ -873,6 +966,24 @@ Page({
         //console.log(res)
       }
     });
+
+    app.sendRequest({
+      url: 'api.php?s=goods/getGoodsEvaluateCount',
+      data: {
+        goods_id: goods_id,
+      },
+      success: function (res) {
+        let code = res.code;
+        let data = res.data;
+        if (code == 0) {
+          let evaluates_count = data;
+
+          that.setData({
+            evaluates_count: evaluates_count
+          })
+        }
+      }
+    });
   },
 
   /**
@@ -990,6 +1101,8 @@ Page({
       point: 0,
       // animation: animation.export(),
       ladderPreferentialShow: 0,
+      TT: false,
+      TCL: false
     })
   },
 
@@ -1614,6 +1727,10 @@ Page({
     }
     app.clicked(that, 'moreEvaluationFlag');
 
+    this.setData({
+      comments_type: evaluation_type,
+    })
+
     wx.navigateTo({
       url: '/pages/goods/controlevaluation/controlevaluation?id=' + goods_id + '&type=' + evaluation_type
     })
@@ -1834,6 +1951,311 @@ Page({
     var that = this;
     this.setData({
       isInput:0
+    })
+  },
+
+  // 你可能还想看商品详情跳转
+  toGood:function(e){
+    var that = this;
+    var id = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: '/pages/goods/goodsdetail/goodsdetail?goods_id=' + id,
+    })
+  },
+  /* 
+     选择分享方式
+   */
+  proChoose: function () {
+    let that = this;
+    console.log(this.data.animation)
+    const animation = wx.createAnimation({
+      duration: 300,
+      timingFunction: 'ease',
+    })
+
+    this.animation = animation
+
+    animation.translateY(192).step()
+
+    setTimeout(function () {
+      animation.translateY(0).step()
+      this.setData({
+        animation: animation.export()
+      })
+    }.bind(this), 30)
+
+
+    this.setData({
+      TT: true,
+      animation: animation.export(),
+    })
+
+  },
+
+  //文本换行 参数：1、canvas对象，2、文本 3、距离左侧的距离 4、距离顶部的距离 5、6、文本的宽度  7字体大小
+
+  drawText(ctx, str, leftWidth, initHeight, titleHeight, canvasWidth, FontSize) {
+    var lineWidth = 0;
+    var lastSubStrIndex = 0; //每次开始截取的字符串的索引
+
+    for (let i = 0; i < str.length; i++) {
+      lineWidth += ctx.measureText(str[i]).width;
+      if (lineWidth > canvasWidth) {
+        ctx.setFontSize(FontSize);
+        ctx.setFillStyle('#000');
+        ctx.fillText(str.substring(lastSubStrIndex, i), leftWidth, initHeight); //绘制截取部分                
+        initHeight += 18; //16为字体的高度   字体与字体相差的高度             
+        lineWidth = 0;
+        lastSubStrIndex = i;
+        titleHeight += 30;
+      }
+      if (i == str.length - 1) { //绘制剩余部分    
+        ctx.setFontSize(FontSize);
+        ctx.setFillStyle('#000');
+        ctx.fillText(str.substring(lastSubStrIndex, i + 1), leftWidth, initHeight);
+
+      }
+    }        // 标题border-bottom 线距顶部距离 
+
+    titleHeight = titleHeight + 10;
+    return titleHeight
+  },
+
+  /* 
+     海报制作中
+  */
+  producer: function () {
+    let that = this;
+    let NOW = that.data.windowWidth;
+    that.setData({
+      TT: false,
+
+    })                   // 合成BC基础图片01---->
+    wx.getImageInfo({
+      src: that.data.base_img,
+      success: function (res) {
+        // width & height
+        console.log(res);
+        const ctx = wx.createCanvasContext('producer');
+        ctx.setFillStyle('#fff')
+        ctx.fillRect(0, 0, NOW, 750)
+        let setfixW = that.data.windowWidth - (that.data.windowWidth / 2); //当前手机屏幕的宽度
+        let imgUrlW = setfixW / res.width;  //等比例计算
+        let imgUrlH = res.height * imgUrlW;
+        let F01w = (that.data.windowWidth / 2) / 2;
+        ctx.drawImage(res.path, F01w, 30, setfixW, imgUrlH);
+        console.log(that.data.shop_img)
+        // 合成BC基础商品首图02---->
+        wx.getImageInfo({
+          src: that.data.shop_img,
+          success: function (res) {
+            // width & height
+            console.log(res);
+            let orign = that.data.windowWidth - (that.data.windowWidth / 5);
+            let orignW = orign / res.width;  //等比例计算
+
+            let Q02 = (orign / res.height) * res.width;
+            let orignH = res.height * orignW;
+            let H01w = (that.data.windowWidth / 5) / 2;
+            ctx.drawImage(res.path, H01w, imgUrlH + 50, orign, orignH);
+            // 合成BC基础商品小程序图03---->
+            let R
+            let fsm = wx.getFileSystemManager();
+            // wx.removeStorageSync
+            // 因wx.getImageInfo获取不到base64的信息 
+            //转换base64解码
+            let buffer = that.data.codeUrl.replace('data:image/png;base64,', '');
+            // +new Date().getTime() 避免安卓缓存问题
+            let Yo = wx.env.USER_DATA_PATH + "/" + new Date().getTime() + ".png"
+            fsm.writeFile({
+              filePath: Yo,
+              data: buffer,
+              encoding: 'base64',
+              success(res) {
+                console.log(res)
+                R = wx.env.USER_DATA_PATH + '/test.png';
+                // 获取图片信息
+                wx.getImageInfo({
+                  src: Yo,
+                  success: function (res) {
+                    let HOS = that.data.windowWidth / 4;
+                    let W = (Q02 + H01w) - HOS;
+                    let All = imgUrlH + orignH + 80;
+
+                    console.log(Q02);
+                    console.log(W);
+                    console.log(HOS);
+                    ctx.drawImage(res.path, W, All, HOS, HOS);
+                    // 合成BC商品说明文字04---->
+                    let text = that.data.goods_info.goods_name;
+                    let KFZ = (Q02 / 2) - HOS / 5; //文字的的宽度
+                    let Fill = HOS / 7;
+                    let UrlH = All + HOS + 10;
+
+                    that.drawText(ctx, text, H01w, All + Fill, 0, KFZ, 14);
+                    console.log(UrlH)
+
+                    //  设计显示图片的大小
+                    let show_imgW = NOW / 2;
+                    // let  show_imgH=NOW/3;
+                    that.setData({
+                      UrlH: All + HOS + 10,
+                      show_imgW
+                    })
+
+                    ctx.stroke()
+                    ctx.draw();
+                    console.log('121331')
+                    wx.showToast({
+                      title: '制作中',
+                      icon: 'loading',
+                      duration: 2000
+                    });
+                    
+                    //  关闭但页面清除单前页面的定时器
+                    clearInterval(that.data.myTime);
+                    that.data.myTime = setTimeout(function () {
+                      wx.canvasToTempFilePath({
+                        x: 0,
+                        y: 0,
+                        width: NOW,
+                        height: UrlH,
+                        destWidth: NOW * 2,
+                        destHeight: UrlH * 2,
+                        canvasId: 'producer',
+                        success(res) {
+                          console.log(res.tempFilePath, '合成图片成功');
+                          let Imgs = res.tempFilePath;
+                          that.setData({
+                            compound_Img: Imgs,
+                            TCL: true
+                          })
+
+
+                        }
+                      });
+                    }, 2000);
+
+                  },
+                  fail() {
+                    console.log(res)
+                  },
+                });
+              }
+            })
+            //  codeUrl
+          }
+        })
+      }
+    })
+  },
+  Againadd: function () {
+    let that = this;
+    wx.openSetting({
+      success: (res) => {
+        console.log('授权成功');
+        console.log(res.authSetting)
+        res.authSetting = {
+          "scope.writePhotosAlbum": true,
+        }
+        that.file();
+      }
+    })
+  },
+  /* 
+    保存到相册
+  */
+  Save: function () {
+    let that = this;
+    that.file();
+    // wx.getSetting({
+    //   success(res) {
+    //     if (!res.authSetting['scope.writePhotosAlbum']) {
+    //       console.log('11')
+    //       // that.setData({
+    //       //   Again:true,
+    //       // })
+    //    wx.authorize({
+    //         scope: 'scope.writePhotosAlbum',
+    //         success() {
+    //           console.log('22')
+    //           that.file();
+    //         },
+    //         fail() {
+    //           console.log("打开设置窗口");
+    //           wx.openSetting({
+    //             success: (res) => {
+    //                 console.log('授权成功');
+    //                 console.log(res.authSetting)
+    //                 res.authSetting = {
+    //                   "scope.writePhotosAlbum": true,
+    //                 }
+    //                 that.file();
+    //             }
+    //         })
+
+
+    //         }
+    //       });
+
+    //     } else {
+    //       console.log('44')
+    //       that.file();
+    //       // that.popupClose();
+    //     }
+    //   }
+    // });
+  },
+  file: function () {
+    let that = this;
+    console.log(that.data.compound_Img, 'saveImg')
+    wx.saveImageToPhotosAlbum({
+      filePath: that.data.compound_Img,
+      success(res) {
+        that.setData({
+          TCL: false,
+        })
+        wx.showToast({
+          title: '保存成功',
+          icon: 'success',
+          duration: 2000
+        });
+      },
+      fail(res) {
+        that.setData({
+          Again: true,
+        })
+        wx.showToast({
+          title: '保存图片开启相册权限',
+          icon: 'fail',
+          duration: 2000
+        });
+
+
+
+      }
+
+    })
+
+  },
+
+  // 页面滚动事件//滑动开始事件
+  handletouchtart: function (event) {
+    this.setData({
+      isHide: 1
+    })
+  },
+  // 滑动移动事件
+  handletouchmove: function () {
+    this.setData({
+      isHide: 1
+    })
+  },
+  //滑动结束事件
+  handletouchend: function (event) {
+    console.log(event, 222222)
+    this.setData({
+      isHide: 0
     })
   },
 })
