@@ -19,17 +19,17 @@
 .new-my-path .nav .ul .li {
   padding: 0 10px;
   border-radius: 10px;
-  border: 1px solid #EEE;
+  border: 1px solid #999;
   margin: 0 5px;
-  font-size: 13px;
+  font-size: 12px;
   white-space: pre-line;
   display: inline-block;
 }
 
 .new-my-path .nav .ul .li.selected {
-  border: 1px solid #999999;
-  color: #000000;
-  background: #f1f1f1;
+  border: 1px solid #e40046;
+  color: #fff;
+  background: #e40046;
   font-weight:900;
 }
 

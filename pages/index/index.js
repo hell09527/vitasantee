@@ -21,21 +21,6 @@ Page({
         isHav: 1,
       },
     ], //限时抢购
-    //商品列表
-    titleList: [{
-        name: '活动',
-        select: 1,
-      },
-      {
-        name: '排序',
-        select: 1,
-      },
-      {
-        name: '品牌',
-        select: 1,
-      },
-    ],
-    currentTab: 0, //预设当前项的值
     scrollLeft: 0, //tab标题的滚动条位置
     winHeight: "", //窗口高度
     indicatorDots: true,
@@ -44,24 +29,16 @@ Page({
     exponent: '',
     model: false,
     is_vip: 0, //是否是vip
-    user_tel: '', //手机号码
+    tel: '', //手机号码
     swiperIndex: 0, //这里不写第一次启动展示的时候会有问题
     page: 1,
     // category_goods: [], //分类商品
     isCouponMask: true, //优惠券弹框
-    swiperCurrent:0,
-    goodsSelect:false,   //全部商品状态
-    recommendSelect: false,   //推荐状态
-    brandSelect: false,    //品牌选择状态
-    brandName: '',   //选择品牌的name字符串
-    brandNameArr:[],   //选中品牌的名称数组
-    source_type:0,   //0：全部商品，1：大贸，2：跨境
-    sort:0,   //0：推荐，1：新品，2：价格升序，3：价格降序
     isInput:1,
     isHide:0,
-    // hasMoreData: true,
-    // isRefreshing: false,
-    // isLoadingMoreData: false
+    new_img:'',
+    index_goods_img:'',
+    isTop:0,   //回到顶部
   },
 
 
@@ -80,7 +57,10 @@ Page({
       var scene = decodeURIComponent(options.scene);
       console.log("scene ", scene);
       let kol_id = scene.split('&')[0];
+      let store_id = scene.split('&')[1];
+      app.globalData.store_id = store_id;
       app.globalData.kol_id = kol_id;
+      console.log("********内详情页store_id", store_id);
       console.log("********kol_id", kol_id);
     }
 
@@ -104,135 +84,22 @@ Page({
       }
     }, 1000);
 
+    that.indexInit(that);
 
-   
-    if (app.globalData.token && app.globalData.token != '') {
-      //判断是否是付费会员的接口
-      that.SY_reuse(); 
-    } else {
-      app.employIdCallback = employId => {
-        if (employId != '') {
-          //判断是否是付费会员的接口
-          that.SY_reuse();
-        }
-      }
-    }
-
-    app.sendRequest({
-      url: "api.php?s=goods/getDefaultImages",
-      data: {},
-      success: function (res) {
-        let code = res.code;
-        let data = res.data;
-        if (code == 0) {
-          that.data.defaultImg = data;
-          that.indexInit(that);
-        }
-      }
-    });
   },
 
-  // 商品标题点击
+  // 商品分类点击
   selectCheck: function(e) {
-    let that = this
-    var id = e.currentTarget.dataset.id;
-    var category_list = this.data.category_list;
-    // console.log(id, category_list)
-    if (id == 0) {
-      var cur = 0;
-    } else {
-      var cur = e.target.dataset.current;
-    }
-    for (var i = 0; i < category_list.length; i++) {
-      category_list[i].select = 1;
-    }
-    category_list[cur].select = 2;
-
-    app.sendRequest({
-      url: "api.php?s=/index/branchPro",
-      data: {
-        category_id: id,
-        page_index: 1,
-        source_type: 0,
-        sort: 0,
-        brand_id: [],
-      },
-      method: 'POST',
-      success: function (res) {
-        let brand = res.data.category_brands;
-        for (let index in brand) {
-          brand[index].select = 0;
-        }
-        that.setData({
-          brand,
-        })
-      }
-    });
-    this.setData({
-      category_list: category_list,
-      category_id: id,
-      page: 1,
-      category_goods: [],
-      brandSelect: false,
-      goodsSelect: false,
-      recommendSelect: false,
-      brandName: '',
-      brandNameArr: [],
-      source_type:0,
-      sort: 0,
+    let that = this;
+    let id = e.currentTarget.dataset.id;
+    let child = e.currentTarget.dataset.child;   //第一个二级分类的id
+    let childId = child.child_list[0].category_id;
+    // console.log(child.child_list[0].category_id)
+    wx.navigateTo({
+      url: '/pages/goods/goodslist/goodslist?first_index=' + id,
     })
-    if (this.data.currentTab == cur) {
-      return false;
-    } else {
-      this.setData({
-        currentTab: cur
-      })
-    }
-    this.toGoods(id, 1, 0, 0, [])
   },
 
-  // 分类点击获取列表
-
-  toGoods: function (id, page, type,sort,brandId) {
-    var that = this;
-    var category_goods = that.data.category_goods;
-    // 获取商品分类标题点击的商品
-    app.sendRequest({
-      url: "api.php?s=/index/branchPro",
-      data: {
-        category_id: id,
-        page_index: page,
-        source_type:type,
-        sort:sort,
-        brand_id: brandId,
-      },
-      method: 'POST',
-      success: function(res) {
-        let new_category_goods = res.data.pro.data;
-        if (new_category_goods[0] != undefined) {
-          page++;
-          let category_pic = res.data.category_pic;
-          category_goods = category_goods.concat(new_category_goods)
-          // console.log(category_goods)
-
-          for (let key in category_goods) {
-            let img = category_goods[key].pic_cover_small;
-            category_goods[key].pic_cover_small = that.IMG(img);
-          }
-          that.setData({
-            category_goods: category_goods,
-            category_pic: category_pic,
-            page: page,
-            isNoGoods: false,
-          })
-        } else {
-          that.setData({
-            isNoGoods: true,
-          })
-        }
-      }
-    });
-  },
 
   // 关闭领取优惠券
   couponReceive: function() {
@@ -256,7 +123,7 @@ Page({
   // 搜索
   searchInput: function(e) {
     var val = e.detail.value;
-    console.log(e.detail.value);
+    // console.log(e.detail.value);
     this.setData({
       searchVal: val
     })
@@ -268,168 +135,6 @@ Page({
         url: '/pages/goods/goodssearchlist/goodssearchlist?search_text=' + this.data.searchVal,
       })
     }
-  },
-
-  // 全部商品导航点击
-  toGoodsCheck: function() {
-    var that = this;
-    var goodsSelect = this.data.goodsSelect;
-    var brand = this.data.brand;
-    var brandNameArr = this.data.brandNameArr;
-    for (let key in brand) {
-      brand[key].select = 0
-    }
-    if (brandNameArr.length > 0) {
-      for (let key in brand) {
-        for (let index in brandNameArr) {
-          if (brand[key].brand_name == brandNameArr[index]) {
-            console.log(brand[key].brand_name, brandNameArr[index])
-            brand[key].select = 1
-          }
-        }
-      }
-    }
-    this.setData({
-      goodsSelect: !goodsSelect,
-      recommendSelect:false,
-      brandSelect:false,
-      brand,
-    })
-  },
-  // 推荐导航点击
-  recommendCheck: function () {
-    var that = this;
-    var recommendSelect = this.data.recommendSelect;
-    var brandNameArr = this.data.brandNameArr;
-    var brand = this.data.brand;
-    for (let key in brand) {
-      brand[key].select = 0
-    }
-    if (brandNameArr.length > 0) {
-      for (let key in brand) {
-        for (let index in brandNameArr) {
-          if (brand[key].brand_name == brandNameArr[index]) {
-            brand[key].select = 1
-          }
-        }
-      }
-    }
-    this.setData({
-      recommendSelect: !recommendSelect,
-      goodsSelect: false,
-      brandSelect: false,
-      brand,
-    })
-  },
-  // 品牌导航点击
-  toBrandCheck: function () {
-    var that = this;
-    var brandSelect = this.data.brandSelect;
-    var brandNameArr = this.data.brandNameArr;
-    var brand = this.data.brand;
-    for (let key in brand) {
-      brand[key].select = 0
-    }
-    if (brandNameArr.length > 0) {
-      for (let key in brand) {
-        for (let index in brandNameArr) {
-          if (brand[key].brand_name == brandNameArr[index]) {
-            brand[key].select = 1
-          }
-        }
-      }
-    }
-    this.setData({
-      brandSelect: !brandSelect,
-      goodsSelect: false,
-      recommendSelect: false,
-      brand,
-    })
-  },
-  // 点击遮罩层
-  toCancelMask: function () {
-    var brand = this.data.brand;
-    var brandNameArr = this.data.brandNameArr;
-    for (let key in brand) {
-      brand[key].select = 0
-    }
-
-    if (brandNameArr.length > 0) {
-      for (let key in brand) {
-        for (let index in brandNameArr) {
-          if (brand[key].brand_name == brandNameArr[index]) {
-            brand[key].select = 1
-          }
-        }
-      }
-    }
-    this.setData({
-      brandSelect: false,
-      goodsSelect: false,
-      recommendSelect: false,
-      brand,
-    })
-  },
-
-  // 选择品牌
-  toCheckBrand: function (e) {
-    var that = this;
-    var index = e.currentTarget.dataset.index;
-    var brand = this.data.brand;
-    if (brand[index].select == 1){
-      brand[index].select = 0;
-    } else {
-      brand[index].select = 1;
-    }
-    // console.log(name,brandId, brandNameArr);
-    this.setData({
-      brand:brand,
-    })
-  },
-
-  // 点击筛选
-  toScreen: function (e) {
-    var that = this;
-    var source_type = this.data.source_type;
-    var sort = this.data.sort;
-    var brandId = [];
-    let category_id = that.data.category_id;
-    var brandName = this.data.brandName;
-    var brand = this.data.brand;
-    var brandNameArr = [];
-    if (e.currentTarget.dataset.type) {
-      var new_source_type = e.currentTarget.dataset.type;
-      source_type = new_source_type;
-      that.setData({
-        source_type,
-      })
-    } else if (e.currentTarget.dataset.sort) {
-      var new_sort = e.currentTarget.dataset.sort;
-      sort = new_sort;
-      that.setData({
-        sort,
-      })
-    }
-    for (let key in brand) {
-      if(brand[key].select==1){
-        brandId.push(brand[key].brand_id);
-        brandNameArr.push(brand[key].brand_name);
-      }
-    }
-
-    console.log(brandNameArr, brandId)
-    brandName = brandNameArr.join(',');
-    that.setData({
-      category_goods: [],
-      brandSelect: false,
-      goodsSelect: false,
-      recommendSelect: false,
-      brandNameArr,
-      brandName,
-      brandId,
-    })
-    // console.log(category_id, source_type, sort, brandId)
-    this.toGoods(category_id, 1, source_type, sort, brandId)
   },
 
   // 跳转热卖推页
@@ -470,18 +175,6 @@ Page({
     }
   },
 
-  // 点击收藏
-  toCollect: function(e) {
-    var that = this;
-    var active = this.data.brand_goods;
-    var index = e.currentTarget.dataset.index;
-    var isActive = 'brand_goods[' + index + '].isActive';
-    // console.log(!active[index].isActive, isActive)
-    this.setData({
-      [isActive]: !active[index].isActive
-    })
-  },
-
   //获取会员所有信息
   SY_reuse: function() {
     let that = this;
@@ -501,7 +194,8 @@ Page({
           app.globalData.user_tel = data.user_info.user_tel;
           //  console.log(app.globalData.is_vip)
           that.setData({
-            is_vip
+            is_vip,
+            tel: data.user_info.user_tel
           })
         }
       }
@@ -523,11 +217,50 @@ Page({
     })
   },
 
+  // 活动点击
+  toProjectIndex: function (event){
+    let projectData = {
+      id: event.currentTarget.dataset.id,
+      title: event.currentTarget.dataset.title,
+    }
+    // 跳转活动详情页
+    app.aldstat.sendEvent('首页活动点击', {
+      "活动名称": event.currentTarget.dataset.title
+    });
+    wx.navigateTo({
+      url: '/pages/index/projectIndex/projectIndex?data=' + JSON.stringify(projectData),
+    })
+  },
+
   onShow: function() {
     let that = this;
     this.setData({
       search_text:'',
+      isInput:1,
     })
+
+    if (app.globalData.token && app.globalData.token != '') {
+      //判断是否是付费会员的接口
+      that.SY_reuse();
+    } else {
+      app.employIdCallback = employId => {
+        if (employId != '') {
+          //判断是否是付费会员的接口
+          that.SY_reuse();
+        }
+      }
+    }
+    app.sendRequest({
+      url: "api.php?s=goods/getDefaultImages",
+      data: {},
+      success: function (res) {
+        let code = res.code;
+        let data = res.data;
+        if (code == 0) {
+          that.data.defaultImg = data;
+        }
+      }
+    });
   },
 
   toClosePrompt:function(){
@@ -542,39 +275,22 @@ Page({
   onShareAppMessage: function() {
     let title = '维美善特';
     let uid = app.globalData.uid;
-    if (app.globalData.distributor_type == 0) {
-      return {
-        title: '维美善特',
-        path: '/pages/index/index',
-        // imageUrl: imgUrl,
-        success: function(res) {
-          app.showBox(that, '分享成功');
-        },
-        fail: function(res) {
-          app.showBox(that, '分享失败');
-        }
+    let path = '/pages/index/index';
+    path += app.globalData.distributor_type == 0?'':('?uid='+uid);
+    return {
+      title: '维美善特',
+      path: path,
+      // imageUrl: imgUrl,
+      success: function(res) {
+        app.showBox(that, '分享成功');
+      },
+      fail: function(res) {
+        app.showBox(that, '分享失败');
       }
-      wx.showShareMenu({
-        title: title
-      })
-    } else {
-      return {
-        title: '维美善特',
-        path: '/pages/index/index?uid=' + uid,
-        // imageUrl: imgUrl,
-        success: function(res) {
-          app.showBox(that, '分享成功');
-
-        },
-        fail: function(res) {
-          app.showBox(that, '分享失败');
-        }
-      }
-      wx.showShareMenu({
-        title: title
-      })
     }
-
+    wx.showShareMenu({
+      title: title
+    })
   },
   /**
    * 商品楼层图片加载失败
@@ -686,9 +402,6 @@ Page({
   indexInit: function(that) {
     let base = app.globalData.siteBaseUrl;
     let timeArray = {};
-    this.setData({
-      currentTab: 0,
-    })
 
     app.sendRequest({
       url: 'api.php?s=index/getIndexData',
@@ -822,47 +535,11 @@ Page({
       }
     })
 
-    //  获取最新话题
+    //  获取话题
     app.sendRequest({
       url: "api.php?s=/activity/hotTopic",
       data: {
-        limit: 1
-      },
-      method: 'POST',
-      success: function(res) {
-        // console.log(res.data);
-        // 获取最新话题下面商品
-        // app.sendRequest({
-        //   url: "api.php?s=/Activity/activityInfo",
-        //   data: { master_id: res.data.data.id },
-        //   success: function (res) {
-
-        //     var new_actList = [];
-        //     var actList = res.data.data
-        //     for (var i = 0; i < actList.length; i++) {
-        //       if (actList[i].goods_info) {
-        //         new_actList.push(actList[i]);
-        //       }
-        //     }
-        //     console.log(res)
-        //     that.setData({
-        //       activities_list: new_actList,
-        //     })
-
-        //   }
-        // });
-        that.setData({
-          lastOne: res.data.data,
-        })
-
-      }
-    });
-
-    //  获取往期话题
-    app.sendRequest({
-      url: "api.php?s=/activity/hotTopic",
-      data: {
-        limit: 3
+        limit: 2
       },
       method: 'POST',
       success: function(res) {
@@ -874,73 +551,197 @@ Page({
       }
     });
 
-    // 商品列表
+      //商品分类
     app.sendRequest({
-      url: "index.php?s=/api/index/getindeximglist",
+      url: 'api.php?s=goods/goodsClassificationList',
       data: {},
-      success: function(res) {
-        var shop = res;
-        for (let index in shop) {
-          let img = shop[index].imgUrl;
-          shop[index].imgUrl = app.IMG(img);
+      success: function (res) {
+        let code = res.code;
+        let data = res.data;
+        console.log(res);
+        if (code == 0) {
+          let goods_category_list = data.goods_category_list;
+          for (let index in goods_category_list) {
+            goods_category_list[index].isSelect = false;
+            //一级分类图片处理
+            let first_img = goods_category_list[index].category_pic;
+            goods_category_list[index].category_pic = app.IMG(first_img);
+          }
+          that.setData({
+            category_list: goods_category_list,
+          })
+          wx.stopPullDownRefresh()
         }
-        that.setData({
-          shop: shop
-        })
       }
     });
 
 
-    //商品标题 
+    var isNoGoods;
+    var page = that.data.page;
+    // 获取品牌推荐(猜你喜欢)
     app.sendRequest({
-      url: "api.php?s=/index/categoryLists",
-      data: {},
-      method: 'POST',
-      success: function(res) {
-        let category_list = res.data
-        // console.log(res.data)
-
-        category_list.unshift({
-          category_id: 0,
-          category_name: '精选',
-        })
-        for (let index in category_list) {
-          category_list[index].select = 1;
-        }
-        category_list[0].select = 2;
-        that.setData({
-          category_list: category_list
-        })
-      }
-    });
-
-    // 获取品牌推荐
-    app.sendRequest({
-      url: "api.php?s=/goods/getPublicGoods",
-      data: {},
+      url: "api.php?s=goods/getIndexGoodsList",
+      data: {
+        page_index:1,
+        page_size:10,
+      },
       method: 'POST',
       success: function (res) {
         // console.log(res);
+        var brand_goods = res.data.data;
+        if (brand_goods[0] != undefined) {
+          //图片处理
+          for (let index in brand_goods) {
+            let img = brand_goods[index].pic_cover_small;
+            brand_goods[index].pic_cover_small = app.IMG(img);
+          }
+          isNoGoods = false;
+        } else {
+          isNoGoods = true;
+        }
 
         that.setData({
-          brand_goods: res.data
+          brand_goods,
+          isNoGoods,
+          page:2,
         })
       }
     });
 
-    console.log(app.globalData.unregistered)
+    // 获取新品的标题图片
+    app.sendRequest({
+      url: 'api.php?s=Goods/getNewGoods',
+      data: {},
+      success: function (res) {
+        // console.log(res)
+        let code = res.code;
+        if (code == 0) {
+          let data = res.data;
+
+          let new_pro = data.list_new;
+          var adv_index = data.adv_new;
+          let adv_list = adv_index.adv_list;
+          if (adv_index.is_use != 0) {
+            for (let index in adv_list) {
+              let img = adv_list[index].adv_image;
+              adv_list[index].adv_image = app.IMG(img);
+            }
+          } else {
+            adv_list = [];
+          }
+          // console.log(adv_list);
+          that.setData({
+            new_img: adv_list[0],
+          });
+        }
+      }
+    })
+
+    // 热卖标题图片
+    app.sendRequest({
+      url: 'api.php?s=Goods/getHotSaleGoods',
+      data: {},
+      success: function (res) {
+        // console.log(res)
+        let code = res.code;
+        if (code == 0) {
+          let data = res.data;
+
+          // console.log(data);
+          let new_pro = data.list_hot;
+          var adv_index = data.adv_hot;
+          let adv_list = adv_index.adv_list;
+          if (adv_index.is_use != 0) {
+            for (let index in adv_list) {
+              let img = adv_list[index].adv_image;
+              adv_list[index].adv_image = app.IMG(img);
+            }
+          } else {
+            adv_list = [];
+          }
+
+          that.setData({
+            index_goods_img: adv_list[0],
+          });
+        }
+      }
+    })
+
+    // console.log(app.globalData.unregistered)
     if (app.globalData.unregistered==0){
       that.setData({
         is_login: 0,
+        unregistered: app.globalData.unregistered
       })
     } else {
       that.setData({
         is_login: 1,
+        unregistered: app.globalData.unregistered
       })
     }
 
-    
-    wx.stopPullDownRefresh()
+
+  },
+
+  /**
+   * 收藏
+   */
+  collect(e){
+    console.log(e.detail)
+    let { index, is_fav, state, message } = e.detail;
+    let brand_goods = this.data.brand_goods;
+    app.showBox(this, message);
+    if(state){
+      brand_goods[index].is_member_fav_goods = is_fav;
+      this.setData({ brand_goods });
+    }
+  },
+  toCollect: function (e) {
+    let that = this;
+    let goodsList = that.data.brand_goods;
+    var id = e.currentTarget.dataset.id;
+    var name = e.currentTarget.dataset.name;
+    var index = e.currentTarget.dataset.index;
+    let is_fav = goodsList[index].is_member_fav_goods;
+    let method = is_fav == 0 ? 'FavoritesGoodsorshop' : 'cancelFavorites';
+    let message = is_fav == 0 ? '收藏' : '取消收藏';
+    is_fav = is_fav == 0 ? 1 : 0;
+    goodsList[index].is_member_fav_goods = is_fav;
+
+    app.sendRequest({
+      url: 'api.php?s=member/' + method,
+      data: {
+        fav_id: id,
+        fav_type: 'goods',
+        log_msg: name
+      },
+      success: function (res) {
+        let code = res.code;
+        let data = res.data;
+        if (code == 0) {
+          if (data > 0) {
+            app.showBox(that, message + '成功');
+
+            that.setData({
+              brand_goods: goodsList
+            })
+          } else {
+            app.showBox(that, message + '失败');
+          }
+        }
+      }
+    });
+  },
+
+  /**触发*/
+  Crossroad: function () {
+    let _that = this;
+    let Tel = _that.data.tel;
+    if (app.globalData.unregistered == 1 || Tel == '') {
+      wx.navigateTo({
+        url: '/pages/member/resgin/resgin',
+      })
+    }
   },
   
 
@@ -988,16 +789,45 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    if (this.data.currentTab >0) {
-      let that = this;
-      let category_id = that.data.category_id;
-      let category_list = that.data.category_list;
-      let page = that.data.page;
-      var source_type = this.data.source_type;
-      var sort = this.data.sort;
-      var brandId = this.data.brandId;
-      this.toGoods(category_id, page, source_type, sort, brandId);
-    }
+    var that = this;
+    let page = that.data.page;
+    let brand_goods = that.data.brand_goods;
+    // 获取品牌推荐(猜你喜欢)
+    app.sendRequest({
+      url: "api.php?s=goods/getIndexGoodsList",
+      data: {
+        page_index: page,
+        page_size: 10,
+      },
+      method: 'POST',
+      success: function (res) {
+        // console.log(res);
+        let new_brand_list = res.data.data;
+        if (new_brand_list[0] != undefined) {
+          page++;
+          brand_goods = brand_goods.concat(new_brand_list)
+          // console.log(brand_goods)
+
+          for (let key in brand_goods) {
+            let img = brand_goods[key].pic_cover_small;
+            brand_goods[key].pic_cover_small = app.IMG(img);
+          }
+          that.setData({
+            brand_goods: brand_goods,
+            page: page,
+            isNoGoods: false,
+          })
+        } else {
+          that.setData({
+            isNoGoods: true,
+          })
+        }
+
+        // that.setData({
+        //   brand_goods: res.data
+        // })
+      }
+    });
   },
 
   /**
@@ -1060,6 +890,32 @@ Page({
     this.indexInit(that)//数据请求
   },
 
+  onPageScroll: function (e) {
+    // console.log(e.scrollTop)
+    if (e.scrollTop>1580){
+      this.setData({
+        isTop: 1
+      })
+    }else{
+      this.setData({
+        isTop: 0
+      })
+    }
+  },
+
+  goTop: function (e) {  // 一键回到顶部
+    if (wx.pageScrollTo) {
+      wx.pageScrollTo({
+        scrollTop: 0
+      })
+    } else {
+      wx.showModal({
+        title: '提示',
+        content: '当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。'
+      })
+    }
+  },
+
 
   // 页面滚动事件//滑动开始事件
   handletouchtart: function (event) {
@@ -1068,7 +924,8 @@ Page({
     })
   },
   // 滑动移动事件
-  handletouchmove: function () {
+  handletouchmove: function (event) {
+    // console.log(event.changedTouches[0].pageY, 222222)
     this.setData({
       isHide: 1
     })

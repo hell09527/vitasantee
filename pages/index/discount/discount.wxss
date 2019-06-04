@@ -47,23 +47,27 @@
   padding:0 20rpx;
 }
 .discount_goods{
-  width:100%;
-  background: #fff;
-  border-radius: 5px;
+  margin-bottom: 20rpx;
   padding:20rpx;
   display: flex;
-  justify-content: flex-start;
-  margin-bottom: 20rpx;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  width:100%;
+  background: #fff;
+  border-radius: 5px; 
 }
 .discount_goods>image{
-  width:180rpx;
+  width: 180rpx;
+  height: 180rpx;
 }
 .discount_goods_detail{
-  flex: 1;
-  padding:0 20rpx;
+  box-sizing: border-box;
+  padding:0 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: calc(100% - 95px);
   height: 180rpx;
 }
 .discount_inventory{

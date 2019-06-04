@@ -6,24 +6,9 @@ Page({
    * 页面的初始数据
    */
   data: {
-    goodsList: [
-      {
-        isActive: true,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: true,
-      },
-      {
-        isActive: false,
-      },
-      {
-        isActive: true,
-      },
-    ],
-
+    goodsList: [],
+    swiperCurrent: 0,
+    imgUrls: [],
   },
 
   /**
@@ -31,8 +16,10 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
+    //是否授权数据更新
+    let updata = app.globalData.unregistered;
     app.sendRequest({
-      url: 'api.php?s=Goods/getHotGoods',
+      url: 'api.php?s=Goods/getHotSaleGoods',
       data: {},
       success: function (res) {
         // console.log(res)
@@ -40,15 +27,41 @@ Page({
         if (code == 0) {
           let data = res.data;
 
-          console.log(data);
-          let new_pro = data;
+          // console.log(data);
+          let new_pro = data.list_hot;
+          var adv_index = data.adv_hot;
+          let adv_list = adv_index.adv_list;
+          if (adv_index.is_use != 0) {
+            for (let index in adv_list) {
+              let img = adv_list[index].adv_image;
+              adv_list[index].adv_image = app.IMG(img);
+            }
+          } else {
+            adv_list = [];
+          }
 
           that.setData({
             goodsList: new_pro, //新品推荐
+            imgUrls: adv_list,
+            swiperHeight: adv_index.ap_height,
+            unregistered: updata
           });
         }
       }
     })
+
+    if (app.globalData.token && app.globalData.token != '') {
+      //判断是否是付费会员的接口
+      that.XXS_reuse();
+    } else {
+      app.employIdCallback = employId => {
+        if (employId != '') {
+          //判断是否是付费会员的接口
+          that.XXS_reuse();
+        }
+
+      }
+    }
   },
 
   /**
@@ -91,6 +104,58 @@ Page({
     });
   },
 
+  XXS_reuse: function () {
+    let that = this;
+
+    app.sendRequest({
+      url: "api.php?s=member/getMemberDetail",
+      success: function (res) {
+        let data = res.data
+        if (res.code == 0) {
+          let is_vip = data.is_vip;
+          app.globalData.is_vip = data.is_vip;
+          app.globalData.distributor_type = data.distributor_type;
+          let distributor_type = data.distributor_type;
+          app.globalData.uid = data.uid;
+          app.globalData.vip_gift = data.vip_gift;
+          app.globalData.vip_goods = data.vip_goods;
+          let tel = data.user_info.user_tel;
+          if (tel !== null || tel !== undefined || tel !== '') {
+            console.log(111)
+          } else if (tel == '') {
+            console.log(223)
+          }
+
+          let updata = that.data.unregistered;
+          updata = app.globalData.unregistered;
+          console.log(updata, 'updata', '134', data.is_employee);
+          // console.log(app.globalData.is_vip)
+          that.setData({
+            is_vip: is_vip,
+            tel: tel,
+            distributor_type,
+            unregistered: updata,
+            is_employee: data.is_employee,
+          })
+
+
+
+        }
+      }
+    })
+  },
+
+  /**没登录*/
+  Crossdetails: function () {
+    let _that = this;
+    let Tel = _that.data.tel;
+    if (app.globalData.unregistered == 1 || Tel == '') {
+      wx.navigateTo({
+        url: '/pages/member/resgin/resgin',
+      })
+    }
+  },
+
   // 跳转商品详情页
   toGood: function (e) {
     var that = this;
@@ -105,6 +170,13 @@ Page({
         url: '/pages/goods/goodsdetail/goodsdetail?goods_id=' + id,
       })
     }
+  },
+
+  swiperChange: function (e) {
+    // console.log(e.detail.current)
+    this.setData({
+      swiperCurrent: e.detail.current
+    })
   },
 
   // 返回首页

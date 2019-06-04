@@ -1,0 +1,19 @@
+<!--pages/member/addInGroup/addInGroup.wxml-->
+<view>
+  <image src='https://static.vitasantee.com/H5%283%29_01.jpg' mode="widthFix"></image>
+  <!-- <button open-type="contact" session-from="weapp"> -->
+    <image src='https://static.vitasantee.com/H5%283%29_02.jpg' mode="widthFix" catchtap='toMask'></image>
+  <!-- </button> -->
+  <image src='https://static.vitasantee.com/H5%283%29_03.jpg' mode="widthFix"></image>
+    <image src='https://static.vitasantee.com/H5%283%29_04.jpg' mode="widthFix" catchtap='toMask'></image>
+  <image src='https://static.vitasantee.com/H5%283%29_05.jpg' mode="widthFix"></image>
+</view>
+
+<view class="imgMask {{isMask?'':'hide'}}" catchtap='toCaucleMask'>
+  <view>
+  <image src='https://static.vitasantee.com/WechatIMG43.jpeg' mode="widthFix"></image>
+  <button open-type="contact" session-from="weapp">
+  <image src='https://static.vitasantee.com/WechatIMG41.png' mode="widthFix"></image>
+  </button>
+  </view>
+</view>

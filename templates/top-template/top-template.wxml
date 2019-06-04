@@ -7,14 +7,14 @@
         <view class='search-box'>
           <image src='/images/goods/search_icon_2.png' class="search-button" catchtap='toSearch'/>
           <view  wx:if='{{isInput==1}}' catchtap='toInput' style='width:100%;color:#cccdd0;font-size:14px;'>按照商品关键字搜索</view>
-          <input type="text" class="search-input" bindinput='searchInput' placeholder="" bindconfirm='toSearch' focus='{{true}}' wx:else/>
+          <input type="text" class="search-input" bindinput='searchInput' placeholder="" bindconfirm='toSearch' focus='{{true}}' value='{{search_text}}' wx:else/>
         </view>
       </view>
 
-      <scroll-view scroll-x class="goods-detail-nav" scroll-left='{{scrollLeft}}'> 
+      <!-- <scroll-view scroll-x class="goods-detail-nav" scroll-left='{{scrollLeft}}'> 
         <block wx:for='{{category_list}}' wx:key='' wx:for-item='category' wx:for-index='index'>
           <text class="nav-item {{category.select==2?'nav-item-active':''}}" catchtap="selectCheck" data-id='{{category.category_id}}' data-current="{{index}}">{{category.category_name}}</text>
         </block>
-      </scroll-view>
+      </scroll-view> -->
     </view>
 </template>

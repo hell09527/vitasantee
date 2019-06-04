@@ -1,80 +1,189 @@
-/* pages/index/couponReceive/couponReceive.wxss */
-.receiveList{
-  padding:40rpx 0; 
-}
-.receiveItem{
-  margin-bottom: 30rpx;
+.all-image{
+  position: fixed;
+  top: 0;
+  left: 0;
   width:100%;
-  background: #fff;
-  padding:20rpx;
+  height:100%;
 }
-.receiveItem-left{
-  height: 200rpx;
-  width:186rpx;
-  background: #000;
-  padding:30rpx 0;
+.all-image image{
+  width:100%;
+}
+.receive-btn{
+  position: fixed;
+  bottom:100px;
+  width:80%;
+  margin:0 auto;
+  background: #e40046;
+  color:#fff;
+  height:40px;
+  line-height: 40px;
+  text-align: center;
+  left:50%;
+  transform: translateX(-50%);
+  font-size: 16px;
+}
+
+/* 弹框 */
+.mask{
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, .6);
+  z-index: 1006;
+  width:100%;
+  height:100%;
+}
+.mask-box{
+  position: absolute;
+  top:50%;
+  left:50%;
+  box-sizing: border-box;
+  transform: translateX(-50%) translateY(-50%);
+  background: #fff;
+  width:80%;
+  border-radius: 8rpx;
+  background: url('https://static.vitasantee.com/coupon_box_bg.png') no-repeat;
+  background-size: cover;
+}
+.mask-box-title{
+  text-align: center;
+  color:#000;
+}
+.toReceive{
+  margin: 50rpx 120rpx;
+  height:40px;
+  line-height: 40px;
+  background: #e40046;
+  color:#fff;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 20px;
+  background-color: gray;
+}
+
+
+.coupon-title{
+  padding: 60rpx 0 32rpx;
+  color:#fff;
+  font-size: 44rpx;
+  line-height: 46rpx;
+  text-align: center;
+  width:100%;
+}
+/* 修改代码部分 */
+.coupon-list-box{
+  padding: 0 36rpx;
+}
+.coupon-list{
+  box-sizing: border-box;
+  padding: 30rpx;
+  height: 490rpx;
+  background-color: #fff;
+  border-radius: 8rpx;
+}
+.couponItem{
+  margin-bottom: 10rpx;
+  padding: 0 30rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 160rpx;
+  color: #fff;
+  /* border:1px solid #e5e5e5; */
+  background: url('https://static.vitasantee.com/coupon_bg.png') no-repeat;
+  background-size: 100% 100%;
+}
+.couponItem:last-child{
+  margin: 0;
+}
+.couponItem-top{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 98rpx;
+}
+.coupon-unit,
+.coupon-price{
+  font-size: 38rpx;
+  color: #FBDB05;
+  font-weight: bold;
+}
+.coupon-price{
+  font-size: 80rpx;
+}
+.couponItem-top-right{
+  font-size: 24rpx;
+  text-align: left;
+  line-height: 46rpx;
+}
+.couponItem-top-right .quan{
+  font-size: 28rpx;
+  font-weight: bold;
+}
+.couponItem-bottom{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 54rpx;
+  font-size: 20rpx;
+  line-height: 54rpx;
+}
+/* 红包 */
+.envelope{
+  position: relative;
+  width: 100%;
+}
+.envelope-content{
+  position: absolute;
+  top: 54rpx;
+  left: 0;
+  right:0 ;
+  bottom: 0;
+  color: #e20246;
+}
+.envelope-content .envelope-top{
+  line-height: 120rpx;
+}
+/* 原代码部分 */
+.couponItem-image{
+  width: 20px;
+  height: 20px;
+  margin-right: 20rpx;
+}
+.couponItem-middle{
+  height: 80px;
+  /* background: #e40046; */
+  padding:20rpx 10rpx;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  text-align: center;
-  background: #000;
-  color:#cc9933;
 }
-.receiveItem-left>view{
+.couponItem-middle>view{
   font-size: 14px;
-  color:#CC9933;
+  color:#fff;
   text-align: center;
   width:100%;
   justify-content: center;
   /* margin-top: 20rpx; */
 }
-.receiveItem-left>view>text{
+.couponItem-middle>view>text{
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
-.receiveItem-left>hr{
+.couponItem-middle>hr{
   width:16px;
   height:1px;
-  border-top:1px solid #CC9933;
+  border-top:1px solid #fff;
 }
-.receiveItem-right{
-  height:200rpx;
+.couponItem-right{
   flex: 1;
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: flex-start;
-  padding:0 40rpx;
-  font-size: 14px;
-}
-
-.receive-btn{
-  background: #000;
-  margin:0 40rpx 40rpx; 
-  color:#cc9933;
-  text-align: center;
-  line-height: 90rpx;
-  font-size: 14px;
-  height: 90rpx;
-}
-.receive-btn-success{
-  background: #bcb6a7;
-  margin:0 40rpx 40rpx; 
-  color:#333;
-  text-align: center;
-  line-height: 90rpx;
-  font-size: 14px;
-  height: 90rpx;
-}
-.back-btn{
-  margin:0 40rpx 60rpx;
-  text-align: center;
-  line-height: 90rpx;
-  font-size: 14px;
-  height: 90rpx;
-  color:#000;
   padding:0 30rpx;
-  border:1px solid #bbb;
 }

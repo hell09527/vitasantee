@@ -9,7 +9,7 @@
         <view class="evaluate remark-r order-detail-r">
           <view class="ul remark-r-ul">
             <view class="li name">
-              <image src="{{goods.picture_info.pic_cover_micro==''?0:goods.picture_info.pic_cover_micro}}" mode='widthFix' binderror='errorImg' data-index='{{index}}'/>
+              <image src="{{goods.picture_info.pic_cover_small==''?0:goods.picture_info.pic_cover_small}}" mode='widthFix' binderror='errorImg' data-index='{{index}}'/>
             </view>
             <view class="ul remark-right">
               <view class='li li-name'>{{goods.goods_name}}</view>
@@ -34,7 +34,7 @@
                     </image>
                   </block>
                 </view>
-                <view class="span evaluate_right_four">{{goodsEvaluate[index].img_num}}/5</view>
+                <view class="span evaluate_right_four">{{img_list[index].length}}/9</view>
               </view>
             </view>
           </view>

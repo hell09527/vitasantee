@@ -275,11 +275,11 @@ Page({
       wx.redirectTo({
         url: "/pages/goods/shareRepertoire/shareRepertoire?share_li=" + suffix,
       })
-    } else if (prevPage.route == "pages/backPage/fetchGift/fetchGift") {
+    } else if (prevPage.route == "package/backPage/fetchGift/fetchGift") {
       console.log(44)
       //  领取礼物页面
       wx.redirectTo({
-        url: "/pages/backPage/fetchGift/fetchGift?order_id=" + suffix,
+        url: "/package/backPage/fetchGift/fetchGift?order_id=" + suffix,
       })
     }
 

@@ -406,7 +406,7 @@ cover-view{
   zoom: 1;
 }
 
-.express-panel .name,{
+.express-panel .name{
   font-size: 14px;
   color: #333;
   float: left;

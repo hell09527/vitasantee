@@ -475,10 +475,10 @@ Page({
                 wx.navigateTo({
                   url: "/pages/goods/shareRepertoire/shareRepertoire?share_li=" + suffix,
                 })
-              } else if (prevPage.route == "pages/backPage/fetchGift/fetchGift") {
+              } else if (prevPage.route == "package/backPage/fetchGift/fetchGift") {
                 //  领取礼物页面
                 wx.navigateTo({
-                  url: "/pages/backPage/fetchGift/fetchGift?order_id=" + suffix,
+                  url: "/package/backPage/fetchGift/fetchGift?order_id=" + suffix,
                 })
               }
 

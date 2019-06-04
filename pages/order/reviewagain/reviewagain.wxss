@@ -146,7 +146,7 @@
   width: 30px;
   background: no-repeat center center;
   background-size: cover;
-  margin-right: 0;
+  margin: 4px 4px 0 0;
 }
 
 .evaluate_right_imgs .li .span {

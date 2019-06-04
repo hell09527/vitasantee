@@ -199,3 +199,10 @@ scroll-view{
   right: 2px;
   top: -4px;
 }
+.adv-box{
+  margin:20rpx 0;
+}
+.adv-box image{
+  width:100%;
+  display: block;
+}

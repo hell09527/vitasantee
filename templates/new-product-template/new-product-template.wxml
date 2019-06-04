@@ -14,7 +14,7 @@
             <text style='font-size:14px;color:#005882;margin-right:8px;'>￥{{price}}</text>
             <view>￥{{market_price}}</view>
           </view>
-          <view style='padding:10rpx;' catchtap='toCollect' data-id='{{goods_id}}' data-name='{{goods_name}}' data-index='{{index}}' wx:if="{{is_member_fav_goods==0||is_member_fav_goods==1}}">
+          <view style='padding:10rpx;' catchtap="{{unregistered==1 || tel==''?'Crossdetails':'toCollect'}}" data-id='{{goods_id}}' data-name='{{goods_name}}' data-index='{{index}}' wx:if="{{is_member_fav_goods==0||is_member_fav_goods==1}}">
             <image src="{{is_member_fav_goods==0?'https://static.vitasantee.com/%E6%94%B6%E8%97%8F@2x.png':'https://static.vitasantee.com/%E6%94%B6%E8%97%8F%20copy%202@2x.png'}}" mode="widthFix"/>
           </view>
         </view>

@@ -164,7 +164,6 @@
   overflow: hidden;
   /* margin-top: 45px;
   background: #f3f5f7; */
-  padding:0 6rpx;
 }
 
 .blank-div{

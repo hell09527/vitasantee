@@ -7,15 +7,12 @@ Page({
    * 页面的初始数据
    */
   data: {
-    indexCheck: 0,
-    classCheck: 1,
-    cartCheck: 0,
-    userCheck: 0,
     goods_category_list: {}, //商品分类列表
     goodsList:'',  //分类商品列表
     classifyLogo:'',    //分类logo
     firstIndex: 0,   //大类id
     listClickFlag: 0,
+    brandList:[],
   },
 
   /**
@@ -66,6 +63,13 @@ Page({
               }
               second_list[key].child_list = third_list;
             }
+
+            let brand_list = goods_category_list[index].brand;
+            for (let key in brand_list) {
+              let brand_img = brand_list[key].brand_ads;
+              brand_list[key].brand_ads = app.IMG(brand_img);
+            }
+            
             goods_category_list[index].child_list = second_list;
 
             let num = goods_category_list[index].num;
@@ -77,12 +81,23 @@ Page({
             }
           }
           goods_category_list[0].isSelect = true;
+          if (goods_category_list[0].child_list.length>0){
+            that.setData({
+              isNoGoods: false,
+            })
+          } else {
+            that.setData({
+              isNoGoods: true,
+            })
+          }
           that.setData({
             goods_category_list: goods_category_list,
             is_load: 1,
             goodsList: goods_category_list[0].child_list,
-            firstIndex: goods_category_list[0].category_id
+            brandList: goods_category_list[0].brand,
+            firstIndex: goods_category_list[0].category_id,
           })
+          wx.stopPullDownRefresh()
         }
       }
     });
@@ -109,7 +124,7 @@ Page({
   // 搜索
   searchInput: function (e) {
     var val = e.detail.value;
-    console.log(e.detail.value);
+    // console.log(e.detail.value);
     this.setData({
       searchVal: val
     })
@@ -121,14 +136,26 @@ Page({
     let id = e.currentTarget.dataset.id;
     let list = this.data.goods_category_list;
     var goodsList = this.data.goodsList;
+    var brandList = this.data.brandList;
     for(let i=0;i<list.length;i++){
       list[i].isSelect=false;
     }
     list[index].isSelect = true;
     goodsList = list[index].child_list;
+    brandList = list[index].brand;
+    if (goodsList.length>0){
+      this.setData({
+        isNoGoods: false,
+      })
+    } else {
+      this.setData({
+        isNoGoods: true,
+      })
+    }
     this.setData({
       goods_category_list:list,
       goodsList,
+      brandList,
       firstIndex:id,
     })
   },
@@ -139,6 +166,18 @@ Page({
     let id = event.currentTarget.dataset.id;
     wx.navigateTo({
       url: '/pages/goods/goodslist/goodslist?id=' + id + '&first_index=' + that.data.firstIndex,
+    })
+  },
+
+  toBrand:function(e){
+    let id = e.currentTarget.dataset.id
+    let title = e.currentTarget.dataset.title;
+    
+    app.aldstat.sendEvent('品牌点击事件', {
+      "品牌名称": title
+    });
+    wx.navigateTo({
+      url: '/pages/goods/brandlist/brandlist?id=' + id,   //+'&store_id=1'
     })
   },
 
@@ -154,6 +193,10 @@ Page({
    */
   onShow: function () {
     var that = this;
+    this.setData({
+      search_text: '',
+      isInput: 1,
+    })
 
   },
 
@@ -175,7 +218,7 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    this.onLoad();
   },
 
   /**

@@ -12,7 +12,6 @@ Page({
     category_goods: {}, //商品列表
     search_text: '', //搜索内容
     category_list: [],  //分类列表
-    currentTab: 0, //预设当前项的值
     page: 1,
     goodsSelect: false,   //全部商品状态
     recommendSelect: false,   //推荐状态
@@ -20,9 +19,9 @@ Page({
     brandId: [],    //选择品牌的id数组
     brandName: '',   //选择品牌的name字符串
     brandNameArr: [],  //选择品牌的name数组
-    source_type: 0,   //0：全部商品，1：大贸，2：跨境
     sort: 0,   //0：推荐，1：新品，2：价格升序，3：价格降序
     isInput: 1,
+    categoryName:'全部商品',
   },
 
   /**
@@ -31,18 +30,22 @@ Page({
   onLoad: function (options) {
     let that = this;
     let url = '';
-    let category_id = options.id;
-    let first_id = options.first_index;
+      var data = decodeURIComponent(options.id);
+      // console.log(data)
+    if (options.id){
+      var category_id = options.id;
+    } else {
+      var category_id = options.first_index;
+    }
+    var first_id = parseInt(options.first_index) ;
     var page = that.data.page;
     console.log(category_id, first_id);
-    category_id = undefined ? '' : category_id;
 
     app.sendRequest({
-      url: 'api.php?s=goods/categoryGoodsList',
+      url: 'api.php?s=goods/searchGoodsList',
       data: {
         category_id: category_id,
         page_index: page,
-        source_type:0,
         sort:0,
         brand_id:[],
       },
@@ -53,41 +56,62 @@ Page({
           let goods_list = data.goods_list;
           let goodsCategoryList = data.goodsCategoryList;
           var category_list = [];
+          var isNoGoods;
+          var categoryName = '全部商品';
+          var category_name='';
+
           let brand = data.category_brands;
           for (let index in brand) {
             brand[index].select = 0;
           }
+          
           for (let index in goodsCategoryList) {
             if (goodsCategoryList[index].category_id == first_id) {
-              category_list = goodsCategoryList[index].child_list
+              category_name=goodsCategoryList[index].category_name
+              wx.setNavigationBarTitle({
+                title: goodsCategoryList[index].category_name
+              })
+              category_list = goodsCategoryList[index].child_list;
+              category_list.unshift({
+                category_id: first_id,
+                category_name:'全部商品',
+                select:1,
+              })
               for (let key in category_list) {
                 category_list[key].select = 1;
                 if (category_list[key].category_id == category_id) {
+                  categoryName = category_list[key].category_name
                   category_list[key].select = 2
                 }
               }
+
+              console.log(category_list)
             }
           }
-          //图片处理
-          for (let index in goods_list) {
-            let img = goods_list[index].pic_cover_small;
-            goods_list[index].pic_cover_small = app.IMG(img);
-          }
-
-          let screen = 0;
-          if (goods_list != undefined) {
+          if (goods_list[0] != undefined) {
             page++;
+            //图片处理
+            for (let index in goods_list) {
+              let img = goods_list[index].pic_cover_small;
+              goods_list[index].pic_cover_small = app.IMG(img);
+            }
+            isNoGoods = false;
+          } else {
+            isNoGoods = true;
           }
 
           that.setData({
             category_goods: goods_list,
             goodsCategoryList: goodsCategoryList,
             category_list,
+            first_id,
             category_id,
             brand,
+            page,
+            isNoGoods,
+            categoryName,
+            category_name,
           })
-          console.log(res);
-
         }
       },
     })
@@ -104,68 +128,89 @@ Page({
   selectCheck: function (e) {
     let that = this
     var id = e.currentTarget.dataset.id;
-    console.log(id);
+    var name = e.currentTarget.dataset.name;
     var category_list = this.data.category_list;
-    if (id == 0) {
-      var cur = 0;
+    var category_goods = that.data.category_goods;
+    var cur = e.currentTarget.dataset.current;
+    console.log(cur,id, category_list);
+    if (this.data.category_id == id) {
+      return false;
     } else {
-      var cur = e.target.dataset.current;
-    }
-    for (var i = 0; i < category_list.length; i++) {
-      category_list[i].select = 1;
-    }
-    category_list[cur].select = 2;
-    app.sendRequest({
-      url: 'api.php?s=goods/categoryGoodsList',
-      data: {
-        category_id: id,
-        page_index: 1,
-        source_type: 0,
-        sort: 0,
-        brand_id: [],
-      },
-      success: function (res) {
-        let code = res.code;
-        let data = res.data;
-        if (code == 0) {
-          let brand = data.category_brands;
-          for (let index in brand) {
-            brand[index].select = 0;
+      for (var i = 0; i < category_list.length; i++) {
+        category_list[i].select = 1;
+      }
+      category_list[cur].select = 2;
+      app.sendRequest({
+        url: 'api.php?s=goods/searchGoodsList',
+        data: {
+          category_id: id,
+          page_index: 1,
+          sort: 0,
+          brand_id: [],
+        },
+        success: function (res) {
+          let code = res.code;
+          let data = res.data;
+          let new_category_goods = res.data.goods_list;
+          if (code == 0) {
+            let brand = data.category_brands;
+            for (let index in brand) {
+              brand[index].select = 0;
+            }
+            if (new_category_goods[0] != undefined) {
+              for (let key in new_category_goods) {
+                let img = new_category_goods[key].pic_cover_small;
+                new_category_goods[key].pic_cover_small = app.IMG(img);
+              }
+              that.setData({
+                category_goods: new_category_goods,
+                isNoGoods: false,
+                brand, 
+                category_list: category_list,
+                page: 2,
+                category_id: id,
+                brandSelect: false,
+                goodsSelect: false,
+                recommendSelect: false,
+                brandName: '',
+                brandNameArr: [],
+                sort: 0,
+                categoryName: name,
+              })
+            } else {
+              that.setData({
+                category_goods:[],
+                isNoGoods: true,
+                brand,
+                category_list: category_list,
+                page: 2,
+                category_id: id,
+                brandSelect: false,
+                goodsSelect: false,
+                recommendSelect: false,
+                brandName: '',
+                brandNameArr: [],
+                sort: 0,
+              })
+            }
           }
-          that.setData({
-            brand,
-          })
-        }
-      },
-    })
-    this.setData({
-      category_list: category_list,
-      page: 1,
-      category_id: id,
-      category_goods: [],
-      brandSelect: false,
-      goodsSelect: false,
-      recommendSelect: false,
-      brandName: '',
-      brandNameArr: [],
-      source_type: 0,
-      sort: 0,
-    })
-    this.toGoods(id, 1, 0, 0, [])
+        },
+      })
+    }
+    // this.toGoods(id, 1, 0, [])
   },
 
   // 分类点击获取列表
 
-  toGoods: function (id, page, type, sort, brandId) {
+  toGoods: function (id, page, sort, brandId) {
     var that = this;
     var category_goods = that.data.category_goods;
     // 获取商品分类标题点击的商品
     app.sendRequest({
-      url: "api.php?s=goods/categoryGoodsList",
+      url: "api.php?s=goods/searchGoodsList",
       data: {
         category_id: id,
         page_index: page,
-        source_type: type,
         sort: sort,
         brand_id: brandId,
       },
@@ -313,23 +358,42 @@ Page({
     })
   },
 
+  onShareAppMessage:function(){
+    let that = this;
+    let first_id = that.data.first_id;
+    let category_id = that.data.category_id;
+    let category_name = that.data.category_name;
+    if (category_id == first_id) {
+      var XQ_share_url = '/pages/goods/goodslist/goodslist?first_index=' + first_id;
+    }else{
+      var XQ_share_url = '/pages/goods/goodslist/goodslist?id=' + category_id + '&first_index=' + first_id;
+    }
+    console.log(first_id, category_id, category_name, XQ_share_url)
+
+    
+    return {
+      title: category_name,
+      path: XQ_share_url,
+      imageUrl: '',
+      success: function (res) {
+        app.showBox(that, '分享成功');
+      },
+      fail: function (res) {
+        app.showBox(that, '分享失败');
+      }
+    }
+  },
+
   // 点击筛选
   toScreen: function (e) {
     var that = this;
-    var source_type = this.data.source_type;
     var sort = this.data.sort;
     var brandId = [];
     let category_id = that.data.category_id;
     var brandName = this.data.brandName;
     var brand = this.data.brand;
     var brandNameArr = [];
-    if (e.currentTarget.dataset.type) {
-      var new_source_type = e.currentTarget.dataset.type;
-      source_type = new_source_type;
-      that.setData({
-        source_type,
-      })
-    } else if (e.currentTarget.dataset.sort) {
+    if (e.currentTarget.dataset.sort) {
       var new_sort = e.currentTarget.dataset.sort;
       sort = new_sort;
       that.setData({
@@ -354,8 +418,8 @@ Page({
       brandName,
       brandId,
     })
-    // console.log(category_id, source_type, sort, brandId)
-    this.toGoods(category_id, 1, source_type, sort, brandId)
+    // console.log(category_id, sort, brandId)
+    this.toGoods(category_id, 1, sort, brandId)
   },
 
 
@@ -381,6 +445,11 @@ Page({
     let that = this;
     app.restStatus(that, 'listClickFlag');
     app.restStatus(that, 'searchFlag');
+
+    this.setData({
+      search_text: '',
+      isInput: 1,
+    })
   },
 
   /**
@@ -411,10 +480,9 @@ Page({
     let that = this;
     let category_id = that.data.category_id;
     let page = that.data.page;
-    var source_type = this.data.source_type;
     var sort = this.data.sort;
     var brandId = this.data.brandId;
-    this.toGoods(category_id, page, source_type, sort, brandId);
+    this.toGoods(category_id, page, sort, brandId);
   },
 
   /**
@@ -480,7 +548,7 @@ Page({
   // 搜索
   searchInput: function (e) {
     var val = e.detail.value;
-    console.log(e.detail.value);
+    // console.log(e.detail.value);
     this.setData({
       searchVal: val
     })

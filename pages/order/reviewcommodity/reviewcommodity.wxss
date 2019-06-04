@@ -39,7 +39,7 @@
 }
 
 .order-detail .order-detail-r .ul .li{
-  padding: 0 0 4px 0;
+  /* padding: 0 0 4px 0; */
 }
 
 .evaluate_right_imgs .li {
@@ -49,7 +49,7 @@
   width: 60px;
   background: no-repeat center center;
   background-size: cover;
-  margin-right: 0;
+  margin: 6px 6px 6px 0;
 }
 
 .evaluate_right_imgs .li .span {
@@ -156,7 +156,7 @@
   border-color: #DCDCDC #DCDCDC #B3B3B3 #DCDCDC;
   display: block;
   float: left;
-  margin-right: 5px;
+  margin:0 5px 5px 0;
   cursor: pointer;
   height: 60px;
   width: 60px;
@@ -177,7 +177,7 @@
 }
 
 .evaluate_right_imgs {
-  margin-top: 6px;
+  /* margin-top: 6px; */
 }
 
 .evaluate_right .rate_content .evaluate_right_imgs {
@@ -264,7 +264,7 @@
 }
 
 #btn_submit{
-  background: #000;
+  background: #e40046;
   border: 0;
   color: #fff;
   padding: 5px;

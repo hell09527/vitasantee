@@ -2,6 +2,23 @@
 <import src="/templates/new-product-template/new-product-template.wxml" />
 <import src="/templates/HomeOrShare-icon-template/HomeOrShare-icon-template.wxml" />
 
+<!-- 轮播 -->
+<view class="index_slide">
+  <swiper autoplay="true" circular='true' class='index-swiper' bindchange='swiperChange' interval='3500' duration='500' style='height:{{swiperHeight}}px'>
+    <block wx:for="{{imgUrls}}" wx:key="" wx:for-item='imgs'>
+      <swiper-item>
+        <image src="{{imgs.adv_image}}" class="slide-image" catchtap='toGood' data-url='{{imgs.adv_url}}' />
+      </swiper-item>
+    </block>
+  </swiper>
+
+  <view class='swiper_dots'>
+    <block wx:for="{{imgUrls}}" wx:key="" wx:for-index='index'>
+      <view class="swiper_dots-item {{index==swiperCurrent?'swiper_dots_item_active':''}}"></view>
+    </block>
+  </view>
+</view>
+
 <view class='hot_goods_list'>
   <block wx:for="{{goodsList}}" wx:key="" wx:for-index='index' wx:for-item='item'>
     <template is="newProductTemplate" data="{{...item,index}}" />

@@ -6,16 +6,16 @@
  <view class="cf-container" data-reactid="2">
     <view class="cf-edge" data-reactid="3"></view>
     <view class="cf-content" data-reactid="4">
-          <view class="cf-tab-item {{_no=='0'?'select':''}}" catchtap='topNav' data-id="0"><view class='a'>分润统计</view></view>
-      <view class="cf-tab-item {{_no=='1'?'select':''}}" catchtap='topNav' data-id="1"><view class='a'>商品排行</view></view>
+          <!-- <view class="cf-tab-item {{_no=='0'?'select':''}}" catchtap='topNav' data-id="0"><view class='a'>分润统计</view></view>
+      <view class="cf-tab-item {{_no=='1'?'select':''}}" catchtap='topNav' data-id="1"><view class='a'>商品排行</view></view> -->
 
-      <view class="cf-tab-item {{_no=='2'?'select':''}}" catchtap='topNav' data-id="2"><view class='a'>订单统计</view></view>
-      <view class="cf-tab-item {{_no=='3'?'select':''}}" catchtap='topNav' data-id="3"><view class='a'>小程序码</view></view>
+      <view class="cf-tab-item {{_no=='0'?'select':''}}" catchtap='topNav' data-id="0">订单统计</view>
+      <view class="cf-tab-item {{_no=='1'?'select':''}}" catchtap='topNav' data-id="1">小程序码</view>
     </view>
   </view>
 <block>
   <block>
-    <view wx:if='{{_no== 0}}' class="slick">
+    <view wx:if='{{_no== 2}}' class="slick">
       <view class='bcg-box'>
         <view class="bcg">
           <view class='headimg'>
@@ -82,7 +82,7 @@
         <view class='xuans'>
           <view class='c_money'>
             <image src='/images/member/additionalMonay.png' mode='widthFix'/>  
-            <view>极选师规则说明</view>
+            <view>惠选师规则说明</view>
           </view>
           <view class='edu' catchtap='open'>
           <text>查看详情</text>
@@ -92,7 +92,7 @@
 
       <!-- 极选师规则 -->
       <view class="template {{ temp ? 'open':''}}">
-        <view class="explains">普通会员通过极选师推广链接购买商品，极选师将获得商品售出价格指定比例的分润。</view>
+        <view class="explains">普通会员通过惠选师推广链接购买商品，惠选师将获得商品售出价格指定比例的分润。</view>
         <!-- 表格解释部分  start-->
         <view class="tables">
           <view class="trs bg-w">
@@ -113,20 +113,20 @@
           <view class='head_text'>1. 订单已付款后，订单分润状态进入待入账；</view>
           <view class='head_text'>2. 订单状态为已收货/已完成，订单分润状态仍然为待入账；</view>
           <view class='head_text'>3. 当此订单已发货超过15日，订单分润状态转变为可提现；</view>
-          <view class='head_text'>4. 极选师在小程序申请提现，分润金额自动到账微信零钱</view>
+          <view class='head_text'>4. 惠选师在小程序申请提现，分润金额自动到账微信零钱</view>
           <view class='headline'>分润计算方式：</view>
           <view class='head_text'>商品实际售价 x 商品分润比例 = 最终所得分润金额</view>
         </view>
         <!-- 分润时长  end--> 
         <!-- 极选师星级制 start-->
         <view class='Star_system'>
-          <view class='headline'>极选师星级制</view>
-          <view class='head_text'>极选师向新会员/普通会员推广商品，新用户/普通用户通过极选师的小程序分享卡片/小程序码进入小程序，并产生消费，用户购买商品的金额转化为极选师的累计商品成交金额。</view>
-          <view class='head_text'>考核期内，极选师的累计商品成交金额达到当前星级的升星额度，则自动上升一个星级。</view>
-          <view class='head_text'>考核结算时，不同星级的极选师将会获得星级额外奖励。</view>
+          <view class='headline'>惠选师星级制</view>
+          <view class='head_text'>惠选师向新会员/普通会员推广商品，新用户/普通用户通过惠选师的小程序分享卡片/小程序码进入小程序，并产生消费，用户购买商品的金额转化为惠选师的累计商品成交金额。</view>
+          <view class='head_text'>考核期内，惠选师的累计商品成交金额达到当前星级的升星额度，则自动上升一个星级。</view>
+          <view class='head_text'>考核结算时，不同星级的惠选师将会获得星级额外奖励。</view>
           <view class=" tables  Star_table ">
             <view class="tb bg-w">
-              <view class="th">极选师星级</view>
+              <view class="th">惠选师星级</view>
               <view class="th">升星标准(元)</view>
               <view class="th">星级奖励比例</view>
             </view>
@@ -144,22 +144,22 @@
         <view class='regulation'>
           <view class='headline'>星级奖励计算规则</view>
           <view class='head_text'>(超出升级标准的部分金额 - 星级升级标准金额) * 星级奖励比例 = 星级额外奖励最终金额</view>
-          <view class='head_text'>假设极选师考核期内升到了二星级，则考核日，极选师获得星级奖励金额 = 一星级奖励金额 + 二星级奖励金额</view>
+          <view class='head_text'>假设惠选师考核期内升到了二星级，则考核日，惠选师获得星级奖励金额 = 一星级奖励金额 + 二星级奖励金额</view>
           </view>
           <!-- 星级奖励计算规则 end-->
           <!-- 极选师推荐制 start-->
           <view class="recommend">
-            <view class='headline'>极选师推荐制</view>
-            <view class='head_text'>极选师可以推荐普通会员成为签约极选师。</view>
+            <view class='headline'>惠选师推荐制</view>
+            <view class='head_text'>惠选师可以推荐普通会员成为签约惠选师。</view>
           </view>
           <!-- 极选师推荐制 end-->
           <!-- 极选师提现 start-->
           <view class="recommend">
-            <view class='headline'>极选师提现</view>
-            <view class='head_text'>极选师可以在小程序内自主发起提现申请，申请提交成功后，自动到账微信零钱。</view>
-            <view class='head_text'>1. 拥有极选师权限的微信号必须已通过实名认证；</view>
-            <view class='head_text'>2.同一个极选师，单笔单日限额2000元；</view>
-            <view class='head_text'>3. 平台每日最多为同一个极选师提现10次。</view>
+            <view class='headline'>惠选师提现</view>
+            <view class='head_text'>惠选师可以在小程序内自主发起提现申请，申请提交成功后，自动到账微信零钱。</view>
+            <view class='head_text'>1. 拥有惠选师权限的微信号必须已通过实名认证；</view>
+            <view class='head_text'>2.同一个惠选师，单笔单日限额2000元；</view>
+            <view class='head_text'>3. 平台每日最多为同一个惠选师提现10次。</view>
             <view class='head_text'>4. 提现分润自动到账。</view>
           </view>
           <!-- 极选师提现 end-->
@@ -170,7 +170,7 @@
     </block>
                             <!-- 分润规则说明  end -->
   <!-- 商品排行 -->
-  <view  wx:if='{{_no== 1}}' class="slick"> 
+  <view  wx:if='{{_no== 3}}' class="slick"> 
   <view class="all" >
     <view class='top_shop_box'>
       <view class="top_shop {{isTopClick==1?'top_shop_click':''}}" catchtap='isTopClick' data-index='1'>商品推荐排行榜</view>
@@ -244,7 +244,7 @@
     </view>
   </view>
   
-  <view wx:if='{{_no== 2}}' class="slick">
+  <view wx:if='{{_no== 0}}' class="slick">
     <view class="ck_blue">
       <template is="dataChooseTemplate" data="{{datetime,nowData}}" />
       <!-- <view class="ck-tab-item  {{ck=='1'?'tabck':''}}" catchtap='orders' data-id="1">
@@ -285,8 +285,8 @@
                   </block>
 
                   <view class="L_f">
-                    <view class="run">分润比例  {{goods.fraction}}</view>
-                    <view class="runs">直接分润金额 ￥{{goods.direct_separation}}</view>
+                    <view class="run" wx:if='{{goods.fraction!=0}}'>分润比例  {{goods.fraction}}%</view>
+                    <view class="runs" wx:if='{{goods.direct_separation!=0}}'>直接分润金额 ￥{{goods.direct_separation}}</view>
                   </view>
                 </view>
               </view>
@@ -303,11 +303,11 @@
 
 <!-- 小程序码 -->
   <block>
-    <view wx:if='{{_no== 3}}' class="slick">
+    <view wx:if='{{_no== 1}}' class="slick">
       <view class="all" >
         <view class='top_shop_box'>
-          <view class="top_shop {{isCode==1?'top_shop_click':''}}" catchtap='isCode' data-index='1'>小程序推荐码</view>
-          <view class="top_shop {{isCode==2?'top_shop_click':''}}" catchtap='isCode' data-index='2'>极选师邀请码</view>
+          <view class="top_shop {{isCode==1?'top_shop_click':''}}" catchtap='isCode' data-index='1'>小程序推广码</view>
+          <view class="top_shop {{isCode==2?'top_shop_click':''}}" catchtap='isCode' data-index='2'>惠选师推荐码</view>
         </view>
         <view class="table">
           <view class="nav_qr" wx:if='{{isCode==1}}'>

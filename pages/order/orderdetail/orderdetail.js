@@ -189,7 +189,7 @@ Page({
     app.clicked(that, 'verificationFlag');
 
     wx.navigateTo({
-      url: '/pages/verification/verificationorderdetail/verificationorderdetail?vg_id=' + vg_id,
+      url: '/package/verification/verificationorderdetail/verificationorderdetail?vg_id=' + vg_id,
     })
   },
 

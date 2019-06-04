@@ -1,28 +1,30 @@
-<!--pages/member/resgin/resgin.wxml-->
+<!-- pages/member/resgin/resgin.wxml -->
 <view class='containBox'>
   <view class='box'>
-    <image src="https://static.vitasantee.com/logo@2x.png" mode="widthFix"/>
-    <button class='wechatLogin' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">微信登录</button>
-    <button class='phoneLogin' data-status="mobile" open-type="getUserInfo" bindgetuserinfo="bindgetuserinfo">手机号登录</button>
+    <image src="https://static.vitasantee.com/logo@2x.png" mode="widthFix" />
+    <button class='wechatLogin' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">
+      微信登录
+    </button>
+    <button class='phoneLogin' data-status="mobile" open-type="getUserInfo" bindgetuserinfo="bindgetuserinfo">
+      手机号登录
+    </button>
   </view>
 </view>
-
-  <!-- 手机号登录逻辑 -->
-    <view class="login-modal-mask" bindtap="hideModal" catchtouchmove="preventTouchMove" wx:if="{{layout}}"></view>
-    <view class="login-modal-dialog" wx:if="{{layout}}">
-        <view class="ck-title">前往绑定手机号登录</view>
-        <view class="ck-footer">
-            <button class="btn-confirm" data-status="mobile" catchtap='Branch'>确定</button>
-        </view>
-    </view>
-
+<!-- 手机号登录逻辑 -->
+<view class="login-modal-mask" bindtap="hideModal" catchtouchmove="preventTouchMove" wx:if="{{layout}}"></view>
+<view class="login-modal-dialog" wx:if="{{layout}}">
+  <view class="ck-title">前往绑定手机号登录</view>
+  <view class="ck-footer">
+    <button class="btn-confirm" data-status="mobile" catchtap='Branch'>确定</button>
+  </view>
+</view>
 <view class="ck-mask" bindtap="hideModal" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
-    <view class="ck-dialog" wx:if="{{showModal}}">
-        <view class="ck-title">手机号授权绑定成功</view>
-        <view class="ck-footer">
-            <!-- <button class="btn-cancel"  data-status="cancel" open-type="getUserInfo" bindgetuserinfo="bindgetuserinfo">拒绝</button> -->
-            <button class="btn-confirm" data-status="confirm" open-type="getUserInfo" bindgetuserinfo="bindgetuserinfo">
-                确   定
-            </button>
-        </view>
-    </view>
+<view class="ck-dialog" wx:if="{{showModal}}">
+  <view class="ck-title">手机号授权绑定成功</view>
+  <view class="ck-footer">
+    <!-- <button class="btn-cancel"  data-status="cancel" open-type="getUserInfo" bindgetuserinfo="bindgetuserinfo">拒绝</button> -->
+    <button class="btn-confirm" data-status="confirm" open-type="getUserInfo" bindgetuserinfo="bindgetuserinfo">
+      确   定
+    </button>
+  </view>
+</view>

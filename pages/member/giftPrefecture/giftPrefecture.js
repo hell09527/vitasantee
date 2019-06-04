@@ -178,7 +178,7 @@ Page({
   onConfirm: function () {
 
     wx.navigateTo({
-      url: '/pages/payMembers/goGivingGift/goGivingGift'
+      url: '/package/payMembers/goGivingGift/goGivingGift'
     })
   },
 

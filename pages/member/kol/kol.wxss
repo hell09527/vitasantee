@@ -182,42 +182,32 @@ scroll-view .canvas {
 }
 
 .cf-container .cf-content{
-  position: relative;
-  color: #333;
   text-align: center;
   top: 0;
   white-space: nowrap;
-  z-index: 5;
-  display: table;
-  -webkit-overflow-scrolling: touch;
-  margin-left: 0.1rem;
-  margin-right: 0.1rem;
   font-size: 1rem;
-  list-style-position: outside;
   font-family: inherit;
   width:100%;
+  height:40px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .cf-container .cf-tab-item{
-  margin-left: 0px;
   padding: 0px;
-  line-height: 32px;
   text-align: center;
-  float: left;
-  width:25%;
-}
-
-.cf-tab-item .a{
-  color: #707070;
+  color: #999;
   font-size: 14px;
-  display: block;
-  width: 80%;
-  margin:0 auto;
+  line-height: 26px;
+  height:26px;
 }
 
-.cf-container .cf-tab-item.select .a{
-  border-bottom: 2px solid #000;
-  color: #000;
+
+
+.cf-container .cf-tab-item.select{
+  border-bottom: 2px solid #e40046;
+  color: #e40046;
 }
 
 .cf-tab-item .last-child{

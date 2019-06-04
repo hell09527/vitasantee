@@ -1,16 +1,18 @@
-<!-- 日期选择器 -->
 
 <template name="goodsScreeningTemplate">
   <view class="content-title">
     <view class="title-item {{!goodsSelect?'':'title-item-active'}}" catchtap='toGoodsCheck'>
-      <text>{{source_type==0?'全部商品':source_type==1?'大贸':'跨境'}}</text>
+      <text>{{categoryName}}</text>
       <image src="{{!goodsSelect?'https://static.vitasantee.com/B740D975-6827-4391-84F2-3877ABD6D46E@2x.png':'https://static.vitasantee.com/967EC88C-B7B6-448B-AD30-1375B28B4A26@2x.png'}}" mode="widthFix" />
     </view>
 
       <view class="secondClass flex {{goodsSelect?'':'hide'}}">
-        <text catchtap='toScreen' data-type='0' class="{{source_type==0?'text-active':''}}">全部商品</text>
-        <text catchtap='toScreen' data-type='1' class="{{source_type==1?'text-active':''}}">大贸</text>
-        <text catchtap='toScreen' data-type='2' class="{{source_type==2?'text-active':''}}">跨境</text>
+        <block wx:for='{{category_list}}' wx:key='' wx:for-item='item' wx:for-index='index' wx:if='{{category_list.length>0}}'>
+          <view catchtap="selectCheck" data-id='{{item.category_id}}' data-current="{{index}}" data-name="{{item.category_name}}" class='secondClass-item' style='text-align:center'>
+            <text class="{{item.select==2?'text-active':''}}">{{item.category_name}}</text>
+          </view>
+        </block>
+        <text wx:if='{{category_list.length==0}}'>空</text>
       </view>
 
     <view class="title-item {{!recommendSelect?'':'title-item-active'}}" catchtap='recommendCheck'>

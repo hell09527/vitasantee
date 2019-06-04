@@ -7,14 +7,11 @@ Page({
    */
   data: {
     prompt: '',
-    indexCheck: 0,
-    classCheck: 0,
-    cartCheck: 0,
-    userCheck: 1,
     Base: '',
     defaultImg: '',
     member_info: {},
-
+    tel:'',
+    
   },
 
   /**
@@ -34,6 +31,7 @@ Page({
   //跳转
   listClick: function (e) {
     let data_url = e.currentTarget.dataset.url;
+    
     wx.navigateTo({
       url: '/pages/' + data_url ,
     })
@@ -93,6 +91,8 @@ Page({
             distributor_type,
           })
         }
+
+        wx.stopPullDownRefresh()
       }
     })
   },
@@ -157,12 +157,15 @@ Page({
 
     let member_info = that.data.member_info;
     app.restStatus(that, 'listClickFlag');
+
     //回调解决执行的先后顺序的问题
     if (app.globalData.token && app.globalData.token != '') {
       //判断是否是付费会员的接口
       that.REUSE_member();
     } else {
+
       app.employIdCallback = employId => {
+        console.log(employId)
         if (employId != '') {
           //判断是否是付费会员的接口
           that.REUSE_member();
@@ -171,6 +174,28 @@ Page({
       }
     }
 
+    app.sendRequest({
+      url: 'api.php?s=member/getMemberVipAdv',
+      data: {},
+      success: function (res) {
+        let code = res.code;
+        let data = res.data;
+        if (code == 0) {
+          that.setData({
+            adv_list: data.adv_list
+          })
+        }
+        console.log(res)
+      }
+    })
+
+  },
+
+  // 进群
+  toAddInoGroup:function(){
+    wx.navigateTo({
+      url: '/pages/member/addInGroup/addInGroup',
+    })
   },
 
   /**
@@ -191,7 +216,7 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-
+    this.onShow();
   },
 
   /**

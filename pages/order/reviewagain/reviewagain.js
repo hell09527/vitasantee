@@ -185,7 +185,7 @@ Page({
     //   app.showBox(that, '姓名不能含有特殊字符');
     // } else {
       if (this.isEmojiCharacter(content)) {
-        app.showBox(that, '姓名不能含有表情');
+        app.showBox(that, '内容不能含有表情');
       } else {
         goodsEvaluate[index].content = content;
       }
@@ -202,21 +202,32 @@ Page({
     let that = this;
     let index = e.currentTarget.dataset.index;
     let goodsEvaluate = that.data.goodsEvaluate;
+    let img_list = that.data.img_list;
+    let num = 9;
 
-    if (goodsEvaluate[index].img_num >= 5) {
+    if (img_list[index].length >= 9) {
       return false;
     }
+    num = num - img_list[index].length;
    
     //选择图片
     wx.chooseImage({
-      // count: 1,
+      count: num,
       sizeType: 'compressed',
       success: function (res) {
-        let filePath = res.tempFilePaths[0];
-        let tempFiles = res.tempFiles[0];
+        let filePath = res.tempFilePaths;
+        let tempFiles = res.tempFiles;
 
-        //上传至服务器
-        that.uplodeHeadImg(that, filePath, index, goodsEvaluate);
+
+        for (let i = 0; i < filePath.length; i++) {
+          if (tempFiles[i].size > 1024 * 1024 * 8) {
+            app.showBox(that, '第' + i + '上传图片过大');
+            return;
+          } else {
+            //上传至服务器
+            that.uplodeHeadImg(that, filePath[i], index, goodsEvaluate);
+          }
+        }
       },
       fail: function (res) {
         app.showBox(that, '无法获取本地图片');
@@ -266,18 +277,15 @@ Page({
 
           if (code > 0) {
             //加入图片数组
-            if (goodsEvaluate[index].imgs == '') {
-              goodsEvaluate[index].imgs = img_url;
-              goodsEvaluate[index].img_num = 1;
+            if (img_list[index][0] == '') {
               img_list[index][0] = img_url;
             } else {
-              goodsEvaluate[index].imgs += ',' + img_url;
-              goodsEvaluate[index].img_num++;
               img_list[index][img_list[index].length] = img_url;
             }
+            console.log(img_list)
+
             that.setData({
-              goodsEvaluate: goodsEvaluate,
-              img_list: img_list
+              img_list: img_list,
             })
 
           } else {
@@ -307,18 +315,6 @@ Page({
     let img_list = that.data.img_list;
     let goodsEvaluate = that.data.goodsEvaluate;
 
-    if (img_list[index].indexOf(base) != 1){
-      img_list[index].splice(key, 1);
-      goodsEvaluate[index].imgs = img_list[index].join();
-      goodsEvaluate[index].img_num--;
-
-      that.setData({
-        img_list: img_list,
-        goodsEvaluate: goodsEvaluate
-      })
-      return;
-    }
-
     app.sendRequest({
       url: 'api.php?s=upload/removeFile',
       data: {
@@ -329,18 +325,12 @@ Page({
         let data = res.data;
 
         if (code == 0) {
-          if (data.success_count > 0) {
             img_list[index].splice(key, 1);
-            goodsEvaluate[index].imgs = img_list[index].join();
-            goodsEvaluate[index].img_num--;
 
             that.setData({
               img_list: img_list,
-              goodsEvaluate: goodsEvaluate
             })
-          } else {
-            app.showBox(that, '删除失败');
-          }
+            app.showBox(that, '删除成功');
         }
         console.log(res)
       }
@@ -356,6 +346,7 @@ Page({
     let order_no = that.data.order_no;
     let goodsEvaluate = that.data.goodsEvaluate;
     let commentvFlag = that.data.commentvFlag;
+    let img_list = that.data.img_list;
     
     if (commentvFlag == 1) {
       return false;
@@ -368,6 +359,7 @@ Page({
         app.restStatus(that, 'commentvFlag');
         return false;
       }
+      goodsEvaluate[index].imgs = img_list[index].join(',');
     }
     goodsEvaluate = JSON.stringify(goodsEvaluate);
 

@@ -87,6 +87,9 @@ Page({
       bad_count: 0
     },    //评论筛选
     comments_type:0,
+    mansongNameMore:false,    //促销是否显示更多 y
+    isPreview:false,
+    advImgUrls:[],   //底部广告位轮播
   },
   //测试数据
   last: function () {
@@ -103,10 +106,6 @@ Page({
   onLoad: function (options) {
     let that = this;
     let flys = options.fly;
-    let isIphoneX = app.globalData.isIphoneX;
-    this.setData({
-      isIphoneX: isIphoneX
-    })
     if (options.uid) {
       console.log('options.uid', options.uid)
       app.globalData.identifying = options.uid;
@@ -129,9 +128,12 @@ Page({
       var scene = decodeURIComponent(options.scene);
       let goods_id = scene.split('&')[0];
       let kol_id = scene.split('&')[1];
+      let store_id = scene.split('&')[2];
+      app.globalData.store_id = store_id;
+      app.globalData.kol_id = kol_id;
+      console.log("********内详情页store_id", store_id);
       console.log("********详情页id", goods_id);
       console.log("********内详情页kol_id", kol_id);
-      app.globalData.kol_id = kol_id;
 
       that.setData({
         goods_id: goods_id,
@@ -145,7 +147,8 @@ Page({
 
     console.log(updata, 'updata')
     that.setData({
-      unregistered: app.globalData.unregistered
+      unregistered: app.globalData.unregistered,
+      isIphoneX: app.globalData.isIphoneX
     });
 
     wx.getSystemInfo({
@@ -154,6 +157,7 @@ Page({
         let windowHeight = res.windowHeight - 50;
         let screenWidth = res.windowWidth;
         let screenHeight = res.windowHeight;
+        let modelmes = res.model;
         console.log(windowWidth)
         console.log(windowHeight)
         that.setData({
@@ -171,7 +175,7 @@ Page({
       })
     }
 
-    //  极选师扫码12小时内有分销来源
+    //  惠选师扫码12小时内有分销来源
     let timestamp = Date.parse(new Date);
     if (app.globalData.identifying != 0) {
       let overtime = timestamp + 43200000;
@@ -234,43 +238,47 @@ Page({
 
   XXS_reuse: function () {
     let that = this;
-
-    app.sendRequest({
-      url: "api.php?s=member/getMemberDetail",
-      success: function (res) {
-        let data = res.data
-        if (res.code == 0) {
-          let is_vip = data.is_vip;
-          app.globalData.is_vip = data.is_vip;
-          app.globalData.distributor_type = data.distributor_type;
-          let distributor_type = data.distributor_type;
-          app.globalData.uid = data.uid;
-          app.globalData.vip_gift = data.vip_gift;
-          app.globalData.vip_goods = data.vip_goods;
-          let tel = data.user_info.user_tel;
-          if (tel !== null || tel !== undefined || tel !== '') {
-            console.log(111)
-          } else if (tel == '') {
-            console.log(223)
+    return new Promise(function (resolve, reject){
+      app.sendRequest({
+        url: "api.php?s=member/getMemberDetail",
+        success: function (res) {
+          let data = res.data
+          if (res.code == 0) {
+            let is_vip = data.is_vip;
+            app.globalData.is_vip = data.is_vip;
+            app.globalData.distributor_type = data.distributor_type;
+            let distributor_type = data.distributor_type;
+            resolve(distributor_type )
+            app.globalData.uid = data.uid;
+            app.globalData.vip_gift = data.vip_gift;
+            app.globalData.vip_goods = data.vip_goods;
+            let tel = data.user_info.user_tel;
+            if (tel !== null || tel !== undefined || tel !== '') {
+              console.log(111)
+            } else if (tel == '') {
+              console.log(223)
+            }
+  
+            let updata = that.data.unregistered;
+            updata = app.globalData.unregistered;
+            console.log(updata, 'updata', '134', data.is_employee);
+            // console.log(app.globalData.is_vip)
+            that.setData({
+              is_vip: is_vip,
+              tel: tel,
+              distributor_type,
+              unregistered: updata,
+              is_employee: data.is_employee,
+            })
+  
+  
+  
           }
-
-          let updata = that.data.unregistered;
-          updata = app.globalData.unregistered;
-          console.log(updata, 'updata', '134', data.is_employee);
-          // console.log(app.globalData.is_vip)
-          that.setData({
-            is_vip: is_vip,
-            tel: tel,
-            distributor_type,
-            unregistered: updata,
-            is_employee: data.is_employee,
-          })
-
-
-
         }
-      }
+      })
+
     })
+   
   },
 
   /**
@@ -279,88 +287,59 @@ Page({
   onShow: function () {
     let that = this;
     let goods_id = that.data.goods_id;
-    let detail_id = that.data.detail_id;
-    let attr_value_items_format = '';
-    let member_price = 0.00;
-    let base = that.data.Base;
-    let is_employee = that.data.is_employee;
-    console.log(is_employee)
+    let isPreview = that.data.isPreview;
 
+    if (!isPreview){
 
+      //判断是否是付费会员
+      let is_vip = app.globalData.is_vip;
+      that.setData({
+        is_vip,
+        TT: false,
+      })
+      if (app.globalData.distributor_type != 0) {
 
-
-
-    //判断是否是付费会员
-    let is_vip = app.globalData.is_vip;
-    that.setData({
-      is_vip,
-      TT: false,
-    })
-    if (app.globalData.distributor_type != 0) {
-
-    } else {
-      let timestamp = Date.parse(new Date);
-      let breakpoints = wx.getStorageSync('breakpoint');
-      console.log(breakpoints, 'breakpoints')
-      let uids = wx.getStorageSync('uid')
-      console.log(uids, 'uids')
-      let overtimes = wx.getStorageSync('overtime');
-      if (timestamp < overtimes) {
-        console.log(211111)
-        app.globalData.identifying = uids;
-        app.globalData.breakpoint = breakpoints;
       } else {
-        console.log(333333)
+        let timestamp = Date.parse(new Date);
+        let breakpoints = wx.getStorageSync('breakpoint');
+        console.log(breakpoints, 'breakpoints')
+        let uids = wx.getStorageSync('uid')
+        console.log(uids, 'uids')
+        let overtimes = wx.getStorageSync('overtime');
+        if (timestamp < overtimes) {
+          console.log(211111)
+          app.globalData.identifying = uids;
+          app.globalData.breakpoint = breakpoints;
+        } else {
+          console.log(333333)
+        }
       }
-    }
 
-    if (app.globalData.token == '') {
-      app.sendRequest({
-        url: "api.php?s=Distributor/getDistributorGoodsWxCode",
-        data: {
-          distributor_type: 0,
-          goods_id: that.data.goods_id
-        },
-        success: function (res) {
-          let data = res.data;
-          that.setData({
-            codeUrl: data,
-          })
+      if (app.globalData.token == '') {
+        app.sendRequest({
+          url: "api.php?s=Distributor/getDistributorGoodsWxCode",
+          data: {
+            distributor_type: 0,
+            goods_id: that.data.goods_id
+          },
+          success: function (res) {
+            let data = res.data;
+            that.setData({
+              codeUrl: data,
+            })
 
-        }
-      })
-    }
+          }
+        })
+      }
+      console.log(app.globalData.token)
 
-    if (app.globalData.token && app.globalData.token != '') {
-      //判断是否是付费会员的接口
-      that.XXS_reuse();
-      let originS = that.data.distributor_type;
-      // 制作二维码
-      app.sendRequest({
-        url: "api.php?s=Distributor/getDistributorGoodsWxCode",
-        data: {
-          distributor_type: originS,
-          goods_id: that.data.goods_id
-        },
-        success: function (res) {
-          let data = res.data;
-          that.setData({
-            codeUrl: data,
-          })
-
-        }
-      })
-    } else {
-      app.employIdCallback = employId => {
-        if (employId != '') {
-          //判断是否是付费会员的接口
-          that.XXS_reuse();
-          let originS = that.data.distributor_type;
-          // 制作二维码
+      if (app.globalData.token && app.globalData.token != '') {
+        that.XXS_reuse().then((resolve)=>{
+          console.log(resolve)
           app.sendRequest({
-            url: "api.php?s=Distributor/getDistributorGoodsWxCode",
+            url: "api.php?s=Distributor/getDistributorGoodsWxCode",    // 制作二维码
             data: {
-              distributor_type: originS,
+              distributor_type: resolve,
               goods_id: that.data.goods_id
             },
             success: function (res) {
@@ -368,211 +347,362 @@ Page({
               that.setData({
                 codeUrl: data,
               })
-
+  
             }
           })
-        }
-
-      }
-    }
-
-
-
-
-
-    app.restStatus(that, 'comboFlag');
-    app.restStatus(that, 'comboPackagesFlag');
-    app.restStatus(that, 'buyNextFlag');
-    app.restStatus(that, 'goodsDetailFlag');
-    app.restStatus(that, 'moreEvaluationFlag');
-    app.restStatus(that, 'confirmSpellFlag');
-    app.sendRequest({
-      url: 'api.php?s=goods/goodsDetail',
-      data: {
-        goods_id: goods_id,
-      },
-      success: function (res) {
-        let code = res.code;
-        let data = res.data;
-        if (code == 0) {
-          let vip_price = data.vip_price;
-          var recommended_goods = data.goodsList.similarOne;
-          let goodsDetailImg = data.goodsDetailImg;
-
-          // 品牌推荐商品
-          if (data.goodsList.similarOne.length < 10){
-            recommended_goods = recommended_goods.concat(data.goodsList.similarTwo);
-            if (recommended_goods.length<10){
-              recommended_goods = recommended_goods.concat(data.goodsList.similarThree);
-            }
-
-            recommended_goods.pic_cover_small = app.IMG(recommended_goods.pic_cover_small);
-          }
-          if (goodsDetailImg) {
-
-          } else {
-            goodsDetailImg = 0
-          }
-          // console.log(vip_price)
-          // 判断是否礼物商品
-          if (data.goods_type == 2) {
-            that.setData({
-              flys: 1
+        })
+      
+    
+       
+      } else {
+        app.employIdCallback = employId => {
+          if (employId != '') {
+            that.XXS_reuse().then((resolve)=>{
+              console.log(resolve)
+              app.sendRequest({
+                url: "api.php?s=Distributor/getDistributorGoodsWxCode",
+                data: {
+                  distributor_type: resolve,
+                  goods_id: that.data.goods_id
+                },
+                success: function (res) {
+                  let data = res.data;
+                  that.setData({
+                    codeUrl: data,
+                  })
+      
+                }
+              })
             })
           }
 
-          if (data.description != '' && data.description != null && data.description != undefined) {
-            detail_id = goods_id;
-          }
+        }
+      }
 
 
-          // 运费转换
-          data.shipping_fee_name = parseInt(data.shipping_fee_name.substring(1)).toFixed(2);
 
 
-          //购买数量初始化
-          let goodsNum = that.data.goodsNum;
-          if (parseInt(data.min_buy) > 0) {
-            goodsNum = parseInt(data.min_buy);
-          }
 
-          //优惠券时间格式转换
-          for (let i in data.goods_coupon_list) {
-            data.goods_coupon_list[i].start_time = time.formatTime(data.goods_coupon_list[i].start_time, 'Y-M-D');
-            data.goods_coupon_list[i].end_time = time.formatTime(data.goods_coupon_list[i].end_time, 'Y-M-D');
-            data.goods_coupon_list[i].status = 1;
-          }
+      app.restStatus(that, 'comboFlag');
+      app.restStatus(that, 'comboPackagesFlag');
+      app.restStatus(that, 'buyNextFlag');
+      app.restStatus(that, 'goodsDetailFlag');
+      app.restStatus(that, 'moreEvaluationFlag');
+      app.restStatus(that, 'confirmSpellFlag');
 
-          //视频路径处理
-          data.goods_video_address = data.goods_video_address == undefined ? '' : data.goods_video_address;
-          data.goods_video_address = data.goods_video_address == 0 ? '' : data.goods_video_address;
-          let video = data.goods_video_address;
-          if (video != '' && video.indexOf('https://') == -1 && video.indexOf('http://') >= -1) {
-            data.goods_video_address = base + video;
-          }
-          //商品图片处理
-          let imgUrls = data.img_list;
+      that.toGoodsDetail().then((result)=>{
+        console.log(result)
+        if (result!=0){
+          app.sendRequest({
+            url: 'api.php?s=goods/getBrandGoodsList',
+            data: {
+              brand_id: result,
+              page: 1
+            },
+            success: function (res) {
+              let code = res.code;
+              let data = res.data;
+              if (code == 0) {
+                let brand_name = data.brand_name
+                let brand_ads = data.brand_ads
 
-          //制作海报的商品主图
-          let shop_img = imgUrls[0].pic_cover_big;
-          for (let index in imgUrls) {
-            let img = imgUrls[index].pic_cover_mid;
-            imgUrls[index].pic_cover_mid = app.IMG(img);
-          }
-          let goods_info = data;
-          // 是否是内购商品
-          let is_inside_sell = goods_info.sku_list[0].is_inside_sell;
-
-          console.log(goods_info)
-
-          goods_info.img_list[0].pic_cover_micro = app.IMG(goods_info.img_list[0].pic_cover_micro);
-          goods_info.picture_detail.pic_cover_micro = app.IMG(goods_info.picture_detail.pic_cover_micro);
-          goods_info.picture_detail.pic_cover_small = app.IMG(goods_info.picture_detail.pic_cover_small);
-          //组合商品图片处理
-          if (goods_info.comboPackageGoodsArray != undefined && goods_info.comboPackageGoodsArray.goods_array != undefined) {
-            for (let index in goods_info.comboPackageGoodsArray.goods_array) {
-              let img = goods_info.comboPackageGoodsArray.goods_array[index].pic_cover_micro;
-              goods_info.comboPackageGoodsArray.goods_array[index].pic_cover_micro = app.IMG(img);
+                that.setData({
+                  brand_name: brand_name,
+                  brand_ads: brand_ads
+                })
+              }
+              // console.log(res);
             }
-          }
-          //富文本格式转化
-          let description = goods_info.description;
-          wxParse.wxParse('description', 'html', description, that, 5);
-
-          //原价
-          let sum = "";
-          if (goods_info.market_price - goods_info.member_price > 0) {
-            sum = 1
-          } else {
-            sum = 2
-          }
-
-          let brand_id = data.brand_id
-          console.log(brand_id, goods_info.promotion_price, goods_info.inside_price)
-          that.setData({
-            goods_info: goods_info,
-            detail_id: detail_id,
-            imgUrls: data.img_list,
-            current_time: data.current_time,
-            goodsNum: goodsNum,
-            brand_id: brand_id,
-            sum,
-            shop_img,
-            is_inside_sell,
-            goodsDetailImg,  //极选师推荐图片
-            recommended_goods,
           });
+        }
+      })
 
-          //限时折扣计时
-          if (data.promotion_type == 2 && data.promotion_detail != '') {
-            let time_array = {};
-            time_array.end = 0;
-            time_array.end_time = data.promotion_detail.end_time;
-            that.timing(that, time_array);
+      //  获取门店信息广告位
+      app.sendRequest({
+        url: "api.php?s=goods/getGoodsDetailAdv",
+        data: {},
+        method: 'POST',
+        success: function (res) {
+          console.log(res);
+          let data=res.data;
+          let adv_list = data.adv_list;
+          if (data.is_use != 0) {
+            for (let index in adv_list) {
+              let img = adv_list[index].adv_image;
+              adv_list[index].adv_image = app.IMG(img);
+            }
+          } else {
+            adv_list = [];
           }
+          that.setData({
+            advImgUrls: adv_list,
+            advImgUrlsHeight: data.ap_height || 0
+          })
+        }
+      });
 
-          let sku_info = that.data.sku_info;//选中规格信息
-          let sku_id = that.data.sku_id; //选中规格
-          console.log(sku_id);
-          let attr_value_items = {}; //规格组
-          let stock = 0; //库存
-          let mo_imgs = data.img_list[0].pic_cover_micro;
-          //规格默认选中
-          for (let i = 0; i < data.spec_list.length; i++) {
-            for (let l = 0; l < data.spec_list[i].value.length; l++) {
-              if (l == 0) {
-                data.spec_list[i].value[l]['status'] = 1;
+    }else{
+      that.setData({
+        isPreview: false,
+      })
+    }
+  },
 
-                if (data.spec_list[i].value[l].spec_value_data_src) {
-                  mo_imgs = data.spec_list[i].value[l].spec_value_data_src;
+  // 获取商品详情
+  toGoodsDetail: function () {
+    let that = this;
+    let goods_id = that.data.goods_id;
+    let detail_id = that.data.detail_id;
+    let attr_value_items_format = '';
+    let member_price = 0.00;
+    let base = that.data.Base;
+    let is_employee = that.data.is_employee;
+    var brand_id;
+    console.log(is_employee)
+    return new Promise(function (resolve, reject){
+      app.sendRequest({
+        url: 'api.php?s=goods/goodsDetail',
+        data: {
+          goods_id: goods_id,
+        },
+        success: function (res) {
+          let code = res.code;
+          let data = res.data;
+          if (code == 0) {
+            let vip_price = data.vip_price;
+            var recommended_goods = data.goodsList.similarOne;
+            let goodsDetailImg = data.goodsDetailImg;
+
+            // 品牌推荐商品
+            if (data.goodsList.similarOne.length < 10) {
+              recommended_goods = recommended_goods.concat(data.goodsList.similarTwo);
+              if (recommended_goods.length < 10) {
+                recommended_goods = recommended_goods.concat(data.goodsList.similarThree);
+              }
+
+              recommended_goods.pic_cover_small = app.IMG(recommended_goods.pic_cover_small);
+            }
+            if (goodsDetailImg) {
+
+            } else {
+              goodsDetailImg = 0
+            }
+            // console.log(vip_price)
+            // 判断是否礼物商品
+            if (data.goods_type == 2) {
+              that.setData({
+                flys: 1
+              })
+            }
+
+            if (data.description != '' && data.description != null && data.description != undefined) {
+              detail_id = goods_id;
+            }
+
+
+            // 运费转换
+            data.shipping_fee_name = parseInt(data.shipping_fee_name.substring(1)).toFixed(2);
+
+
+            //购买数量初始化
+            let goodsNum = that.data.goodsNum;
+            if (parseInt(data.min_buy) > 0) {
+              goodsNum = parseInt(data.min_buy);
+            }
+
+            //优惠券时间格式转换
+            for (let i in data.goods_coupon_list) {
+              data.goods_coupon_list[i].start_time = time.formatTime(data.goods_coupon_list[i].start_time, 'Y-M-D');
+              data.goods_coupon_list[i].end_time = time.formatTime(data.goods_coupon_list[i].end_time, 'Y-M-D');
+              data.goods_coupon_list[i].status = 1;
+            }
+
+            //视频路径处理
+            data.goods_video_address = data.goods_video_address == undefined ? '' : data.goods_video_address;
+            data.goods_video_address = data.goods_video_address == 0 ? '' : data.goods_video_address;
+            let video = data.goods_video_address;
+            if (video != '' && video.indexOf('https://') == -1 && video.indexOf('http://') >= -1) {
+              data.goods_video_address = base + video;
+            }
+            //商品图片处理
+            let imgUrls = data.img_list;
+
+            //制作海报的商品主图
+            let shop_img = imgUrls[0].pic_cover_big;
+            for (let index in imgUrls) {
+              let img = imgUrls[index].pic_cover_mid;
+              imgUrls[index].pic_cover_mid = app.IMG(img);
+            }
+            let goods_info = data;
+            // 是否是内购商品
+            let is_inside_sell = goods_info.sku_list[0].is_inside_sell;
+
+            console.log(goods_info)
+
+            goods_info.img_list[0].pic_cover_micro = app.IMG(goods_info.img_list[0].pic_cover_micro);
+            goods_info.picture_detail.pic_cover_micro = app.IMG(goods_info.picture_detail.pic_cover_micro);
+            goods_info.picture_detail.pic_cover_small = app.IMG(goods_info.picture_detail.pic_cover_small);
+            //组合商品图片处理
+            if (goods_info.comboPackageGoodsArray != undefined && goods_info.comboPackageGoodsArray.goods_array != undefined) {
+              for (let index in goods_info.comboPackageGoodsArray.goods_array) {
+                let img = goods_info.comboPackageGoodsArray.goods_array[index].pic_cover_micro;
+                goods_info.comboPackageGoodsArray.goods_array[index].pic_cover_micro = app.IMG(img);
+              }
+            }
+            //富文本格式转化
+            let description = goods_info.description;
+            wxParse.wxParse('description', 'html', description, that, 5);
+
+            //原价
+            let sum = "";
+            if (goods_info.market_price - goods_info.member_price > 0) {
+              sum = 1
+            } else {
+              sum = 2
+            }
+
+            if (goods_info.cart_count > 100) {
+              goods_info.cart_count = 99;
+            }
+
+            brand_id = data.brand_id
+
+            resolve(brand_id)
+            console.log(brand_id, goods_info.promotion_price, goods_info.inside_price)
+            that.setData({
+              goods_info: goods_info,
+              detail_id: detail_id,
+              imgUrls: data.img_list,
+              current_time: data.current_time,
+              goodsNum: goodsNum,
+              brand_id: brand_id,
+              sum,
+              shop_img,
+              is_inside_sell,
+              goodsDetailImg,  //极选师推荐图片
+              recommended_goods,
+              brand_id,
+            });
+
+            //限时折扣计时
+            if (data.promotion_type == 2 && data.promotion_detail != '') {
+              let time_array = {};
+              time_array.end = 0;
+              time_array.end_time = data.promotion_detail.end_time;
+              that.timing(that, time_array);
+            }
+
+            let sku_info = that.data.sku_info;//选中规格信息
+            let sku_id = that.data.sku_id; //选中规格
+            console.log(sku_id);
+            let attr_value_items = {}; //规格组
+            let stock = 0; //库存
+            let mo_imgs = {
+              spec_value_data: data.img_list[0].pic_cover_micro,
+              spec_value_data_big_src: data.img_list[0].pic_cover_big,
+            };
+
+            //规格默认选中
+            for (let i = 0; i < data.spec_list.length; i++) {
+              for (let l = 0; l < data.spec_list[i].value.length; l++) {
+                if (l == 0) {
+                  data.spec_list[i].value[l]['status'] = 1;
+
+                  if (data.spec_list[i].value[l].spec_value_data_src) {
+                    mo_imgs = {
+                      spec_value_data: data.spec_list[i].value[l].spec_value_data_src,
+                      spec_value_data_big_src: data.spec_list[i].value[l].pic_cover_big
+                    };
+                  }
+
+                  attr_value_items[i] = data.spec_list[i].value[l].spec_id + ':' + data.spec_list[i].value[l].spec_value_id;
+                  attr_value_items.length = i + 1;
+                } else {
+                  data.spec_list[i].value[l]['status'] = 0;
+                }
+              }
+            }
+
+          let  ori_range=[];  //显示价格范围
+          let  bazaar_range=[];  //划掉价格范围
+
+            //规格组、库存判断
+            for (let i = 0; i < data.sku_list.length; i++) {
+              let count = 1;
+              for (let l = 0; l < attr_value_items.length; l++) {
+                if (data.sku_list[i].attr_value_items.indexOf(attr_value_items[l]) == -1) {
+                  count = 0;
                 }
 
-                attr_value_items[i] = data.spec_list[i].value[l].spec_id + ':' + data.spec_list[i].value[l].spec_value_id;
-                attr_value_items.length = i + 1;
-              } else {
-                data.spec_list[i].value[l]['status'] = 0;
+                ori_range.push(data.sku_list[i].promote_price);    
+                bazaar_range.push(data.sku_list[i].market_price);
               }
-            }
-          }
+              if (count == 1) {
+                attr_value_items_format = data.sku_list[i].attr_value_items_format;
+                sku_id = data.sku_list[i].sku_id;
+                member_price = data.sku_list[i].member_price;
 
-          //规格组、库存判断
-          for (let i = 0; i < data.sku_list.length; i++) {
-            let count = 1;
-            for (let l = 0; l < attr_value_items.length; l++) {
-              if (data.sku_list[i].attr_value_items.indexOf(attr_value_items[l]) == -1) {
-                count = 0;
+                stock = data.sku_list[i].stock;
+                sku_info = data.sku_list[i];
               }
+
+
+
+
             }
-            if (count == 1) {
-              attr_value_items_format = data.sku_list[i].attr_value_items_format;
-              sku_id = data.sku_list[i].sku_id;
-              member_price = data.sku_list[i].member_price;
-
-              stock = data.sku_list[i].stock;
-              sku_info = data.sku_list[i];
+            console.log(stock, 'stock');
+           
+            let Max_ori = Math.max(...ori_range).toFixed(2);
+            let Min_ori = Math.min(...ori_range).toFixed(2);
+            let Max_bazaar = Math.max(...bazaar_range).toFixed(2);
+            let Min_bazaar = Math.min(...bazaar_range).toFixed(2);
+            let scale
+            if(data.sku_list.length==1 || Max_ori ==Min_ori) {
+              console.log('qqq')
+              scale=1
+            }else{
+              scale=2
+              console.log('www')
             }
+           
+            
+            console.log(data.sku_list.length, 'ori_range');
+            console.log(scale, 'bazaar_range');
+            that.setData({
+              spec_list: data.spec_list,
+              sku_id: sku_id,
+              attr_value_items_format: attr_value_items_format,
+              member_price: member_price,
+              stock: stock,
+              sku_info: sku_info,
+              vip_price,
+              mo_imgs,
+              Max_ori ,
+              Min_ori,
+              Max_bazaar,
+              Min_bazaar, 
+              scale
+            })
 
-
-
-
+            let comment_type = 0;
+            that.getComments(comment_type);
           }
-          console.log(stock, 'stock');
-          that.setData({
-            spec_list: data.spec_list,
-            sku_id: sku_id,
-            attr_value_items_format: attr_value_items_format,
-            member_price: member_price,
-            stock: stock,
-            sku_info: sku_info,
-            vip_price,
-            mo_imgs
-          })
-
-          let comment_type = that.data.comments_type;
-          that.getComments(comment_type);
+          // console.log(res);
         }
-        // console.log(res);
-      }
+      })
+    })
+  },
+
+  // 跳转品牌页
+  toBrand: function () {
+    let id = this.data.brand_id
+    let title = this.data.brand_name;
+
+    app.aldstat.sendEvent('品牌点击事件', {
+      "品牌名称": title
+    });
+    wx.navigateTo({
+      url: '/pages/goods/brandlist/brandlist?id=' + id,   //+'&store_id=1'
     })
   },
 
@@ -634,15 +764,6 @@ Page({
       })
     }
   },
-  plusXing(str, frontLen) {
-    //console.log(str);
-    var len = str.length - frontLen
-    var xing = '';
-    for (var i = 0; i < len; i++) {
-      xing += '*';
-    }
-    return str.substring(0, frontLen) + xing
-  },
 
   /**
    * 用户点击右上角分享
@@ -652,10 +773,11 @@ Page({
     let goods_info = that.data.goods_info;
     let uid = app.globalData.uid;
     let XQ_share_url = '/pages/goods/goodsdetail/goodsdetail?goods_id=' + goods_info.goods_id;
-
+    let infoText = decodeURIComponent(that.data.goods_info.introduction);
+    infoText = infoText.replace(/&quot;/g, '"');
     if (that.data.distributor_type == 0) {
       return {
-        title: goods_info.introduction,
+        title: infoText,
         path: XQ_share_url,
         imageUrl: goods_info.picture_detail.pic_cover_small,
         success: function (res) {
@@ -668,7 +790,7 @@ Page({
     }
     else {
       return {
-        title: goods_info.introduction,
+        title: infoText,
         path: XQ_share_url + '&uid=' + uid,
         imageUrl: goods_info.picture_detail.pic_cover_small,
         success: function (res) {
@@ -815,19 +937,6 @@ Page({
   },
 
   /**
-   * 底部二级导航选中
-   */
-  goodsBottomChildNav: function (event) {
-    let that = this;
-    let id = event.currentTarget.dataset.type;
-
-    that.setData({
-      goodsChildNav: id
-    });
-    that.getComments(id);
-  },
-
-  /**
    * 首页跳转
    */
   tapSwitch: function (event) {
@@ -941,17 +1050,12 @@ Page({
                   comments_list[i].image[key] = app.IMG(img);
                 }
               }
-              // comments_list[i].member_name = that.plusXing(comments_list[i].member_name, 1)
             }
-            // var appraiser = comments_list[0].member_name
-            // console.log(appraiser )
-            // console.log(that.plusXing(appraiser, 1))
 
             that.setData({
               comments_list: comments_list,
               comments_type: comment_type,
               page: page,
-              // appraisers: that.plusXing(appraiser, 1)
             })
           } else {
             let comments_list = {};
@@ -1074,6 +1178,13 @@ Page({
 
   },
 
+  // 促销点击显示更多
+  toShowMore:function(){
+    this.setData({
+      mansongNameMore: !this.data.mansongNameMore,
+    })
+  },
+
   /**
    * 关闭弹框
    */
@@ -1129,7 +1240,10 @@ Page({
     }
 
     arr[key].value[k].status = 1;
-    let sku_img = arr[key].value[k].spec_value_data_src;
+    let sku_img = {
+      spec_value_data: arr[key].value[k].spec_value_data_src,
+      spec_value_data_big_src: arr[key].value[k].spec_value_data_big_src
+    };
     //拼合规格组
     for (let i = 0; i < arr.length; i++) {
 
@@ -1161,8 +1275,8 @@ Page({
 
       }
 
-      console.log(sku_id);
-      console.log(goods_info.sku_list[i].sku_id);
+      // console.log(sku_id);
+      // console.log(goods_info.sku_list[i].sku_id);
 
       // 选择规格修改前段页面显示
       if (sku_id == goods_info.sku_list[i].sku_id) {
@@ -1172,7 +1286,7 @@ Page({
 
         //非内购价格
         let sku_let = goods_info.sku_list[i].inside_price;
-        console.log(sku_let)
+        // console.log(sku_let)
         let Lei_price = goods_info.sku_list[i].inside_price;
         let is_inside_sell = goods_info.sku_list[i].is_inside_sell;
 
@@ -1208,13 +1322,14 @@ Page({
 
 
     that.setData({
+      scale:1,
       spec_list: arr,
       sku_id: sku_id,
       attr_value_items_format: attr_value_items_format,
       member_price: member_price,
       stock: stock,
       sku_info: sku_info,
-      goods_info
+      goods_info,
     })
   },
 
@@ -1401,6 +1516,7 @@ Page({
         cart_detail: cart_detail,
       },
       success: function (res) {
+        console.log(res)
         let code = res.code;
         let data = res.data;
         if (code == 0) {
@@ -1914,7 +2030,7 @@ Page({
   },
 
   /**
-   * 图片预览
+   * 商品主图图片预览
    */
   preivewImg: function (e) {
     let imgUrls = this.data.imgUrls;
@@ -1931,6 +2047,36 @@ Page({
   },
 
   /**
+   * 规格图片预览
+   */
+  skuPreivewImg: function (e) {
+    let that=this;
+    let mo_imgs = this.data.mo_imgs;
+    let spec_list = this.data.spec_list;
+    let goods_info = this.data.goods_info;
+    let imgUrls = e.currentTarget.dataset.urls;
+    let urls=[];
+    if (spec_list.length>0&&spec_list[0].value[0].spec_value_data_big_src) {
+      for (let i = 0; i < spec_list.length; i++) {
+        for (let l = 0; l < spec_list[i].value.length; l++) {
+          urls.push(spec_list[i].value[l].spec_value_data_big_src);
+        }
+      }
+    }else{
+      urls.push(goods_info.img_list[0].pic_cover_big)
+    }
+    // console.log(urls);
+    that.setData({
+      isPreview:true,
+     
+    })
+    wx.previewImage({
+      current: mo_imgs.spec_value_data_big_src, // 当前显示图片的http链接
+      urls: urls // 需要预览的图片http链接列表
+    })
+  },
+
+  /**
    * 选择显示类型
    */
   selectType: function (e) {
@@ -1943,7 +2089,7 @@ Page({
   // 跳转开通会员页
   toOpenMember: function () {
     wx.navigateTo({
-      url: "/pages/payMembers/payMember/payMember",
+      url: "/package/payMembers/payMember/payMember",
     })
   },
 
@@ -1955,12 +2101,19 @@ Page({
   },
 
   // 你可能还想看商品详情跳转
-  toGood:function(e){
+  toGood: function (e) {
     var that = this;
     var id = e.currentTarget.dataset.id;
-    wx.navigateTo({
-      url: '/pages/goods/goodsdetail/goodsdetail?goods_id=' + id,
-    })
+    var url = e.currentTarget.dataset.url;
+    if (url) {
+      wx.navigateTo({
+        url: '/' + url,
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/goods/goodsdetail/goodsdetail?goods_id=' + id,
+      })
+    }
   },
   /* 
      选择分享方式
@@ -1992,30 +2145,54 @@ Page({
 
   },
 
-  //文本换行 参数：1、canvas对象，2、文本 3、距离左侧的距离 4、距离顶部的距离 5、6、文本的宽度  7字体大小
+  //文本换行 参数：1、canvas对象，2、文本 3、距离左侧的距离 4、距离顶部的距离 5、  6字体大小
 
-  drawText(ctx, str, leftWidth, initHeight, titleHeight, canvasWidth, FontSize) {
+  drawText(ctx, str, leftWidth, initHeight, titleHeight, FontSize, FontColor,textWidth) {
     var lineWidth = 0;
     var lastSubStrIndex = 0; //每次开始截取的字符串的索引
 
-    for (let i = 0; i < str.length; i++) {
-      lineWidth += ctx.measureText(str[i]).width;
-      if (lineWidth > canvasWidth) {
-        ctx.setFontSize(FontSize);
-        ctx.setFillStyle('#000');
-        ctx.fillText(str.substring(lastSubStrIndex, i), leftWidth, initHeight); //绘制截取部分                
-        initHeight += 18; //16为字体的高度   字体与字体相差的高度             
-        lineWidth = 0;
-        lastSubStrIndex = i;
-        titleHeight += 30;
-      }
-      if (i == str.length - 1) { //绘制剩余部分    
-        ctx.setFontSize(FontSize);
-        ctx.setFillStyle('#000');
-        ctx.fillText(str.substring(lastSubStrIndex, i + 1), leftWidth, initHeight);
+    ctx.setFontSize(FontSize);
+    ctx.setFillStyle(FontColor);
+    var chr = str.split("");//这个方法是将一个字符串分割成字符串数组    
+    var temp = "";
+    var row = [];
+    for (var a = 0; a < chr.length; a++) {
 
+      // console.log(ctx.measureText(temp).width, textWidth);
+      if (ctx.measureText(temp).width < textWidth) {
+        temp += chr[a];
+      } else {
+        a--; //这里添加了a-- 是为了防止字符丢失，效果图中有对比
+        row.push(temp); 
+        temp = "";
       }
-    }        // 标题border-bottom 线距顶部距离 
+    }
+    row.push(temp);      //如果数组长度大于2 则截取前两个
+    console.log(row);
+    // console.log(row)
+    if (row.length > 2) {
+      var rowCut = row.slice(0, 2);
+      var rowPart = rowCut[1];
+      // console.log(rowCut, rowPart)
+      var test = "";
+      var empty = [];
+      for (var a = 0; a < rowPart.length; a++) {
+        if (ctx.measureText(test).width < parseInt(parseInt(textWidth)-30)) {
+          test += rowPart[a];
+        } else {
+          break;
+        }
+      }
+      empty.push(test);
+      var group = empty[0] + "..."//这里只显示两行，超出的用...表示
+      rowCut.splice(1, 1, group);
+      row = rowCut;
+    }
+    // console.log(row)
+    for (var b = 0; b < row.length; b++) {
+      // context.fillText(row[b], 10, 30 + b * 30, 300);
+      ctx.fillText(row[b], leftWidth, initHeight + b * 20); //绘制截取部分
+    }
 
     titleHeight = titleHeight + 10;
     return titleHeight
@@ -2035,31 +2212,36 @@ Page({
       src: that.data.base_img,
       success: function (res) {
         // width & height
-        console.log(res);
         const ctx = wx.createCanvasContext('producer');
         ctx.setFillStyle('#fff')
         ctx.fillRect(0, 0, NOW, 750)
-        let setfixW = that.data.windowWidth - (that.data.windowWidth / 2); //当前手机屏幕的宽度
+        let setfixW = that.data.windowWidth / 2; //当前手机屏幕的宽度  
         let imgUrlW = setfixW / res.width;  //等比例计算
         let imgUrlH = res.height * imgUrlW;
-        let F01w = (that.data.windowWidth / 2) / 2;
-        ctx.drawImage(res.path, F01w, 30, setfixW, imgUrlH);
-        console.log(that.data.shop_img)
+        let F01 = parseInt(that.data.windowWidth / 2)/2;
+
+        ctx.drawImage(res.path, F01, 30, setfixW, imgUrlH);
+        
+        let F01w = parseInt((that.data.windowWidth / 2)/2)-50 ;  //文字左右两边的距离
+        // 介绍语
+        let infoText = decodeURIComponent(that.data.goods_info.introduction);
+        infoText = infoText.replace(/&quot;/g, '"');
+        console.log(infoText)
+        let infoWidth = parseInt(parseInt(setfixW) + 100);
+        that.drawText(ctx, infoText, F01w, imgUrlH + 60, 0, 16, '#000', infoWidth);
+
         // 合成BC基础商品首图02---->
         wx.getImageInfo({
           src: that.data.shop_img,
           success: function (res) {
             // width & height
             console.log(res);
-            let orign = that.data.windowWidth - (that.data.windowWidth / 5);
-            let orignW = orign / res.width;  //等比例计算
-
-            let Q02 = (orign / res.height) * res.width;
+            let orign = infoWidth;
+            let orignW = (parseInt(parseInt(orign) - 20)) / res.width;  //等比例计算
+            // console.log(orign, orignW);
             let orignH = res.height * orignW;
-            let H01w = (that.data.windowWidth / 5) / 2;
-            ctx.drawImage(res.path, H01w, imgUrlH + 50, orign, orignH);
+            ctx.drawImage(res.path, F01w+10, imgUrlH + 100, parseInt(parseInt(orign)-20), orignH);
             // 合成BC基础商品小程序图03---->
-            let R
             let fsm = wx.getFileSystemManager();
             // wx.removeStorageSync
             // 因wx.getImageInfo获取不到base64的信息 
@@ -2073,27 +2255,24 @@ Page({
               encoding: 'base64',
               success(res) {
                 console.log(res)
-                R = wx.env.USER_DATA_PATH + '/test.png';
+                // R = wx.env.USER_DATA_PATH + '/test.png';
                 // 获取图片信息
                 wx.getImageInfo({
                   src: Yo,
                   success: function (res) {
-                    let HOS = that.data.windowWidth / 4;
-                    let W = (Q02 + H01w) - HOS;
-                    let All = imgUrlH + orignH + 80;
-
-                    console.log(Q02);
-                    console.log(W);
-                    console.log(HOS);
+                    let HOS = that.data.windowWidth / 4; 
+                    let W = (orign + F01w) - HOS;  //二维码距离左边的距离
+                    let All = imgUrlH + orignH + 120;
                     ctx.drawImage(res.path, W, All, HOS, HOS);
                     // 合成BC商品说明文字04---->
                     let text = that.data.goods_info.goods_name;
-                    let KFZ = (Q02 / 2) - HOS / 5; //文字的的宽度
-                    let Fill = HOS / 7;
+                    let price = '￥'+ that.data.goods_info.price;
                     let UrlH = All + HOS + 10;
+                    let textWidth = parseInt(parseInt(orign) - 10 - parseInt(HOS));
 
-                    that.drawText(ctx, text, H01w, All + Fill, 0, KFZ, 14);
-                    console.log(UrlH)
+                    that.drawText(ctx, text, F01w, All+20, 0, 14, '#000', textWidth);
+                    that.drawText(ctx, price, F01w, All+65, 0, 18, '#e40046', textWidth);
+                    // console.log(UrlH)
 
                     //  设计显示图片的大小
                     let show_imgW = NOW / 2;
@@ -2253,7 +2432,7 @@ Page({
   },
   //滑动结束事件
   handletouchend: function (event) {
-    console.log(event, 222222)
+    // console.log(event, 222222)
     this.setData({
       isHide: 0
     })

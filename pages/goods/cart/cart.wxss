@@ -1,4 +1,5 @@
 
+@import "/templates/goods-list-template/goods-list-template.wxss";
 .show-btn {
   margin-top: 100 rpx;
   color: #22cc22;
@@ -92,6 +93,7 @@
   margin-right:3px;
   height: 18px;
   text-align: center;
+  border-radius: 2px;
 }
 
 /* cust end ========================= */
@@ -111,11 +113,12 @@ input {
 
 .cart-detail {
   margin-top: 2px;
+  padding-bottom: 80px;
 }
 
 .cart-prolist {
   /* background-color: #fff; */
-  margin-bottom: 80px;
+  /* margin-bottom: 80px; */
 }
 
 .weChat-cart{
@@ -134,10 +137,10 @@ input {
   padding: 0px;
   background: #fff;
   border: 0;
-  display: flex;
- justify-content: space-between;
+  /* display: flex;
+ justify-content: space-between; */
  width: 100%;
- overflow: hidden;
+ position: relative;
 }
 
 .cart-prolist .title {
@@ -166,17 +169,23 @@ input {
 }
 
 .cart-list-li {
-  border: 0;
   border-bottom: 1px solid #F8F8F8;
   justify-content: space-between;
   width:100%;
-  padding: 10px;
+  padding: 20rpx;
+  position: relative;
+  z-index: 10;
+  min-height:240rpx;
+  box-sizing: border-box;
+  height: 100%;
+  overflow-y: hidden;
+  overflow:auto;-webkit-overflow-scrolling: touch;
 }
 
 .checkbox {
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
+  display: inline-block;
+  width: 40rpx;
+  height: 40rpx;
   margin-right: 10rpx;
  -webkit-transition: all 0.4s;
  transition: all 0.4s;
@@ -184,9 +193,14 @@ input {
  transform: translateX(90px);
  margin-left: -90px;
 }
+.checkbox>image{
+  width: 40rpx;
+  height: 40rpx;
+  display: inline-block
+}
 
 .cart-list-li .product {
-  width:100%;
+  width:670rpx;
   padding:0 10px 0 0;
     -webkit-transition: all 0.4s;
  transition: all 0.4s;
@@ -195,6 +209,7 @@ input {
  /* margin-left: -90px  */
  position: relative;
  z-index: 10;
+  -webkit-backface-visibility: hidden;
 }
 
 .cart-list-li .product .pic {
@@ -278,8 +293,8 @@ input {
 .cart-list-li .ui-number .decrease, .cart-list-li .ui-number .increase {
   color: initial;
   width: 25px;
-  height:1.4rem;
-  line-height: 1.4rem;
+  height:50rpx;
+  line-height: 50rpx;
   text-align: center;
   background: #fbfbfb;
 }
@@ -303,8 +318,8 @@ input {
   border-left: 1px;
   -webkit-border-left: 1px;
   box-shadow: none;
-  margin-left: -1px;
-  margin-right: -1px;
+  /* margin-left: -1px;
+  margin-right: -1px; */
 }
 
 .cart-list-li .ui-number .increase {
@@ -316,10 +331,12 @@ input {
 
 .cart-list-li .ui-number .num {
   padding: 0 5px;
-  height:1.4rem;
-  line-height: 1.4rem;
+  height:50rpx !important;
+  line-height: 50rpx !important;
   width: 30px;
   text-align: center;
+  border:none;
+  min-height: 0;
 }
 
 .fixed {
@@ -346,7 +363,7 @@ body .fixed.bottom {
   bottom:0;
   height: 54px;
   background: #fff;
-  z-index: 5;
+  z-index: 1000;
   padding: 0 20rpx;
   display: flex;
   justify-content: space-around;
@@ -469,7 +486,7 @@ body .fixed.bottom {
 
 .cart-none .btn {
   display: block;
-  margin: 0 auto 80px;
+  margin: 0 auto 40px;
   height: 38px;
   line-height: 38px;
   width: 392rpx;
@@ -598,24 +615,36 @@ body .fixed.bottom {
   display:block;
 }  
 .del {
- background-color: orangered;
- width: 90px;
+ /* width: 240rpx; */
+ -webkit-transform: translateX(100px);
+ transform: translateX(100px);
+ -webkit-transition: all 0.4s;
+ transition: all 0.4s; 
+ position: absolute;
+ top:0;
+ right:-240rpx;
+ z-index: 100;
+ height:100%;
+}
+.del>view{
+  background-color: orangered;
   display: flex;
  align-items: center;
  justify-content: center; 
  font-size: 14px;
  color: #fff;
- -webkit-transform: translateX(100px);
- transform: translateX(100px);
- -webkit-transition: all 0.4s;
- transition: all 0.4s;
- height: 200rpx;
+ margin:20rpx;
+ box-sizing: border-box;
+ min-height:200rpx;
+ width: 160rpx;
 }
 .touch-move-active .checkbox,
 .touch-move-active .product,
-.touch-move-active .del {
+.touch-move-del{
  -webkit-transform: translateX(0);
  transform: translateX(0);
+ right:0;
+ -webkit-backface-visibility: hidden;
 }      
 
 .goods_price-input{
@@ -672,6 +701,39 @@ width:100%;
 }
 .choose{
   display:inline-block;
+}
+
+/* 品牌推荐 */
+.brand{
+  background: #fff;
+  padding:20rpx 0;
+}
+.activity_title{
+  display: flex;
+  justify-content: flex-start;
+}
+.activity_title_border{
+  background: #e40046;
+  width:8px;
+  border-radius: 8px;
+  height:50px;
+  display: inline-block;
+}
+.activity_title_text{
+  color:#333;
+  font-size: 18px;
+  font-weight: 500;
+  padding:0 20rpx;
+  display: flex;
+  align-items: center;
+}
+.brand .activity_title_border{
+  height:50rpx;
+  width:6px;
+  background: #e40046;
+}
+.brand .activity_title_text{
+  line-height: 50rpx;
 }
 /* .d_l{
   float: left;

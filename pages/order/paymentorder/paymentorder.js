@@ -1631,7 +1631,7 @@ console.log(data);
                             success(c){
                                 "use strict";
                                 wx.navigateTo({
-                                    url: '/pages/pay/getpayvalue/getpayvalue?out_trade_no=' + out_trade_no
+                                  url: '/pages/pay/getpayvalue/getpayvalue?present=0&&out_trade_no=' + out_trade_no
                                 })
                             }
                         })

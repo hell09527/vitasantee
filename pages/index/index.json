@@ -1,4 +1,7 @@
 {
   "navigationBarTitleText": "维美善特",
-  "enablePullDownRefresh": true
+  "enablePullDownRefresh": true,
+  "usingComponents":{
+    "goods-list": "/components/common/goodsList/goodsList"
+  }
 }

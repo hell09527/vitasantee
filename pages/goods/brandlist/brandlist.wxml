@@ -1,0 +1,46 @@
+
+<!-- 引入tempalte  -->
+<!-- <import src="/templates/goods-list-template/goods-list-template.wxml" /> -->
+
+<view class="motify {{prompt==''?'hide':''}}">
+  <icon class="i show_type warning" type='warn' size='25' color='#FFF'></icon>
+  <view class="motify-inner">{{prompt}}</view>
+</view>
+<!-- 广告位 -->
+<block>
+  <view  wx:if='{{brand_pic?brand_pic:""}}' class="slick">
+  <image  lazy-load="true"  src="{{brand_pic}}" bindload='imgLoad' mode='widthFix' class="fde"/>
+  </view>
+  </block>
+  <!-- <block>
+     <view    wx:if='{{brind_id== 4}}' class="slick">
+          <image src="http://p6yljnwkf.bkt.clouddn.com/750-400-1.jpg" bindload='imgLoad' mode='widthFix' class="fde"/>
+  </view> 
+</block> -->
+  <!-- <view class="sliding">
+	<view class='ul' id="slider">
+    <block wx:for='{{goods_brand_list}}' wx:key='' wx:for-item='brand' wx:for-index='index'>
+      <view class="li {{index==brand_select_index?'selected':''}}" catchtap='selectBrind' data-index='{{index}}' data-id='{{brand.brand_id}}'>{{brand.brand_name}}</view>
+    </block>
+  </view>
+</view>   -->
+<view class="goods-list-grid openList">
+	<!-- <view class="blank-div"></view> -->
+	<view id="goods_list">
+		<view class="tablelist-append clearfix" style="overflow: hidden;">
+      <goods-list brandGoods="{{goods_list}}" isNoGoods="{{false}}"></goods-list>
+      <!-- <view class='brand_goods'>
+       <view class='left'>
+          <block wx:for='{{goods_list}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+            <template is="goodsListTemplate" data="{{...item,index}}" wx:if='{{index%2==0}}'/>
+          </block>
+        </view>
+        <view class='right'>
+          <block wx:for='{{goods_list}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+            <template is="goodsListTemplate" data="{{...item,index}}" wx:if='{{index%2==1}}'/>
+          </block>
+        </view>
+      </view> -->
+    </view>
+	</view>
+</view>

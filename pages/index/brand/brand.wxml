@@ -1,14 +1,14 @@
 <!-- //品牌 -->
 
-<scroll-view>
+<view>
   <view class='first-search'>
     <view class='search-box'>
       <image src='/images/goods/search_icon_2.png' class="search-button" catchtap='toSearch'/>
-      <input type="text" class="search-input" bindinput='searchInput' placeholder="按照商品关键字搜索" bindconfirm='toSearch' placeholder-style='color:#cccdd0'/>
+      <input type="text" class="search-input" bindinput='searchInput' placeholder="按照商品关键字搜索" bindconfirm='toSearch' value='{{search_text}}' placeholder-style='color:#cccdd0'/>
     </view>
   </view>
 
-  <view class='flex' style='height:100%;margin-bottom:50px;'>
+  <view class="flex classify-box">
      <!-- 左边 -->
     <view class='classify-left'>
       <block wx:for='{{goods_category_list}}' wx:key='' wx:for-item='category' wx:for-index='index'>
@@ -17,7 +17,7 @@
     </view>
 
     <!-- 右边 -->
-    <view class='classify-right'>
+    <scroll-view class='classify-right' wx:if='{{goodsList.length>0}}'>
       <!-- <image src="{{classifyLogo}}" mode="widthFix"/> -->
       <view class='goods-list'>
         <block wx:for='{{goodsList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
@@ -27,11 +27,30 @@
           </view>
         </block>
       </view>
+
+      <!-- 品牌推荐 -->
+      <view class='brand-recommended'>
+        <text>品牌推荐</text>
+        <hr/>
+      </view>
+      <view class='goods-list' style='padding:20rpx 0;'>
+        <block wx:for='{{brandList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+          <view class='goods-list-item' catchtap='toBrand' data-id='{{item.brand_id}}' data-title='{{item.brand_name}}' style='padding:0;'>
+            <image src="{{item.brand_ads}}" mode="widthFix" style='width:100%;border:1px solid #e5e5e5;'/>
+            <view class='flex' style='text-align:center;color:#333;line-height:20px;height:40px;align-items: center;justify-content: center;padding:10rpx;'>{{item.brand_name}}</view>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+
+    <view class="p {{isNoGoods?'':'hide'}}" style='padding:50px;text-align:center;background:#fff;width:560rpx;box-sizing:border-box;height:100vh;' wx:if='{{goodsList.length==0}}'>
+        <!-- <image src="/images/goods/wap_nodata.png" mode='widthFix' style='width:60px;display:block;margin:20rpx auto'/> -->
+      <br/>此分类暂时没有商品了
     </view>
   </view>
   
 
-</scroll-view> 
+</view> 
 
 
 

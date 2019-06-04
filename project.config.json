@@ -1,7 +1,7 @@
 {
 	"description": "项目配置文件。",
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
@@ -10,10 +10,12 @@
 		"uglifyFileName": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.4.2",
+	"libVersion": "2.7.0",
 	"appid": "wxc5a426c09ac5cebc",
-	"projectname": "CB_test04",
+	"projectname": "vta",
 	"isGameTourist": false,
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
 	"condition": {
 		"search": {
 			"current": -1,
@@ -32,18 +34,18 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 3,
+			"current": 7,
 			"list": [
 				{
-					"id": -1,
-					"name": "666",
-					"pathName": "pages/member/withdrawal/withdrawal",
+					"id": 0,
+					"name": "惠选师申请",
+					"pathName": "pages/member/kolApply/kolApply",
 					"query": ""
 				},
 				{
-					"id": -1,
-					"name": "666",
-					"pathName": "pages/member/withdrawal/withdrawal",
+					"id": 1,
+					"name": "进群",
+					"pathName": "pages/member/addInGroup/addInGroup",
 					"query": ""
 				},
 				{
@@ -55,7 +57,34 @@
 				{
 					"id": -1,
 					"name": "限时抢购",
-					"pathName": "pages/index/discount/discount"
+					"pathName": "pages/index/discount/discount",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "详情页",
+					"pathName": "pages/goods/goodsdetail/goodsdetail",
+					"query": "goods_id=13"
+				},
+				{
+					"id": 5,
+					"name": "二维码进入",
+					"pathName": "pages/index/index",
+					"query": "",
+					"scene": "1011"
+				},
+				{
+					"id": 6,
+					"name": "秒杀",
+					"pathName": "pages/index/discount/discount",
+					"query": "",
+					"scene": "1011"
+				},
+				{
+					"id": -1,
+					"name": "领取优惠券",
+					"pathName": "pages/index/couponReceive/couponReceive",
+					"query": ""
 				}
 			]
 		}

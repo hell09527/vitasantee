@@ -204,7 +204,7 @@ Page({
                                   // app.aldstat.sendEvent('支付成功');
                                   // console.log(222)
                                   wx.reLaunch({
-                                    url: '/pages/payMembers/paySuccess/paySuccess',
+                                    url: '/package/payMembers/paySuccess/paySuccess',
                                   })
                                 }else{
                                   // console.log(333)

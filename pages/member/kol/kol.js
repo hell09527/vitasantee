@@ -12,7 +12,7 @@ Page({
       { "code": "分润待结算状态", "text": "订单付款后，订单获得的分润" },
       { "code": "分润审核期", "text": "订单已收货后15天内的维权期" },
       { "code": "待入账金额", "text": "订单获得的分润处于审核期" },
-      { "code": "可提现金额", "text": "订单获得的分润已入账到极选师账户，等待提现" },
+      { "code": "可提现金额", "text": "订单获得的分润已入账到惠选师账户，等待提现" },
       { "code": "考核期", "text": "每个季度为一个考核期" },
     ],
     CistData: [
@@ -76,12 +76,12 @@ Page({
       url: "api.php?s=goods/getGoodsRecommendList",
       success: function (res) {
         let listData = res.data
-        // console.log(listData)       
+        console.log(listData)       
         
         for (let index in listData){
           // console.log(listData[index].fraction)
           listData[index].fraction
-          listData[index].fraction = listData[index].fraction * 100 + "%"
+          listData[index].fraction = listData[index].fraction * 100
         }
         that.setData({
           listData
@@ -184,7 +184,7 @@ Page({
             for (let key in order_list[index].order_item_list) {
               let img = order_list[index].order_item_list[key].picture.pic_cover_small;
               order_list[index].order_item_list[key].picture.pic_cover_small = app.IMG(img);
-              order_list[index].order_item_list[key].fraction = order_list[index].order_item_list[key].fraction * 100 + "%";
+              order_list[index].order_item_list[key].fraction = order_list[index].order_item_list[key].fraction * 100 ;
               let shareBenefit = (order_list[index].order_item_list[key].goods_money) * parseInt(order_list[index].order_item_list[key].fraction)
               // console.log(order_list[index].order_item_list[key].goods_money);
               // console.log(order_list[index].order_item_list[key].fraction);
@@ -267,7 +267,7 @@ Page({
             for (let key in order_list[index].order_item_list) {
               let img = order_list[index].order_item_list[key].picture.pic_cover_small;
               order_list[index].order_item_list[key].picture.pic_cover_small = app.IMG(img);
-              order_list[index].order_item_list[key].fraction = order_list[index].order_item_list[key].fraction * 100 + "%";
+              order_list[index].order_item_list[key].fraction = order_list[index].order_item_list[key].fraction * 100;
               let shareBenefit = (order_list[index].order_item_list[key].goods_money) * parseInt(order_list[index].order_item_list[key].fraction)
               // console.log(order_list[index].order_item_list[key].goods_money);                    // console.log(order_list[index].order_item_list[key].fraction);
               // console.log(shareBenefit)

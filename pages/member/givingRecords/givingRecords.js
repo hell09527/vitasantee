@@ -399,13 +399,13 @@ Page({
 
   //   return {
   //     title: "您的好友赠予你一份礼物",
-  //     path: '/pages/backPage/fetchGift/fetchGift?order_id=' + x,
+  //     path: '/package/backPage/fetchGift/fetchGift?order_id=' + x,
   //     imageUrl: '',
   //     success: function (res) {
   //       app.showBox(that, '分享成功');
 
   //       wx.navigateTo({
-  //         url: "/pages/backPage/backPage",
+  //         url: "/package/backPage/backPage",
   //       })
 
   //     },

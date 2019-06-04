@@ -21,7 +21,7 @@ Page({
         console.log(res);
         if (res.code == 2) {
           that.setData({
-            kolText:'你已经是极选师',
+            kolText:'你已经是惠选师',
           })
         } else if (res.code == 3) {
           that.setData({

@@ -1,16 +1,22 @@
 <!-- CB商品列表 -->
 <template name="goodsListTemplate">
   <view class='brand_goods_detail' catchtap='toGood' data-id='{{goods_id}}'>
-              <image src="{{pic_cover_small}}" mode="widthFix"/>
-              <text decode="true" class='activity_text'>
-                <block wx:if='{{source_type==2}}' wx:key='' wx:for-item='vo'>
-                  <text class="i goods_tab">跨境</text>
-                </block>{{goods_name}}
-              </text>
-              <!-- <text class='activity_info'>收敛毛孔补水保湿收敛毛孔补水保湿</text> -->
-              <view class='brand_goods_price'>
-                <text>￥{{promotion_price}}</text>
-                <!-- <image src="{{!isActive?'https://static.vitasantee.com/%E6%94%B6%E8%97%8F@2x.png':'https://static.vitasantee.com/%E6%94%B6%E8%97%8F%20copy%202@2x.png'}}" mode="widthFix"  catchtap='toCollect' data-index='{{index}}'/> -->
-              </view>
-            </view>
+    <image src="{{pic_cover_small}}" mode="widthFix" />
+    <view style='padding:10rpx;'>
+      <text decode="true" style='margin:10rpx 0;font-size: 12px;color:#333;'>{{introduction}}</text>
+      <text decode="true" class='activity_text'>
+        <block wx:if='{{source_type==2}}' wx:key='' wx:for-item='vo'>
+          <text class="i goods_tab">跨境</text>
+        </block>
+        {{goods_name}}
+      </text>
+      <!-- <text class='activity_info'>收敛毛孔补水保湿收敛毛孔补水保湿</text> -->
+      <view class='brand_goods_price'>
+        <text>￥{{promotion_price}}</text>
+        <view style='padding:10rpx;' catchtap="{{unregistered==1 || tel==''?'Crossroad':'toCollect'}}" data-id='{{goods_id}}' data-name='{{goods_name}}' data-index='{{index}}' wx:if="{{is_member_fav_goods==0||is_member_fav_goods==1}}">
+          <image src="{{is_member_fav_goods==0?'https://static.vitasantee.com/%E6%94%B6%E8%97%8F@2x.png':'https://static.vitasantee.com/%E6%94%B6%E8%97%8F%20copy%202@2x.png'}}" mode="widthFix" />
+        </view>
+      </view>
+    </view>
+  </view>
 </template>

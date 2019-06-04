@@ -1,47 +1,84 @@
-<!--pages/index/couponReceive/couponReceive.wxml-->
-
-<!-- 引入tempalte -->
-<import src="/templates/dataLogin-template/dataLogin.wxml" />
-
+<!-- pages/index/couponReceive/couponReceive.wxml -->
 <view>
-
-<view class="motify {{prompt==''?'hide':''}}">
-    <icon class="i show_type warning" type='warn' size='25'color='#fff' ></icon>
+  <view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25' color='#fff'></icon>
     <view class="motify-inner">{{prompt}}</view>
   </view>
-
-
-  <view class="receiveList">
-    <view class="flex receiveItem">
-      <view class="receiveItem-left">
-        <view class='flex'>￥<text style='font-size:22px;'>{{coupon.money}}</text></view>
-        <hr/>
-        <view style='margin-top:8rpx;font-size:12px;'>优惠券</view>
+  <scroll-view scroll-y class='all-image'>
+    <image src='{{detail.img}}' mode='widthFix' />
+  </scroll-view>
+  <view class='receive-btn' catchtap="toReceive">领取优惠券</view>
+</view>
+<!-- 弹框 -->
+<view class='mask' wx:if='{{isShow==1}}' catchtap='toCancle'>
+  <view class='mask-box'>
+    <view class='mask-box-title'>
+      <view class='coupon-title'>领取成功</view>
+      <view class="coupon-list-box">
+        <scroll-view scroll-y="{{true}}" class='coupon-list'>
+          <block wx:for='{{list}}' wx:key='' wx:for-item='coupons' wx:for-index='index'>
+            <view class="couponItem">
+                <view class="couponItem-top">
+                    <view class="couponItem-top-left">
+                      <text class="coupon-unit">￥</text>
+                      <text class="coupon-price">{{coupons.money}}</text>
+                    </view>
+                    <view class="couponItem-top-right">
+                      <view>满{{coupons.at_least}}可用</view>
+                      <view class="quan">优惠券</view>
+                    </view>
+                </view>
+                <view class="couponItem-bottom">
+                  <view>使用期限: {{coupons.end_time}}前</view>
+                  <view>{{coupons.face_type_show}}</view>
+                </view>
+              <!-- <view class='couponItem-middle'>
+                <view class='flex'>
+                  ￥
+                  <text style='font-size:18px;'>{{coupons.money}}</text>
+                </view>
+                <hr />
+                <view style='margin-top:8rpx;font-size:12px;'>优惠券</view>
+              </view>
+              <view class="couponItem-right">
+                <view>
+                  <view style='font-size:16px;color:#000;text-align:left;'>
+                    满{{coupons.at_least}}元使用
+                  </view>
+                  <view style='color:#333;text-align:left;' wx:if="{{coupons.use_type!=2}}">
+                    有效期:{{coupons.start_time}}-{{coupons.end_time}}
+                  </view>
+                  <view style='color:#333;text-align:left;' wx:if="{{coupons.use_type==2}}">
+                    请在领取后{{coupons.get_after_days}}天内使用
+                  </view>
+                </view>
+                <view style='color:#666;'>{{coupons.coupon_name}}</view>
+              </view> -->
+            </view>
+          </block>
+        </scroll-view>
       </view>
-      <view class="receiveItem-right">
-        <view style='margin:20rpx 0;'>
-          <view style='color:#333;' style='font-size:18px;color:#000;'>满{{coupon.at_least}}元使用</view>
-          <view style='color:#333;' wx:if="{{coupon.use_type!=2}}">{{coupon.start_time}}-{{coupon.end_time}}</view>
-          <view wx:if="{{coupon.use_type==2}}">请在领取后{{coupon.get_after_days}}天内使用 </view>
-        </view>
-        <view style='color:#666;margin:0 0 10rpx;'>{{coupon.coupon_name}}</view>
-      </view>
     </view>
-  </view> 
-
-
-    <view wx:if='{{unregistered==1 || tel==""}}'>
-      <view class="receive-btn" catchtap='Crossroad'>领取优惠券</view> 
-    </view>
-    <!-- 领取优惠券按钮 -->
-    <view wx:if='{{unregistered==0 && tel!="" }}'>
-      <view class="{{lickstick==1?'receive-btn':'receive-btn-success'}}" catchtap="{{lickstick==1?'toReceive':''}}">{{lickstick==1?'领取优惠券':'领取成功'}}</view> 
-    </view>
-
-
-  <view>
-    <view class="back-btn" catchtap='backIndex'>前往购物</view>
+    <view catchtap='toIndex' class='toReceive'>前往购物</view>
   </view>
-
-  <template is="dataLogin" data="{{showModal,Choice,layout}}" />
+</view>
+<!-- 弹框 -->
+<view class='mask' wx:if='{{isEnvelope==1}}' catchtap='toCancle'>
+  <view class='mask-box'>
+    <view class='mask-box-title'>
+      <view class='coupon-title'>{{detail.title}}</view>
+      <view class='coupon-list-box'>
+        <image class="envelope" src="https://static.vitasantee.com/envelope.png" mode="widthFix">
+          <view class="envelope-content">
+            <view class="envelope-top">
+              <text style="font-size: 46rpx">200</text>
+              <text style="font-size: 24rpx">元</text>
+            </view>
+            <view class="envelope-bottom" style="font-size: 28rpx">购物金</view>  
+          </view>
+        </image>
+      </view>
+    </view>
+    <view catchtap='toIndex' class='toReceive'>前往购物</view>
+  </view>
 </view>

@@ -1,5 +1,5 @@
 
-<import src="/templates/goods-list-template/goods-list-template.wxml" />
+<!-- <import src="/templates/goods-list-template/goods-list-template.wxml" /> -->
 
 <view>
   <view class="motify {{prompt==''?'hide':''}}">
@@ -18,11 +18,19 @@
               <image src="/images/goods/wap_nodata.png" mode='widthFix'/>
               <br/>Sorry！没有找到您想要的商品……
             </view>
-            <view class='body'>
-              <block wx:for='{{goods_list}}' wx:key='' wx:for-item='item' wx:for-index='index'>
-                <template is="goodsListTemplate" data="{{...item,index}}" />
-              </block>
-            </view>
+            <goods-list brandGoods="{{goods_list}}"></goods-list>
+            <!-- <view class='brand_goods'>
+              <view class='left'>
+                <block wx:for='{{goods_list}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+                  <template is="goodsListTemplate" data="{{...item,index}}" wx:if='{{index%2==0}}'/>
+                </block>
+              </view>
+              <view class='right'>
+                <block wx:for='{{goods_list}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+                  <template is="goodsListTemplate" data="{{...item,index}}" wx:if='{{index%2==1}}'/>
+                </block>
+              </view>
+            </view> -->
           </view>
         </view>
       </view>

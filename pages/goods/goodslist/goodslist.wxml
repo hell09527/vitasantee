@@ -1,26 +1,32 @@
 <import src="/templates/top-template/top-template.wxml" />
-<import src="/templates/goods-list-template/goods-list-template.wxml" />
+<!-- <import src="/templates/goods-list-template/goods-list-template.wxml" /> -->
 <import src="/templates/goodsScreening-template/goodsScreening-template.wxml" />
-
 <view class="com-content">
   <!-- 公共头部 -->
-  <template is="topTemplate" data="{{category_list,scrollLeft,select,isInput}}" />
-
-
+  <template is="topTemplate" data="{{scrollLeft,select,isInput}}" />
   <view class="item-ans">
     <!-- 内容主体 -->
     <view class='skin-container'>
-      <template is="goodsScreeningTemplate" data="{{brandSelect,recommendSelect,goodsSelect,brand,source_type,sort,brandName}}" />
+      <template is="goodsScreeningTemplate" data="{{search_text,brandSelect,recommendSelect,goodsSelect,brand,sort,brandName,category_list,categoryName}}" />
       <!-- 商品列表 -->
-      <view class='brand_goods'>
-        <block wx:for='{{category_goods}}' wx:key='' wx:for-item='item' wx:for-index='index'>
-          <template is="goodsListTemplate" data="{{...item,index}}" />
-        </block>
-        <view class="p {{isNoGoods?'':'hide'}}" style='margin:40px auto;text-align:center;'>
-          <!-- <image src="/images/goods/wap_nodata.png" mode='widthFix' style='width:60px;display:block;margin:20rpx auto'/> -->
-          <br/>此分类暂时没有商品
+      <goods-list brandGoods="{{category_goods}}" msg="此分类暂时没有更多商品" isNoGoods="{{isNoGoods}}"></goods-list>
+      <!-- <view class='brand_goods'>
+        <view class='left'>
+          <block wx:for='{{category_goods}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+            <template is="goodsListTemplate" data="{{...item,index}}" wx:if='{{index%2==0}}'/>
+          </block>
         </view>
-      </view>
+        <view class='right'>
+          <block wx:for='{{category_goods}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+            <template is="goodsListTemplate" data="{{...item,index}}" wx:if='{{index%2==1}}'/>
+          </block>
+        </view>
+      </view> -->
+      <!-- <view class="p {{isNoGoods?'':'hide'}}" style='margin:20px auto;text-align:center;'>
+         <image src="/images/goods/wap_nodata.png" mode='widthFix' style='width:60px;display:block;margin:20rpx auto'/> 
+        <br />
+        此分类暂时没有更多商品
+      </view> -->
     </view>
   </view>
 </view>

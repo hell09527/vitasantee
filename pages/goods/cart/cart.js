@@ -56,8 +56,9 @@ Page({
     personnel: '',
     Carrier: '' ,   // 分销者ID
     showStatus:0,   // 原价的展示
-    showTitle:0,//是否提示普通极选师修改价格
-    showEide: 0, 
+    showTitle: 0,//是否提示普通惠选师修改价格
+    showEide: 0,
+    isFoll: true
   },
   // 测试数据
   last: function () {
@@ -286,6 +287,8 @@ Page({
             edit: 0,
             is_checked: 1
           });
+
+          wx.stopPullDownRefresh()
         }
         // console.log(res);
       }
@@ -336,6 +339,25 @@ Page({
       showStatus:0,
       distributor_type,
       uid
+    })
+
+    app.sendRequest({
+      url: 'api.php?s=Goods/getHotGoods',
+      data: {},
+      success: function (res) {
+        // console.log(res)
+        let code = res.code;
+        if (code == 0) {
+          let data = res.data;
+
+          console.log(data);
+          let new_pro = data;
+
+          that.setData({
+            goodsList: new_pro, //新品推荐
+          });
+        }
+      }
     })
 
 
@@ -400,9 +422,61 @@ Page({
   },
 
   /**
+   * 收藏
+   */
+  toCollect: function (e) {
+    let that = this;
+    let goodsList = that.data.goodsList;
+    var id = e.currentTarget.dataset.id;
+    var name = e.currentTarget.dataset.name;
+    var index = e.currentTarget.dataset.index;
+    let is_fav = goodsList[index].is_member_fav_goods;
+    let method = is_fav == 0 ? 'FavoritesGoodsorshop' : 'cancelFavorites';
+    let message = is_fav == 0 ? '收藏' : '取消收藏';
+    is_fav = is_fav == 0 ? 1 : 0;
+    goodsList[index].is_member_fav_goods = is_fav;
+
+    app.sendRequest({
+      url: 'api.php?s=member/' + method,
+      data: {
+        fav_id: id,
+        fav_type: 'goods',
+        log_msg: name
+      },
+      success: function (res) {
+        let code = res.code;
+        let data = res.data;
+        if (code == 0) {
+          if (data > 0) {
+            app.showBox(that, message + '成功');
+
+            that.setData({
+              goodsList: goodsList
+            })
+          } else {
+            app.showBox(that, message + '失败');
+          }
+        }
+      }
+    });
+  },
+
+  /**触发*/
+  Crossroad: function () {
+    let _that = this;
+    let Tel = _that.data.tel;
+    if (app.globalData.unregistered == 1 || Tel == '') {
+      wx.navigateTo({
+        url: '/pages/member/resgin/resgin',
+      })
+    }
+  },
+
+  /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
+    this.GWC_reuse()//数据请求
 
   },
 
@@ -715,6 +789,7 @@ Page({
     let cart_list = that.data.cart_list;
     let num = event.detail.value;
     let total_price = that.data.total_price;
+    console.log('000000',num);
 
     app.sendRequest({
       url: 'api.php?s=goods/cart',
@@ -1149,6 +1224,23 @@ Page({
     
   },
 
+  // 热卖商品跳转商品详情页
+
+  toGood: function (e) {
+    var that = this;
+    var id = e.currentTarget.dataset.id;
+    var url = e.currentTarget.dataset.url;
+    if (url) {
+      wx.navigateTo({
+        url: '/' + url,
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/goods/goodsdetail/goodsdetail?goods_id=' + id,
+      })
+    }
+  },
+
   verification: function (e) {
     let that = this;
     let cart_list = that.data.cart_list;
@@ -1254,6 +1346,7 @@ Page({
   touchstart: function (e) {
     //开始触摸时 重置所有删除
     var data = this.data.cart_list;
+    let isFoll = true;
     for (let index in data) {
       for (let key in data[index]) {
         data[index][key].isTouchMove = false
@@ -1263,7 +1356,9 @@ Page({
       startX: e.changedTouches[0].clientX,
       startY: e.changedTouches[0].clientY,
       cart_list: data,
+      isFoll
     })
+
   },
   //滑动事件处理
   touchmove: function (e) {
@@ -1275,7 +1370,10 @@ Page({
       touchMoveY = e.changedTouches[0].clientY,//滑动变化坐标
       //获取滑动角度
       angle = that.angle({ X: startX, Y: startY }, { X: touchMoveX, Y: touchMoveY });
+
+    // console.log(e.detail,touchMoveX, touchMoveY)
     var data = this.data.cart_list;
+    let isFoll;
     for (let i in data) {
       for (let key in data[i]) {
         // console.log(index,key)
@@ -1287,7 +1385,21 @@ Page({
           if (touchMoveX > startX) //右滑
             data[i][key].isTouchMove = false
           else //左滑
-            data[i][key].isTouchMove = true
+            data[i][key].isTouchMove = true;
+
+
+          if (data[i][key].isTouchMove == true) {
+            isFoll = false;
+            //   that.setData({
+            //    isFoll
+            //  })
+
+          } else {
+            isFoll = true;
+            that.setData({
+              isFoll
+            })
+          }
         }
       }
     }
@@ -1304,7 +1416,8 @@ Page({
     // })
     //更新数据
     that.setData({
-      cart_list: data
+      cart_list: data, 
+      isFoll
     })
   },
   /**
@@ -1326,6 +1439,7 @@ Page({
     let del_id = '';
     for (let i in cart_list) {
       del_id += cart_list[i][index].cart_id;
+      cart_list[i][index].isTouchMove =true;
     }
     console.log(del_id)
     app.sendRequest({
@@ -1490,6 +1604,22 @@ Page({
     this.setData({
       cart_list,
     })
+  },
+
+
+  // 修改19-06-03(列表组件化-收藏)
+  /**
+   * 收藏
+   */
+  collect(e){
+    console.log(e.detail)
+    let { index, is_fav, state, message } = e.detail;
+    let goodsList = this.data.goodsList;
+    app.showBox(this, message);
+    if(state){
+      goodsList[index].is_member_fav_goods = is_fav;
+      this.setData({ goodsList });
+    }
   },
 })
   

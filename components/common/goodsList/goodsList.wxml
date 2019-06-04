@@ -1,0 +1,19 @@
+<!-- components/common/goodsList/goodsList.wxml -->
+<import src="/templates/goods-list-template/goods-list-template.wxml" />
+<view class='brand_goods'>
+    <view class='left'>
+        <block wx:for='{{brandGoods}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+            <template is="goodsListTemplate" data="{{...item,index,tel,unregistered}}" wx:if='{{index%2==0}}' />
+        </block>
+    </view>
+    <view class='right'>
+        <block wx:for='{{brandGoods}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+            <template is="goodsListTemplate" data="{{...item,index,tel,unregistered}}" wx:if='{{index%2==1}}' />
+        </block>
+    </view>
+</view>
+<view class="p {{isNoGoods?'':'hide'}}" style='margin:20px auto;text-align:center;'>
+    <!-- <image src="/images/goods/wap_nodata.png" mode='widthFix' style='width:60px;display:block;margin:20rpx auto'/> -->
+    <br />
+    {{msg}}
+</view>

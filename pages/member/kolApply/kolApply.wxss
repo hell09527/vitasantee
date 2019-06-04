@@ -34,8 +34,8 @@ page{
   background: #fff;
 }
 .nav-circle-active{
-  border:1px solid #000;
-  background: #000;
+  border:1px solid #e40046;
+  background: #e40046;
 }
 
 /* 基本信息 */
@@ -117,11 +117,17 @@ page{
   text-align: center;
 }
 .next-btn{
-  background: #000;
+  background: #e40046;
   width:400rpx;
   height:90rpx;
   color:#fff;
   margin:40rpx auto;
+}
+
+.color-red{
+  color: #e40046;
+  margin-right:10rpx;
+
 }
 
 /* 经历爱好 */
@@ -168,8 +174,8 @@ page{
 }
 .hobby-preo-btn{
   background: #fff;
-  border:1px solid #000;
-  color:#000;
+  border:1px solid #e40046;
+  color:#e40046;
   line-height: 90rpx;
   width:260rpx;
   text-align: center;
@@ -177,8 +183,8 @@ page{
 .hobby-next-btn{
   text-align: center;
   color:#fff;
-  background: #000;
-  border:1px solid #000;
+  background: #e40046;
+  border:1px solid #e40046;
   width:260rpx;
   line-height:90rpx;
   font-size:14px;
@@ -225,11 +231,11 @@ page{
   align-items: center;
 }
 .FilePaths{
-  background: url('https://static.bonnieclyde.cn/%E7%85%A7%E7%89%87%E5%B1%95%E4%BD%8D%E5%9B%BE@2x.png') no-repeat;
+  background: url('https://static.vitasantee.com/%E7%85%A7%E7%89%87%E5%B1%95%E4%BD%8D%E5%9B%BE@2x.png') no-repeat;
   background-size: 100% 100%;
 }
 .recitePaths{
-  background: url('https://static.bonnieclyde.cn/%E5%B1%95%E4%BD%8D%E5%9B%BE-2@2x.png') no-repeat;
+  background: url('https://static.vitasantee.com/%E5%B1%95%E4%BD%8D%E5%9B%BE-2@2x.png') no-repeat;
   background-size: 100% 100%;
 }
 .paths{
@@ -309,7 +315,7 @@ page{
 .article button{
   display: inline-block;
   border: 0;
-  background: #000;
+  background: #e40046;
   color: #ffffff;
   border-radius: 3px;
   padding: 10px;

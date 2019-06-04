@@ -9,7 +9,7 @@ Page({
    */
   data: {
     prompt: '',  //等待标识
-    actList:[],  //活动详情列表
+    actList: [],  //活动详情列表
     isHide: 0,        //客服按钮是否影藏
     showModal: false, // 显示弹框的 cust
     // is_login:1,
@@ -24,17 +24,16 @@ Page({
     if (options.uid) {
       app.globalData.identifying = options.uid;
     }
-  
 
 
-    if (options.id){
+    if (options.id) {
       var id = options.id;
       var title = "专题活动";
       var data = {
-        id:id,
+        id: id,
         title: title
       };
-    }else if(options.scene){
+    } else if (options.scene) {
       var scene = decodeURIComponent(options.scene)
       var id = scene;
       var title = "专题活动";
@@ -80,12 +79,12 @@ Page({
     // 获取活动详情
     app.sendRequest({
       url: "api.php?s=/Activity/activityInfo",
-      data: { master_id:id },
+      data: { master_id: id },
       success: function (res) {
-        var new_actList=[];
-        var actList= res.data.data
-        for (var i = 0; i < actList.length;i++){
-          if (actList[i].goods_info){
+        var new_actList = [];
+        var actList = res.data.data
+        for (var i = 0; i < actList.length; i++) {
+          if (actList[i].goods_info) {
             new_actList.push(actList[i]);
           }
         }
@@ -97,7 +96,7 @@ Page({
         wx.setStorageSync('expiration', expiration);
         wx.setStorageSync('ids', id)
         that.setData({
-          actList:actList,
+          actList: actList,
           new_actList: new_actList,
           imgUrl: res.data.detail_pic
         })
@@ -107,7 +106,7 @@ Page({
     //  获取往期话题
     app.sendRequest({
       url: "api.php?s=/activity/hotTopic",
-      data: { limit: 3 },
+      data: { limit: 4 },
       method: 'POST',
       success: function (res) {
         console.log(res.data.data);
@@ -120,120 +119,6 @@ Page({
 
   },
 
-  /**
-   * 加入购物车
-   */
-  addCart: function (e) {
-    let that = this;
-    let goods_info = e.currentTarget.dataset.data;
-    // let purchase_num = goods_info.purchase_num;
-    let count = 1;
-
-    let stock = parseInt(goods_info.stock);
-
-    if (goods_info.state == 0) {
-      app.showBox(that, '该商品已下架');
-      return false;
-    }
-
-    if (goods_info.state == 10) {
-      app.showBox(that, '该商品属于违禁商品，现已下架');
-      return false;
-    }
-
-
-
-
-    let public_cart = ""
-    if (this.data.is_vip == 1) {
-      public_cart = goods_info.goods_info.vip_price
-      // console.log(public_cart, 1111)
-      let cart_detail = {
-        shop_id: 0,
-        shop_name: 'shopal',
-        trueId: goods_info.goods_info.goods_id,
-        goods_name: goods_info.goods_info.goods_name,
-        count: count,
-        select_skuid: that.data.sku_id,
-        select_skuName: that.data.sku_info.sku_name,
-        price: public_cart,
-        cost_price: that.data.sku_info.cost_price,
-        picture: goods_info.picture
-      };
-      cart_detail = JSON.stringify(cart_detail);
-
-      app.sendRequest({
-        url: 'api.php?s=goods/addCart',
-        data: {
-          cart_detail: cart_detail,
-        },
-        success: function (res) {
-          let code = res.code;
-          let data = res.data;
-          if (code == 0) {
-            if (data.code > 0) {
-              app.showBox(that, '加入购物车成功')
-              purchase_num = parseInt(purchase_num) + parseInt(count);
-              let d = {};
-              let parm = "goods_info." + purchase_num;
-              d[parm] = purchase_num;
-
-              that.setData(d);
-              that.popupClose();
-            } else {
-              app.showBox(that, data.message)
-            }
-          }
-        }
-      });
-    } else {
-      public_cart = goods_info.promotion_price < goods_info.price ? goods_info.promotion_price : goods_info.price
-      // public_cart = that.data.member_price
-      // console.log(public_cart,2222)
-      let cart_detail = {
-        shop_id: 0,
-        shop_name: 'shopal',
-        trueId: that.data.goods_info.goods_id,
-        goods_name: that.data.goods_info.goods_name,
-        count: count,
-        select_skuid: that.data.sku_id,
-        select_skuName: that.data.sku_info.sku_name,
-        price: public_cart,
-        cost_price: that.data.sku_info.cost_price,
-        picture: that.data.goods_info.picture
-      };
-      cart_detail = JSON.stringify(cart_detail);
-      app.sendRequest({
-        url: 'api.php?s=goods/addCart',
-        data: {
-          cart_detail: cart_detail,
-        },
-        success: function (res) {
-          let code = res.code;
-          let data = res.data;
-          if (code == 0) {
-            if (data.code > 0) {
-              app.showBox(that, '加入购物车成功')
-              purchase_num = parseInt(purchase_num) + parseInt(count);
-              let d = {};
-              let parm = "goods_info." + purchase_num;
-              d[parm] = purchase_num;
-
-              that.setData(d);
-              that.popupClose();
-            } else {
-              app.showBox(that, data.message)
-            }
-          }
-        }
-      });
-
-    }
-
-
-
-
-  },
 
   // 跳转链接
   toLink: function (e) {
@@ -242,7 +127,7 @@ Page({
     let title = e.currentTarget.dataset.title;
     let id = e.currentTarget.dataset.id;
     let info = e.currentTarget.dataset.info;
-    console.log(info,url)
+    console.log(info, url)
 
     if (url == "全部商品") {
       wx.navigateTo({
@@ -259,25 +144,25 @@ Page({
     } else if (url == "会员专区") {
       if (is_vip == 1) {
         wx.navigateTo({
-          url: "/pages/payMembers/memberZone/memberZone",
+          url: "/package/payMembers/memberZone/memberZone",
         })
       } else {
         wx.navigateTo({
-          url: "/pages/payMembers/payMember/payMember",
+          url: "/package/payMembers/payMember/payMember",
         })
       }
     } else if (typeof url == 'number' && url > 0) {
       wx.navigateTo({
         url: "/pages/goods/goodsdetail/goodsdetail?goods_id=" + url,
       })
-    }  else if (info != undefined) {
+    } else if (info != undefined) {
       wx.navigateTo({
         url: "/pages/goods/goodsdetail/goodsdetail?goods_id=" + id + "&&goods_name=" + title,
       })
     } else if (url == "") {
       // console.log(8888)
       return;
-    }else {
+    } else {
       wx.navigateTo({
         url: "/" + url,
       })
@@ -292,7 +177,7 @@ Page({
     })
   },
 
-// 跳转往期话题
+  // 跳转往期话题
   listClick: function (event) {
     let that = this;
     let projectData = {
@@ -300,9 +185,9 @@ Page({
       title: event.currentTarget.dataset.title,
     }
     // 跳转活动详情页
-      wx.navigateTo({
-        url: '/pages/index/projectIndex/projectIndex?data=' + JSON.stringify(projectData),
-      })
+    wx.navigateTo({
+      url: '/pages/index/projectIndex/projectIndex?data=' + JSON.stringify(projectData),
+    })
   },
   /**
      * 隐藏模态对话框
@@ -319,11 +204,11 @@ Page({
   onShareAppMessage: function () {
     let that = this;
     let data = this.data.data;
-    let imgUrl = this.data.imgUrl?this.data.imgUrl:"";
+    let imgUrl = this.data.imgUrl ? this.data.imgUrl : "";
     let uid = app.globalData.uid;
     let TWO_share_url = '/pages/index/projectIndex/projectIndex?data=' + JSON.stringify(data);
     console.log(data);
-    if (that.data.distributor_type== 0){
+    if (that.data.distributor_type == 0) {
       return {
         title: that.data.title,
         path: TWO_share_url,
@@ -335,12 +220,12 @@ Page({
           app.showBox(that, '分享失败');
         }
       }
-    } 
+    }
     else {
       console.log(8888)
       return {
         title: that.data.title,
-        path: TWO_share_url + '&uid=' + uid ,
+        path: TWO_share_url + '&uid=' + uid,
         imageUrl: imgUrl,
         success: function (res) {
           app.showBox(that, '分享成功');
@@ -351,8 +236,8 @@ Page({
       }
     }
 
- 
-   
+
+
 
 
   },
@@ -363,35 +248,35 @@ Page({
   onReady: function () {
 
   },
-TWO_reeuse:function(){
-  let that = this;
-  app.sendRequest({
-    url: "api.php?s=member/getMemberDetail",
-    success: function (res) {
-      let data = res.data
-      if (res.code == 0) {
-        let is_vip = data.is_vip;
-        app.globalData.is_vip = data.is_vip;
-        app.globalData.distributor_type = data.distributor_type;
-        let distributor_type = data.distributor_type;
-        app.globalData.uid = data.uid;
-        app.globalData.vip_gift = data.vip_gift;
-        app.globalData.vip_goods = data.vip_goods;
-        app.globalData.vip_overdue_time = data.vip_overdue_time;
-        // console.log(app.globalData.is_vip)
-        that.setData({
-          is_vip: is_vip,
-          distributor_type
-        })
+  TWO_reeuse: function () {
+    let that = this;
+    app.sendRequest({
+      url: "api.php?s=member/getMemberDetail",
+      success: function (res) {
+        let data = res.data
+        if (res.code == 0) {
+          let is_vip = data.is_vip;
+          app.globalData.is_vip = data.is_vip;
+          app.globalData.distributor_type = data.distributor_type;
+          let distributor_type = data.distributor_type;
+          app.globalData.uid = data.uid;
+          app.globalData.vip_gift = data.vip_gift;
+          app.globalData.vip_goods = data.vip_goods;
+          app.globalData.vip_overdue_time = data.vip_overdue_time;
+          // console.log(app.globalData.is_vip)
+          that.setData({
+            is_vip: is_vip,
+            distributor_type
+          })
+        }
       }
-    }
-  })
-},
+    })
+  },
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    let that=this;
+    let that = this;
     if (app.globalData.token && app.globalData.token != '') {
       //判断是否是付费会员的接口
       that.TWO_reeuse();
@@ -456,8 +341,8 @@ TWO_reeuse:function(){
     })
   },
 
-// 轮播滑动事件
-  swiperChange: function (event){
+  // 轮播滑动事件
+  swiperChange: function (event) {
     console.log(event.detail);
     // 选中的轮播图片的下标
     let index = event.detail.current;

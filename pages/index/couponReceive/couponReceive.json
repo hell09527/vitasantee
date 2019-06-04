@@ -1,3 +1,4 @@
 {
-  "navigationBarTitleText": "领取优惠券"
+  "navigationBarTitleText": "领取优惠券",
+  "disableScroll": true
 }

@@ -50,9 +50,9 @@
   color: #F15050;
 } */
 .cf-container .cf-tab-item.select .a{
-  border-bottom:2px solid #000;
+  border-bottom:2px solid #e40046;
   padding-bottom:0px;
-  color:#000;
+  color:#e40046;
   font-weight:900;
 }
 

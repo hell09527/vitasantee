@@ -120,7 +120,7 @@
         </view>
       </view>
       <view class="none-goods">
-        <icon class="icon-tip-circle" type='{{refund_info.refund_status==5?"success":"info"}}' color='{{refund_info.refund_status==5?"#7bc351":"#45a5cf"}}' size='30'></icon>
+        <icon class="icon-tip-circle" type='{{refund_info.refund_status==5?"success":"info"}}' color='{{refund_info.refund_status==5?"#e40046":"#45a5cf"}}' size='30'></icon>
         <view class="text">
           <block wx:if='{{refund_info.refund_status==-1}}'>
             <view class='h4 refused'>卖家拒绝您的退款申请</view>

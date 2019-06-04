@@ -13,7 +13,7 @@
 
 .cf-tab-item{
   color: #999;
-  font-size: 16px;
+  font-size: 14px;
   border-bottom: 2px solid transparent;
   height:26px;
   line-height: 26px;

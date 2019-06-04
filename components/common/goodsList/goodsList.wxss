@@ -1,0 +1,4 @@
+@import "/templates/goods-list-template/goods-list-template.wxss";
+.hide{
+    display: none !important;
+}

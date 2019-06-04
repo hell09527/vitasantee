@@ -9,29 +9,17 @@
     "pages/goods/giftDone/giftDone",
     "pages/goods/presentGift/presentGift",
     "pages/goods/shareRepertoire/shareRepertoire",
+    "pages/goods/brandlist/brandlist",
     "pages/member/member/member",
     "pages/member/membershipCard/membershipCard",
     "pages/logs/logs",
-    "pages/backPage/backPage",
-    "pages/backPage/fetchGift/fetchGift",
-    "pages/backPage/giveSend/giveSend",
-    "pages/backPage/receiveSuccess/receiveSuccess",
     "pages/index/discount/discount",
-    "pages/articlecenter/articlecenter",
     "pages/index/noticelist/noticelist",
     "pages/index/brand/brand",
     "pages/index/projectIndex/projectIndex",
     "pages/index/topicCollection/topicCollection",
     "pages/index/topicList/topicList",
-    "pages/payMembers/payMember/payMember",
-    "pages/payMembers/perfectInfo/perfectInfo",
-    "pages/payMembers/paySuccess/paySuccess",
-    "pages/payMembers/argeement/argeement",
-    "pages/payMembers/memberZone/memberZone",
-    "pages/payMembers/getSuccess/getSuccess",
-    "pages/payMembers/goGivingGift/goGivingGift",
     "pages/index/noticecontent/noticecontent",
-    "pages/articlecenter/articlecontent/articlecontent",
     "pages/goods/goodsdetail/goodsdetail",
     "pages/goods/controlevaluation/controlevaluation",
     "pages/goods/goodssearchlist/goodssearchlist",
@@ -72,6 +60,7 @@
     "pages/member/kolSuccess/kolSuccess",
     "pages/member/withdrawal/withdrawal",
     "pages/member/withdrawalSuccess/withdrawalSuccess",
+    "pages/member/addInGroup/addInGroup",
     "pages/order/myvirtualorderlist/myvirtualorderlist",
     "pages/order/myorderlist/myorderlist",
     "pages/order/paymentorder/paymentorder",
@@ -86,10 +75,6 @@
     "pages/order/amendAdder/amendAdder",
     "pages/pay/getpayvalue/getpayvalue",
     "pages/pay/paycallback/paycallback",
-    "pages/verification/verificationplatform/verificationplatform",
-    "pages/verification/myVirtualCode/myVirtualCode",
-    "pages/verification/virtualgoodsshare/virtualgoodsshare",
-    "pages/verification/verificationorderdetail/verificationorderdetail",
     "pages/goods/integralzone/integralzone",
     "pages/index/coverindex/coverindex",
     "pages/index/coupon/coupon",
@@ -97,7 +82,7 @@
   ],
   "tabBar": {
     "borderStyle": "white",
-    "color": "#fff",
+    "color": "#f3a5be",
     "selectedColor": "#fff",
     "backgroundColor": "#e40046",
     "list": [
@@ -127,6 +112,45 @@
       }
     ]
   },
+  "subpackages": [
+    {
+      "root": "package/articlecenter",
+      "pages": [
+        "articlecenter",
+        "articlecontent/articlecontent"
+      ]
+    },
+    {
+      "root": "package/backPage",
+      "pages": [
+        "backPage",
+        "fetchGift/fetchGift",
+        "giveSend/giveSend",
+        "receiveSuccess/receiveSuccess"
+      ]
+    },
+    {
+      "root": "package/payMembers",
+      "pages": [
+        "payMember/payMember",
+        "perfectInfo/perfectInfo",
+        "paySuccess/paySuccess",
+        "argeement/argeement",
+        "memberZone/memberZone",
+        "getSuccess/getSuccess",
+        "goGivingGift/goGivingGift"
+      ]
+    },
+    {
+      "root": "package/verification",
+      "pages": [
+        "verificationplatform/verificationplatform",
+        "myVirtualCode/myVirtualCode",
+        "virtualgoodsshare/virtualgoodsshare",
+        "verificationorderdetail/verificationorderdetail"
+      ]
+    }
+  ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#e40046",
@@ -136,5 +160,6 @@
   },
   "navigateToMiniProgramAppIdList": [
     "wx56c8f077de74b07c"
-  ]
+  ],
+  "sitemapLocation": "sitemap.json"
 }

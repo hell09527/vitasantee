@@ -8,51 +8,34 @@
   border-bottom: 1px solid #E2E2E2;
   max-width: 640px;
   margin: auto;
-  margin-top: 1.5px;
 }
 
 .cf-container .cf-content{
-  position: relative;
   color: #333;
   text-align: center;
-  top: 0;
-  white-space: nowrap;
-  z-index: 5;
-  -webkit-overflow-scrolling: touch;
-  margin-left: 0.1rem;
-  margin-right: 0.1rem;
+  display: flex;
+  justify-content: space-around;
+  height:40px;
+  align-items: center;
 }
 
 .cf-container .cf-tab-item{
-  display: inline;
-  margin-left: 0px;
-  padding: 0px;
-  line-height: 32px;
-  text-align: center;
-}
-
-.cf-tab-item .a{
-  padding-right: 3px;
-  padding-left: 3px;
-  color: #707070;
+  border-bottom: 2px solid transparent;
+  color: #999;
   font-size: 14px;
-  display: block;
-  width: 25%;
-  float: left;
-  line-height:2.1rem;
+  line-height: 26px;
+  height: 26px;
 }
 
-.cf-container .cf-tab-item.select .a{
+
+.cf-container .cf-tab-item.select{
   border-bottom: 2px solid #e40046;
-  padding-bottom: 0px;
   color: #e40046;
-  height:2.1rem;
-  line-height:2.1rem;
 }
 
 .collection_goods_list{
   width: 100%;
-  padding: 10px;
+  padding:0 10px 10px;
   background: #fff;
 }
 

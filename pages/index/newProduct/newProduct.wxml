@@ -23,7 +23,7 @@
 <!-- 新品商品 -->
 <view class='new_goods_list'>
   <block wx:for="{{goodsList}}" wx:key="" wx:for-index='index' wx:for-item='item'>
-    <template is="newProductTemplate" data="{{...item,index}}" />
+    <template is="newProductTemplate" data="{{...item,index,unregistered,tel}}" />
   </block>
 </view>
 

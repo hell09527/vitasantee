@@ -5,25 +5,48 @@
 </view>
 <view class="goods-list-grid openList">
 	<view id="goods_list">
-		<view class="tablelist-append clearfix" style="overflow: hidden;">
-      <view class='body'>
+		<view class="tablelist-append">
+      <view class='brand_goods'>
         <!-- <view class='goods-title'>NB</view> -->
-        <block wx:for='{{insideList}}' wx:key='' wx:for-item='goods' wx:for-index='index'>
-
-        <view class='brand_goods_detail' catchtap='aClick'data-code='{{goods.material_code}}' data-url="/goods/goodsdetail/goodsdetail?goods_id={{goods.goods_id}}&&goods_name={{goods.goods_name}}">
-              <image src="{{goods.pic_cover_small}}" mode="widthFix"/>
-              <text class='activity_text'>
-                <block wx:if='{{goods.source_type==2}}' wx:key='' wx:for-item='vo'>
-                  <text class="i goods_tab">跨境</text>
-                </block>{{goods.goods_name}}
-              </text>
-              <!-- <text class='activity_info'>收敛毛孔补水保湿收敛毛孔补水保湿</text> -->
-              <view class='brand_goods_price'>
-                <text>￥{{goods.inside_price}}</text>
-                <view style='text-decoration:line-through;color:#d7d7d7;font-size:12px;' wx:if="{{goods.market_price - goods.promotion_price > 0}}">￥{{goods.market_price}}</view>
+        <view class='left'>
+          <block wx:for='{{insideList}}' wx:key='' wx:for-item='goods' wx:for-index='index'>
+          <view class='brand_goods_detail' catchtap='aClick'data-code='{{goods.material_code}}' data-url="/goods/goodsdetail/goodsdetail?goods_id={{goods.goods_id}}&&goods_name={{goods.goods_name}}"  wx:if='{{index%2==0}}'>
+                <image src="{{goods.pic_cover_small}}" mode="widthFix"/>
+                <view style='padding:10rpx'>
+                  <text class='activity_text'>
+                    <block wx:if='{{goods.source_type==2}}' wx:key='' wx:for-item='vo'>
+                      <text class="i goods_tab">跨境</text>
+                    </block>{{goods.goods_name}}
+                  </text>
+                  <!-- <text class='activity_info'>收敛毛孔补水保湿收敛毛孔补水保湿</text> -->
+                  <view class='brand_goods_price'>
+                    <text>￥{{goods.inside_price}}</text>
+                    <view style='text-decoration:line-through;color:#d7d7d7;font-size:12px;' wx:if="{{goods.market_price - goods.promotion_price > 0}}">￥{{goods.market_price}}</view>
+                  </view>
+                </view>
               </view>
-            </view>
-        </block>
+          </block>
+        </view>
+
+        <view class='right'>
+          <block wx:for='{{insideList}}' wx:key='' wx:for-item='goods' wx:for-index='index'>
+          <view class='brand_goods_detail' catchtap='aClick'data-code='{{goods.material_code}}' data-url="/goods/goodsdetail/goodsdetail?goods_id={{goods.goods_id}}&&goods_name={{goods.goods_name}}"  wx:if='{{index%2==1}}'>
+                <image src="{{goods.pic_cover_small}}" mode="widthFix"/>
+                <view style='padding:10rpx'>
+                  <text class='activity_text'>
+                    <block wx:if='{{goods.source_type==2}}' wx:key='' wx:for-item='vo'>
+                      <text class="i goods_tab">跨境</text>
+                    </block>{{goods.goods_name}}
+                  </text>
+                  <!-- <text class='activity_info'>收敛毛孔补水保湿收敛毛孔补水保湿</text> -->
+                  <view class='brand_goods_price'>
+                    <text>￥{{goods.inside_price}}</text>
+                    <view style='text-decoration:line-through;color:#d7d7d7;font-size:12px;' wx:if="{{goods.market_price - goods.promotion_price > 0}}">￥{{goods.market_price}}</view>
+                  </view>
+                </view>
+              </view>
+          </block>
+        </view>
       </view>
       <!-- <block wx:if='{{goods_list[0] == undefined && goods_list }}'>
         <view class="nothing-data" align="center">

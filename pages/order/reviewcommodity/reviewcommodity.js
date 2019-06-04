@@ -20,6 +20,7 @@ Page({
     explain_types: 5, //1好评 2中评 3差评
     is_anonymous: 0, //是否匿名
     commentvFlag: 0,
+    imgNum:0,
   },
 
   /**
@@ -145,6 +146,41 @@ Page({
     }
   },
 
+  // 判断输入的文字是否有表情
+  isEmojiCharacter: function (substring) {
+    for (var i = 0; i < substring.length; i++) {
+      var hs = substring.charCodeAt(i);
+      if (0xd800 <= hs && hs <= 0xdbff) {
+        if (substring.length > 1) {
+          var ls = substring.charCodeAt(i + 1);
+          var uc = ((hs - 0xd800) * 0x400) + (ls - 0xdc00) + 0x10000;
+          if (0x1d000 <= uc && uc <= 0x1f77f) {
+            return true;
+          }
+        }
+      } else if (substring.length > 1) {
+        var ls = substring.charCodeAt(i + 1);
+        if (ls == 0x20e3) {
+          return true;
+        }
+      } else {
+        if (0x2100 <= hs && hs <= 0x27ff) {
+          return true;
+        } else if (0x2B05 <= hs && hs <= 0x2b07) {
+          return true;
+        } else if (0x2934 <= hs && hs <= 0x2935) {
+          return true;
+        } else if (0x3297 <= hs && hs <= 0x3299) {
+          return true;
+        } else if (hs == 0xa9 || hs == 0xae || hs == 0x303d || hs == 0x3030
+          || hs == 0x2b55 || hs == 0x2b1c || hs == 0x2b1b
+          || hs == 0x2b50) {
+          return true;
+        }
+      }
+    }
+  },
+
   /**
    * 输入评价
    */
@@ -154,7 +190,11 @@ Page({
     let content = e.detail.value;
     let goodsEvaluate = that.data.goodsEvaluate;
 
-    goodsEvaluate[index].content = content;
+    if (this.isEmojiCharacter(content)) {
+      app.showBox(that, '内容不能含有表情');
+    } else {
+      goodsEvaluate[index].content = content;
+    }
 
     that.setData({
       goodsEvaluate: goodsEvaluate
@@ -168,24 +208,32 @@ Page({
     let that = this;
     let index = e.currentTarget.dataset.index;
     let goodsEvaluate = that.data.goodsEvaluate;
+    let img_list = that.data.img_list;
+    let num=9;
 
-    if (goodsEvaluate[index].img_num >= 5) {
+    if (img_list[index].length >= 9) {
+      app.showBox(that, '最多上传9张');
       return false;
     }
+    num = num - img_list[index].length;
     //选择图片
     wx.chooseImage({
-      count: 1,
+      count: num,
       sizeType: 'compressed',
       success: function (res) {
-        let filePath = res.tempFilePaths[0];
-        let tempFiles = res.tempFiles[0];
-        if (tempFiles.size > 1024 * 1024 * 8) {
-          app.showBox(that, '上传图片过大');
-          return;
+        // console.log(res);
+        let filePath = res.tempFilePaths;
+        let tempFiles = res.tempFiles;
+        for (let i = 0; i < filePath.length; i++) {
+          if (tempFiles[i].size > 1024 * 1024 * 8) {
+            app.showBox(that, '第' + i + '上传图片过大');
+            return;
+          } else {
+            //上传至服务器
+            that.uplodeHeadImg(that, filePath[i], index, goodsEvaluate);
+          }
         }
 
-        //上传至服务器
-        that.uplodeHeadImg(that, filePath, index, goodsEvaluate);
       },
       fail: function (res) {
         app.showBox(that, '无法获取本地图片');
@@ -207,61 +255,66 @@ Page({
         delta: 1
       })
     }
+    console.log(index)
+    wx.showLoading({
+      title: '加载中',
+      success: function () {
+        wx.uploadFile({
+          url: base + 'api.php?s=upload/uploadFile',
+          filePath: filePath,
+          name: name,
+          formData: {
+            token: app.globalData.token,
+            file_path: 'upload/comment/',
+          },
+          success: function (res) {
+            let data = res.data;
 
-    wx.uploadFile({
-      url: base + 'api.php?s=upload/uploadFile',
-      filePath: filePath,
-      name: name,
-      formData: {
-        token: app.globalData.token,
-        file_path: 'upload/comment/',
-      },
-      success: function (res) {
-        console.log(res);
-        let data = res.data;
-
-        if (JSON.parse(data)) {
-          data = JSON.parse(data);
-        } else {
-          app.showBox(that, '上传失败');
-        }
-
-        let code = data.code;
-        if (code == 0) {
-          data = data.data;
-          let code = data.code;
-          let message = data.message;
-          let img_url = data.data;
-          img_url = app.IMG(img_url);
-
-          if (code > 0) {
-            //加入图片数组
-            if (goodsEvaluate[index].imgs == '') {
-              goodsEvaluate[index].imgs = img_url;
-              goodsEvaluate[index].img_num = 1;
-              img_list[index][0] = img_url;
+            if (JSON.parse(data)) {
+              data = JSON.parse(data);
             } else {
-              goodsEvaluate[index].imgs += ',' + img_url;
-              goodsEvaluate[index].img_num++;
-              img_list[index][img_list[index].length] = img_url;
+              app.showBox(that, '上传失败');
             }
-            that.setData({
-              goodsEvaluate: goodsEvaluate,
-              img_list: img_list
-            })
+            console.log(filePath, data);
 
-          } else {
-            app.showBox(that, message);
+            let code = data.code;
+            if (code == 0) {
+              data = data.data;
+              let code = data.code;
+              let message = data.message;
+              let img_url = data.data;
+              img_url = app.IMG(img_url);
+              if (code > 0) {
+                //加入图片数组
+                if (img_list[index][0] == '') {
+                  img_list[index][0] = img_url;
+                } else {
+                  img_list[index][img_list[index].length] = img_url;
+                }
+                console.log(img_list)
+
+                that.setData({
+                  img_list: img_list,
+                })
+                
+
+              } else {
+                app.showBox(that, message);
+              }
+              
+
+            } else {
+              app.showBox(that, '上传失败');
+            }
+            wx.hideLoading()
+          },
+          fail: function (res) {
+            console.log(res);
+            app.showBox(that, '上传失败');
+            wx.hideLoading()
           }
-
-        } else {
-          app.showBox(that, '上传失败');
-        }
+        })
       },
-      fail: function (res) {
-        console.log(res);
-        app.showBox(that, '上传失败');
-      }
     })
   },
 
@@ -285,19 +338,13 @@ Page({
         let code = res.code;
         let data = res.data;
         img_list[index].splice(key, 1);
-        goodsEvaluate[index].imgs = img_list[index].join();
-        goodsEvaluate[index].img_num--;
 
         that.setData({
           img_list: img_list,
-          goodsEvaluate: goodsEvaluate
         })
         if (code == 0) {
-          if (data.success_count > 0) {
 
-          } else {
-            app.showBox(that, '删除失败');
-          }
+          app.showBox(that, '删除成功');
         }
         console.log(res)
       }
@@ -359,6 +406,7 @@ Page({
     let scores = that.data.scores;
     let explain_type = that.data.explain_type;
     let is_anonymous = that.data.is_anonymous;
+    let img_list = that.data.img_list;
 
     if (commentvFlag == 1) {
       return false;
@@ -374,8 +422,11 @@ Page({
         app.restStatus(that, 'commentvFlag');
         return false;
       }
+
+      goodsEvaluate[index].imgs = img_list[index].join(',');
     }
     goodsEvaluate = JSON.stringify(goodsEvaluate);
+    console.log(JSON.stringify(goodsEvaluate))
 
     app.sendRequest({
       url: 'api.php?s=order/addGoodsEvaluate',

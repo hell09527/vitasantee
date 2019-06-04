@@ -125,7 +125,7 @@
   </view>
 <!-- //客服 -->
            <button class="a new-btn buy-cart" open-type="contact" session-from="weapp" class="{{isHide==0?'yuan':'hide-kf'}}  cks">
-                <view><image src="https://static.bonnieclyde.cn/tt.png"  mode='widthFix' ></image></view>
+                <view><image src="https://static.vitasantee.com/%E5%AE%A2%E6%9C%8D.png"  mode='widthFix' ></image></view>
                  <!-- <text class="ke_fu">客服</text> -->
             </button>
 </scroll-view>
