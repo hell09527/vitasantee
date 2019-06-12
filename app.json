@@ -37,6 +37,8 @@
     "pages/member/kol/kolbill/kolbill",
     "pages/member/membercoupon/membercoupon",
     "pages/member/posterList/posterList",
+    "pages/member/verifierID/verifierID",
+    "pages/member/Meinfo/Meinfo",
     "pages/member/createImage/createImage",
     "pages/member/mycollection/mycollection",
     "pages/member/updatememberaddress/updatememberaddress",
@@ -78,7 +80,8 @@
     "pages/goods/integralzone/integralzone",
     "pages/index/coverindex/coverindex",
     "pages/index/coupon/coupon",
-    "pages/index/couponReceive/couponReceive"
+    "pages/index/couponReceive/couponReceive",
+    "pages/index/couponDetail/couponDetail"
   ],
   "tabBar": {
     "borderStyle": "white",

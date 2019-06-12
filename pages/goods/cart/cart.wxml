@@ -1,182 +1,175 @@
-
 <import src="/templates/goods-list-template/goods-list-template.wxml" />
-<scroll-view  scroll-y="{{isFoll}}" style='height:100%'>
+<scroll-view scroll-y="{{isFoll}}" style='height:100%' wx:if="{{loaded}}">
   <!-- <button catchtap='last'>我的清单</button> -->
   <view class="motify {{prompt==''?'hide':''}}">
     <icon class="i show_type warning" type='warn' size='25' color='#FFF'></icon>
     <view class="motify-inner">{{prompt}}</view>
   </view>
-    <view class="cart-detail" wx:for='{{cart_list}}' wx:key='' wx:for-item='list' wx:for-index='i' wx:if='{{unregistered==0 && tel!=""}}'>
-      <view class='store-title' data-parent-shopid="0">
-        <view class="h2 title">
-          <image class="custom-store-img" src='/images/goods/shop-img.png'></image>
-          维美善特店铺
-        </view>
-        <view class="cart_ed">
-          <block wx:if='{{edit == 0}}'>
-            <view class="a" id="cart_edit" data-shopid="0" catchtap='cartEdit' data-edit='1'>
-              编辑
-            </view>
-          </block>
-          <block wx:if='{{edit == 1}}'>
-            <view class="a" id="edit_success0" catchtap='cartEdit' data-edit='0'>完成</view>
-          </block>
-        </view>
+  <view class="cart-detail" wx:for='{{cart_list}}' wx:key='' wx:for-item='list' wx:for-index='i' wx:if='{{unregistered==0 && tel!=""}}'>
+    <view class='store-title' data-parent-shopid="0">
+      <view class="h2 title">
+        <image class="custom-store-img" src='/images/goods/shop-img.png'></image>
+        维美善特店铺
       </view>
-      <!-- 选择分享分销者  start -->
-      <view class='lise'>
-        <picker wx:if='{{edit == 1 && distributor_type==1}}' class='roots' range='{{region}}' range-key="name" value="{{Index}}" bindchange="bindRegionChange" custom-item="{{customItem}}">
-          <view class="picker" wx:if='{{personnel==""}}'>设置分销:未指定</view>
-          <view wx:if='{{personnel!=""}}' class="picker">设置分销:{{personnel}}</view>
-        </picker>
-        <block wx:if='{{edit == 0  && distributor_type==1}}'>
-          <view class="distribution {{edit!=1?'':'choose'}}" wx:if='{{ personnel!=""}}'>
-            直接分销:{{personnel}}
-          </view>
-          <view class="distribution {{edit!=1?'':'choose'}}" wx:if='{{ personnel==""}}'>
-            直接分销:未指定
-          </view>
+      <view class="cart_ed">
+        <block wx:if='{{edit == 0}}'>
+          <view class="a" id="cart_edit" data-shopid="0" catchtap='cartEdit' data-edit='1'>编辑</view>
+        </block>
+        <block wx:if='{{edit == 1}}'>
+          <view class="a" id="edit_success0" catchtap='cartEdit' data-edit='0'>完成</view>
         </block>
       </view>
-      <!-- 选择分享分销者  end -->
-      
-      <view class="cart-prolist">
-        <view class="ul cart-prolist-ul " data-index="{{index}}" wx:for='{{list}}' wx:key='cart_id' wx:for-item='cart' wx:for-index='k'>
-          <scroll-view style='isScrollY:{{cart.isTouchMove }};isLevelMove:{{!cart.isTouchMove}}' class="li cart-list-li {{cart.isTouchMove ? 'touch-move-active' : ''}}" bindtouchstart="{{cart.isInput==1?'touchstart':''}}" bindtouchmove="touchmove" data-shopid="0" data-index="{{k}}">
-            <view class="checkbox">
-              <image catchtap='selectCart' data-index='{{i}}' data-key='{{k}}' data-status='{{cart.status}}' src='/images/goods/{{cart.status==1?"cartp2.png":"cartp1.png"}}'></image>
-            </view>
-            <view style='display:inline-block;'>
-              <view class="product flex">
-                <view class="pic">
-                  <view class='a'>
-                    <image wx:if='{{cart.picture_info.pic_cover_small}}' src="{{cart.picture_info.pic_cover_small==''?0:cart.picture_info.pic_cover_small}}" binderror='errorImg' data-index='{{i}}' data-key='{{k}}' alt="商品图片" catchtap='goodsDetail' data-id='{{cart.goods_id}}' data-name='{{cart.goods_name}}'></image>
+    </view>
+    <!-- 选择分享分销者  start -->
+    <view class='lise'>
+      <picker wx:if='{{edit == 1 && distributor_type==1}}' class='roots' range='{{region}}' range-key="name" value="{{Index}}" bindchange="bindRegionChange" custom-item="{{customItem}}">
+        <view class="picker" wx:if='{{personnel==""}}'>设置分销:未指定</view>
+        <view wx:if='{{personnel!=""}}' class="picker">设置分销:{{personnel}}</view>
+      </picker>
+      <block wx:if='{{edit == 0  && distributor_type==1}}'>
+        <view class="distribution {{edit!=1?'':'choose'}}" wx:if='{{ personnel!=""}}'>
+          直接分销:{{personnel}}
+        </view>
+        <view class="distribution {{edit!=1?'':'choose'}}" wx:if='{{ personnel==""}}'>
+          直接分销:未指定
+        </view>
+      </block>
+    </view>
+    <!-- 选择分享分销者  end -->
+    <view class="cart-prolist">
+      <view class="ul cart-prolist-ul " data-index="{{index}}" wx:for='{{list}}' wx:key='cart_id' wx:for-item='cart' wx:for-index='k'>
+        <scroll-view style='isScrollY:{{cart.isTouchMove }};isLevelMove:{{!cart.isTouchMove}}' class="li cart-list-li {{cart.isTouchMove ? 'touch-move-active' : ''}}" bindtouchstart="{{cart.isInput==1?'touchstart':''}}" bindtouchmove="touchmove" data-shopid="0" data-index="{{k}}">
+          <view class="checkbox">
+            <image catchtap='selectCart' data-index='{{i}}' data-key='{{k}}' data-status='{{cart.status}}' src='/images/goods/{{cart.status==1?"cartp2.png":"cartp1.png"}}'></image>
+          </view>
+          <view style='display:inline-block;'>
+            <view class="product flex">
+              <view class="pic">
+                <view class='a'>
+                  <image wx:if='{{cart.picture_info.pic_cover_small}}' src="{{cart.picture_info.pic_cover_small==''?0:cart.picture_info.pic_cover_small}}" binderror='errorImg' data-index='{{i}}' data-key='{{k}}' alt="商品图片" catchtap='goodsDetail' data-id='{{cart.goods_id}}' data-name='{{cart.goods_name}}'></image>
+                </view>
+              </view>
+              <view class="info">
+                <view class='name' data-id='{{cart.goods_id}}' data-name='{{cart.goods_name}}'>
+                  <text class="goods-type-icon" wx:if="{{cart.source_type == 2}}">跨境商品</text>
+                  {{cart.goods_name}}
+                </view>
+                <view class='sku span' wx:if='{{cart.sku_name!=""}}'>规格：{{cart.sku_name}}</view>
+                <view class="number" data-id='{{cart.goods_id}}' data-name='{{cart.goods_name}}'>
+                  <!-- {{box.promotion_price}}此价格并非原价也可能是会员价也可能是促销价 -->
+                  <view class='span' name="goods_price" wx:if='{{showStatus==0}}' style='font-size:14px;color:#005882;'>
+                    销售价:¥{{cart.promotion_price}}
+                  </view>
+                        <view>
+                      <!-- <view class='span' name="goods_price" style='width:140rpx;'>
+                        ¥{{cart.promotion_price}}
+                      </view> -->
+                      <!-- <text style='color:#999;font-size:12px;margin-left:10rpx;'>
+                        原价¥{{cart.price}}
+                      </text> -->
+                    </view>
+                  <!-- 超级vip的权限 -->
+                  <view wx:if='{{distributor_type==1 && edit == 1}}' name="goods_price">
+                    ¥
+                    <input class="goods_price-input" type='digit' value='{{cart.promotion_price}}' data-index='{{k}}' data-id='{{cart.cart_id}}' bindinput='ECTPrice' />
+                    <text style='color:#999;font-size:12px;margin-left:10rpx;'>
+                      原价¥{{cart.price}}
+                    </text>
+                  </view>
+                  <!-- 普通vip的权限 -->
+                  <view wx:if='{{ distributor_type!=0 && distributor_type!=1 && edit == 1 && cart.is_change_price==1}}' name="goods_price">
+                    ¥
+                    <input class="goods_price-input  " type='digit' value='{{cart.promotion_price}}' data-index='{{k}}' data-id='{{cart.cart_id}}' bindinput='inputPrice' bindblur='EiditPrice' />
+                    <view class='showTitle' style='color:red;font-size: 12px;'>
+                      您修改的价格不得低于{{cart.min_change_price}}
+                    </view>
+                  </view>
+                  <!-- 付费会员的价格 -->
+                  <view class='vip_price' wx:if='{{is_vip==1 && distributor_type!=1}}' style='color:#CC9933' name="vip_price">
+                    销售价:¥ {{cart.promotion_price}}
+                  </view>
+                  <view class='interior' style="color:red;font-size: 12px;" name="goods_price" wx:if='{{cart.is_inside==1}}'>
+                    内购价: ¥{{cart.interior_price}}
                   </view>
                 </view>
-                <view class="info">
-                  <view class='name' data-id='{{cart.goods_id}}' data-name='{{cart.goods_name}}' >
-                    <text class="goods-type-icon" wx:if="{{cart.source_type == 2}}">跨境商品</text>{{cart.goods_name}}
-                  </view>
-                  <view class='sku span' wx:if='{{cart.sku_name!=""}}'>规格：{{cart.sku_name}}</view>
-                  <view class="number"data-id='{{cart.goods_id}}' data-name='{{cart.goods_name}}'>
-                    <!-- {{box.promotion_price}}此价格并非原价也可能是会员价也可能是促销价 -->
-                    <view class='span' name="goods_price" wx:if='{{showStatus==0}}' style='font-size:14px;'>
-                      销售价:¥{{cart.promotion_price}}
-                    </view>
-
-                    <!-- <view wx:if='{{distributor_type==1 && edit == 0}}' name="goods_price">
-                      <view class='span' name="goods_price" style='width:140rpx;'>
-                        ¥{{cart.promotion_price}}
-                      </view>
-                      <text style='color:#999;font-size:12px;margin-left:10rpx;'>
-                        原价¥{{cart.price}}
-                      </text>
-                    </view> -->
-
-                        <!-- 超级vip的权限 -->
-                    <view wx:if='{{distributor_type==1 && edit == 1}}' name="goods_price">
-                      ¥
-                      <input class="goods_price-input" type='digit' value='{{cart.promotion_price}}' data-index='{{k}}' data-id='{{cart.cart_id}}' bindinput='ECTPrice' />
-                      <text style='color:#999;font-size:12px;margin-left:10rpx;'>
-                        原价¥{{cart.price}}
-                      </text>
-                    </view>
-                    
-                      <!-- 普通vip的权限 -->
-                    <view wx:if='{{ distributor_type!=0 && distributor_type!=1 && edit == 1 && cart.is_change_price==1}}' name="goods_price">
-                      ¥
-      <input   class="goods_price-input  " type='digit' value='{{cart.promotion_price}}' data-index='{{k}}' data-id='{{cart.cart_id}}'
-  bindinput='inputPrice'  bindblur='EiditPrice'  />
-                      <view class='showTitle' style='color:red;font-size: 12px;' > 您修改的价格不得低于{{cart.min_change_price}} </view>
-                    
-                    </view>
-                      <!-- 付费会员的价格 -->
-                    <view class='vip_price' wx:if='{{is_vip==1 && distributor_type!=1}}' style='color:#CC9933' name="vip_price">
-                      销售价:¥ {{cart.promotion_price}}
-                    </view>
-                    <view  class='interior' style="color:red;font-size: 12px;" name="goods_price" wx:if='{{cart.is_inside==1}}'>
-                      内购价: ¥{{cart.interior_price}}
-                      </view>
-
-                  </view>
-                  
-                  <!-- 普通vip的样式 -->
-                  <view class="edit_show"  wx:if='{{distributor_type!=0 && distributor_type!=1 && edit == 1 && cart.is_change_price==1}}'>
+                <!-- 普通vip的样式 -->
+                <view class="edit_show" wx:if='{{distributor_type!=0 && distributor_type!=1 && edit == 1 && cart.is_change_price==1}}'>
                   <text style='color:#999;font-size:12px;margin-left:10rpx;line-height:0; '>
-                        原价¥{{cart.price}}
-                      </text>
-                    <view class="span ui-number">
-                      <view class="decrease" data-type='minus' data-index='{{i}}' data-key='{{k}}' style="border-right:1px solid #ccc;" data-id='{{cart.cart_id}}' catchtap='numAdjust'>
-                        -
-                      </view>
-                      <input class="num" value="{{cart.num}}" data-index='{{i}}' data-key='{{k}}' data-id='{{cart.cart_id}}' bindblur='inputAdjust' />
-                      <view class="increase" data-type='add' data-index='{{i}}' data-key='{{k}}' style="border-left:1px solid #ccc;" data-id='{{cart.cart_id}}' catchtap='numAdjust'>
-                        +
-                      </view>
+                    原价¥{{cart.price}}
+                  </text>
+                  <view class="span ui-number">
+                    <view class="decrease" data-type='minus' data-index='{{i}}' data-key='{{k}}' style="border-right:1px solid #ccc;" data-id='{{cart.cart_id}}' catchtap='numAdjust'>
+                      -
+                    </view>
+                    <input class="num" value="{{cart.num}}" data-index='{{i}}' data-key='{{k}}' data-id='{{cart.cart_id}}' bindblur='inputAdjust' />
+                    <view class="increase" data-type='add' data-index='{{i}}' data-key='{{k}}' style="border-left:1px solid #ccc;" data-id='{{cart.cart_id}}' catchtap='numAdjust'>
+                      +
                     </view>
                   </view>
-                  <!-- 超级vip的样式  -->
+                </view>
+                <!-- 超级vip的样式 -->
                 <view class="edit_num" wx:else>
-                    <view class="span ui-number">
-                      <view class="decrease" data-type='minus' data-index='{{i}}' data-key='{{k}}' style="border-right:1px solid #ccc;" data-id='{{cart.cart_id}}' catchtap='numAdjust'>
-                        -
-                      </view>
-                      <view class="num" wx:if='{{cart.isInput==1}}' catchtap='toInput' data-index='{{i}}' data-key='{{k}}' data-list='{{cart}}' style='width:40px;'>{{cart.num}}</view>
-                      <input type='number' class="num" value="{{cart.num}}" data-index='{{i}}' data-key='{{k}}' data-id='{{cart.cart_id}}' bindblur='inputAdjust' focus='{{true}}' wx:else/>
-                      <view class="increase" data-type='add' data-index='{{i}}' data-key='{{k}}' style="border-left:1px solid #ccc;" data-id='{{cart.cart_id}}' catchtap='numAdjust'>
-                        +
-                      </view>
+                  <view class="span ui-number">
+                    <view class="decrease" data-type='minus' data-index='{{i}}' data-key='{{k}}' style="border-right:1px solid #ccc;" data-id='{{cart.cart_id}}' catchtap='numAdjust'>
+                      -
+                    </view>
+                    <view class="num" wx:if='{{cart.isInput==1}}' catchtap='toInput' data-index='{{i}}' data-key='{{k}}' data-list='{{cart}}' style='width:40px;'>
+                      {{cart.num}}
+                    </view>
+                    <input type='number' class="num" value="{{cart.num}}" data-index='{{i}}' data-key='{{k}}' data-id='{{cart.cart_id}}' bindblur='inputAdjust' focus='{{true}}' wx:else />
+                    <view class="increase" data-type='add' data-index='{{i}}' data-key='{{k}}' style="border-left:1px solid #ccc;" data-id='{{cart.cart_id}}' catchtap='numAdjust'>
+                      +
                     </view>
                   </view>
-
                 </view>
               </view>
             </view>
-          </scroll-view>
-          <view class="del {{cart.isTouchMove?'touch-move-del':''}}" catchtap="del" data-index="{{k}}">
-            <view>删除</view>
           </view>
+        </scroll-view>
+        <view class="del {{cart.isTouchMove?'touch-move-del':''}}" catchtap="del" data-index="{{k}}">
+          <view>删除</view>
         </view>
-
-         <!-- 购物单信息 -->
+      </view>
+      <!-- 购物单信息 -->
       <view class='weChat-cart'>
         <image src='https://static.vitasantee.com/stodownload%20%281%29.jpeg' mode='widthFix'></image>
-        <navigator target="miniProgram" open-type="navigate" app-id="wx56c8f077de74b07c" path="/open/function-introduction/function-introduction" extra-data="" version="release">已同步至好物圈</navigator>
+        <navigator target="miniProgram" open-type="navigate" app-id="wx56c8f077de74b07c" path="/open/function-introduction/function-introduction" extra-data="" version="release">
+          已同步至好物圈
+        </navigator>
       </view>
-      </view>
-     
     </view>
+  </view>
   <block wx:if="{{cart_list.length != 0 && cart_list != undefined && unregistered==0 && tel!=''}}">
-      <view class="btn_wrap btn_wrap_static">
-        <view class="ttn_server" id="div_selected">
-          <image src='/images/goods/{{check_all==1?"cartp2.png":"cartp1.png"}}' mode='widthFix' catchtap='checkAll'></image>
-          <view class='span' id="sel_text">全选</view>
-        </view>
-        <view class='hidden' id="price_info" style="{{edit==1?'':'visibility:unset;'}}">
-          <block wx:if="{{is_vip==0}}">
-            <view>
-              <text>合计：</text>
-              <view class='span' id="orderprice" class="price">¥{{total_price}}</view>
-            </view>
-            <view wx:if='{{inside_price>0}}'>
-              <text>内购合计：</text>
-              <view class='span' id="orderprice" class="price">¥{{inside_price}}</view>
-            </view>
-          </block>
-          <block wx:if="{{is_vip==1}}">
+    <view class="btn_wrap btn_wrap_static">
+      <view class="ttn_server" id="div_selected">
+        <image src='/images/goods/{{check_all==1?"cartp2.png":"cartp1.png"}}' mode='widthFix' catchtap='checkAll'></image>
+        <view class='span' id="sel_text">全选</view>
+      </view>
+      <view class='hidden' id="price_info" style="{{edit==1?'':'visibility:unset;'}}">
+        <block wx:if="{{is_vip==0}}">
+          <view>
             <text>合计：</text>
             <view class='span' id="orderprice" class="price">¥{{total_price}}</view>
-          </block>
-        </view>
-        <view class="btn_buy {{is_checked==0?'delete':'next'}}" catchtap='{{edit==1?"deleteCart":"settlement"}}'>
-          <block wx:if='{{edit == 1}}'>
-            <text class='span {{edit==1?"":"hide"}}' id="settlement">删除</text>
-          </block>
-          <block wx:if='{{edit == 0}}'>
-            <text class='span {{edit==0?"":"hide"}}' id="settlement">结算</text>
-          </block>
-        </view>
+          </view>
+          <view wx:if='{{inside_price>0}}'>
+            <text>内购合计：</text>
+            <view class='span' id="orderprice" class="price">¥{{inside_price}}</view>
+          </view>
+        </block>
+        <block wx:if="{{is_vip==1}}">
+          <text>合计：</text>
+          <view class='span' id="orderprice" class="price">¥{{total_price}}</view>
+        </block>
       </view>
+      <view class="btn_buy {{is_checked==0?'delete':'next'}}" catchtap='{{edit==1?"deleteCart":"settlement"}}'>
+        <block wx:if='{{edit == 1}}'>
+          <text class='span {{edit==1?"":"hide"}}' id="settlement">删除</text>
+        </block>
+        <block wx:if='{{edit == 0}}'>
+          <text class='span {{edit==0?"":"hide"}}' id="settlement">结算</text>
+        </block>
+      </view>
+    </view>
   </block>
   <block wx:else>
     <view wx:if='{{unregistered==0 && tel!=""}}'>
@@ -197,10 +190,9 @@
         <view class="a btn" catchtap="toResgin" data-url='/pages/member/resgin/resgin'>点击登录</view>
       </view>
     </view>
-
     <!-- 品牌推荐 -->
     <view class='brand' wx:if='{{goodsList.length>0}}'>
-      <!--  标题 -->
+      <!-- 标题 -->
       <view class='activity_title'>
         <view class='activity_title_border'></view>
         <view class='activity_title_text'>热卖商品</view>

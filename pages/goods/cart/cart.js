@@ -5,6 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    loaded: false,
     prompt: '',
     Base: '', //库路径
     defaultImg: {},
@@ -217,7 +218,7 @@ Page({
     let siteBaseUrl = app.globalData.siteBaseUrl;
     wx.showShareMenu({
       withShareTicket: true
-    })
+    });
   },
 
   GWC_reuse: function () {
@@ -285,7 +286,8 @@ Page({
             inside_price: inside_price.toFixed(2),
             //check_all: 1,
             edit: 0,
-            is_checked: 1
+            is_checked: 1,
+            loaded: true
           });
 
           wx.stopPullDownRefresh()
@@ -1485,6 +1487,7 @@ Page({
                   is_checked: 1,
                   total_price: total_price.toFixed(2),
                   inside_price: inside_price.toFixed(2),
+                  isFoll: true
                 })
                 app.showBox(that, '操作成功');
           

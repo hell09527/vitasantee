@@ -61,6 +61,18 @@ swiper {
   padding: 10rpx 10px;
   position: relative;
 }
+.buy_area .tip{
+  display:inline-block;
+  width:80rpx;
+  height:40rpx;
+  color:#e40046;
+  text-align:center;
+  line-height:40rpx;
+  outline:1px solid #e40046;
+  transform:scale(0.6) translateX(-12px);
+  font-size:28rpx;
+  margin-right:-8px;
+}
 
 .hr{
   display: block;
@@ -463,7 +475,7 @@ image{
 }
 
 .s-buy-pro .pro-price{
-  color: #F44 !important;
+  color: #005882 !important;
   font-size: 16px;
 }
 
@@ -636,6 +648,7 @@ image{
   width: 100%;
   color: #666;
 }
+
 
 .cart_num{
   position: absolute;
@@ -1818,7 +1831,7 @@ border-radius: 0;
   white-space:pre-line;
 }
 .recommended-goods-item .brand_goods_price{
-  color:#e40046;
+  color:#005882;
   font-size: 12px;
 }
 

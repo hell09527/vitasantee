@@ -1,0 +1,149 @@
+/* 个人身份证信息 */
+.basic-infor{
+    padding:20rpx 40rpx;
+    width:100%;
+  }
+  .table{
+    width:100%;
+  }
+  .table>view{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 90rpx;
+  }
+  .table-text{
+    width:140rpx;
+    font-size: 14px;
+    color:#000;
+    text-align: right;
+    margin-right: 60rpx;
+  }
+  .table-input{
+    flex: 1;
+    border-bottom: 1px solid #bbbbbb;
+    padding:0 10rpx;
+    height: 70rpx;
+    line-height: 70rpx;
+  }
+  .section{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .radio{
+    margin-right: 30rpx;
+  }
+  .picker{
+    text-align: right;
+    height:1.4rem;
+  }
+  .addressText{
+    height: 100%;
+    width:100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    text-align: center;
+  }
+  .model-box{
+    background: rgba(0,0,0,0.6);
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height: 100%;
+    z-index: 20;
+  }
+  .picker-view {
+    width: 100%;
+    display: flex;
+    z-index:30;
+    background-color: #fff;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 0rpx;
+    left: 0rpx;
+    height: 40vh;
+  }
+  .picker-item {
+    line-height: 70rpx;
+    margin-left: 5rpx;
+    margin-right: 5rpx;
+    text-align: center;
+  }
+  .next-btn{
+    background: #000;
+    width:400rpx;
+    height:90rpx;
+    color:#fff;
+    margin:40rpx auto;
+    text-align: center;
+    line-height: 90rpx;
+  }
+  /* 实名制认证 */
+.realname-title{
+    color:#000;
+    font-size:14px;
+    line-height: 20px;
+  }
+  .titel-bottom{
+    font-size: 12px;
+    color:#AAAAAA;
+  }
+  .identityCard{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .identityCard_item_box{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: relative;
+    z-index: 10;
+  }
+  .identityCard_del{
+    position: absolute;
+    right: 20rpx;
+    bottom: 60rpx;
+    z-index: 100;
+    width:64rpx;
+    height: 64rpx;
+    margin-left: 40rpx;
+  }
+  .identityCard_item{
+    width:660rpx;
+    height: 360rpx;
+    margin-bottom: 40rpx;
+    display: flex;
+    align-items: center;
+  }
+  .FilePaths{
+    background: url('https://static.bonnieclyde.cn/%E7%85%A7%E7%89%87%E5%B1%95%E4%BD%8D%E5%9B%BE@2x.png') no-repeat;
+    background-size: 100% 100%;
+  }
+  .recitePaths{
+    background: url('https://static.bonnieclyde.cn/%E5%B1%95%E4%BD%8D%E5%9B%BE-2@2x.png') no-repeat;
+    background-size: 100% 100%;
+  }
+  .paths{
+    width:100%;
+    height:100%;
+  }
+  .imgs{
+    width:100%;
+    height: 100%;
+    line-height: 272rpx;
+    text-align: center;
+  }
+  .writer{
+    padding: 0 40rpx;
+    color:#999;
+}
+  

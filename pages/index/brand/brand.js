@@ -1,4 +1,5 @@
 // pages/index/brand/brand.js
+const SERVERS = require('../../../utils/servers.js');
 const app = getApp();
 
 Page({
@@ -28,11 +29,9 @@ Page({
       defaultImg: defaultImg
     })
 
-    app.sendRequest({
-      url: 'api.php?s=goods/goodsClassificationList',
-      data: {},
-      success: function (res) {
-        let code = res.code;
+
+    SERVERS.GOODS.goodsClassificationList.post().then(res => {
+      let code = res.code;
         let data = res.data;
         console.log(res);
         if (code == 0) {
@@ -97,8 +96,15 @@ Page({
             brandList: goods_category_list[0].brand,
             firstIndex: goods_category_list[0].category_id,
           })
-          wx.stopPullDownRefresh()
+          wx.stopPullDownRefresh();
         }
+    }).catch(e => console.log(e));
+    return;
+    app.sendRequest({
+      url: 'api.php?s=goods/goodsClassificationList',
+      data: {},
+      success: function (res) {
+        
       }
     });
 

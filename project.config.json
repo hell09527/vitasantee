@@ -10,7 +10,7 @@
 		"uglifyFileName": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.7.0",
+	"libVersion": "2.7.1",
 	"appid": "wxc5a426c09ac5cebc",
 	"projectname": "vta",
 	"isGameTourist": false,
@@ -34,7 +34,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 7,
+			"current": 6,
 			"list": [
 				{
 					"id": 0,
@@ -77,14 +77,21 @@
 					"id": 6,
 					"name": "秒杀",
 					"pathName": "pages/index/discount/discount",
-					"query": "",
-					"scene": "1011"
+					"query": "type=2",
+					"scene": 1011
 				},
 				{
 					"id": -1,
 					"name": "领取优惠券",
 					"pathName": "pages/index/couponReceive/couponReceive",
 					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "优惠券详情",
+					"pathName": "pages/index/couponDetail/couponDetail",
+					"query": "id=1234",
+					"scene": null
 				}
 			]
 		}

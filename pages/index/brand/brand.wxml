@@ -17,7 +17,7 @@
     </view>
 
     <!-- 右边 -->
-    <scroll-view class='classify-right' wx:if='{{goodsList.length>0}}'>
+    <scroll-view class='classify-right' wx:if='{{goodsList.length>0}}' scroll-y="{{true}}">
       <!-- <image src="{{classifyLogo}}" mode="widthFix"/> -->
       <view class='goods-list'>
         <block wx:for='{{goodsList}}' wx:key='' wx:for-item='item' wx:for-index='index'>

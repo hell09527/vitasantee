@@ -197,6 +197,12 @@ Page({
       url: '/pages/member/addInGroup/addInGroup',
     })
   },
+  Auto:function(){
+    console.log(app.globalData.identifying)
+    wx.navigateTo({
+      url: '/pages/member/kolApply/kolApply?uid='+ app.globalData.identifying ,
+    })
+  },
 
   /**
    * 生命周期函数--监听页面隐藏

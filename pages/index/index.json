@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "维美善特",
   "enablePullDownRefresh": true,
+  "backgroundColor": "#e40046",
   "usingComponents":{
     "goods-list": "/components/common/goodsList/goodsList"
   }

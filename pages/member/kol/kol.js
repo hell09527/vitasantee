@@ -4,7 +4,7 @@ var _wxcharts = require('../../mars/plugins/wxcharts')
 Page({
   data: {
     ck: 1,//区分数据本月或者本周
-    _no: '0',//区分切换项
+    _no: '2',//区分切换项
     isTopClick: 1,  //商品排行标题点击
     datetime: '',
     nowData: '',  //当前月
@@ -81,7 +81,7 @@ Page({
         for (let index in listData){
           // console.log(listData[index].fraction)
           listData[index].fraction
-          listData[index].fraction = listData[index].fraction * 100
+          listData[index].fraction = listData[index].fraction * 100 + "%"
         }
         that.setData({
           listData

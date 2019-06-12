@@ -153,6 +153,11 @@
       </view>
     </view> -->
   </view>
+
+  <view class="huzhi" wx:if="{{distributor_type==0}}" catchtap='Auto'>
+     <image  src="https://static.bonnieclyde.cn/WechatIMG3228.jpeg" mode="widthFix" style="width:750rpx"> </image>
+  </view>
+
 <!-- //客服 -->
            <button class="a new-btn buy-cart" open-type="contact" session-from="weapp" class="yuan cks">
                 <view><image src="https://static.vitasantee.com/%E5%AE%A2%E6%9C%8D.png"  mode='widthFix' ></image></view>

@@ -261,7 +261,7 @@
 
         <view class="dividing-line"><!-- 分隔行 --></view>
 
-        <view class="item-options {{shop_config.order_balance_pay==1?'':'hide'}}">
+        <!-- <view class="item-options {{shop_config.order_balance_pay==1?'':'hide'}}">
             <view class='label'>使用余额
                 <view class="b account_balance">￥{{member_account.balance}}</view>
             </view>
@@ -269,7 +269,7 @@
                 <input type="digit" id="account_balance" bindinput='inputBalance' data-max="{{member_account.balance}}"
                        placeholder="0.00"/>元
             </view>
-        </view>
+        </view> -->
         <!--<view class="dividing-line">&lt;!&ndash; 分隔行 &ndash;&gt;</view>-->
         <!--
               <view class="item-options">

@@ -1,4 +1,5 @@
 <import src="../../../wxParse/wxParse.wxml" />
+<wxs src="../../../wxs/common.wxs" module="common"></wxs>
 <!-- 引入tempalte -->
 <scroll-view bindtouchstart="handletouchtart" bindtouchend="handletouchend" bindtouchmove="handletouchmove">
     <!-- 制作 -->
@@ -47,6 +48,7 @@
                 </block>
             </swiper>
         </block>
+        <!-- promotion_type 0正常 2限时 3秒杀 -->
         <!-- 商品图，价格 -->
         <block wx:if="{{goods_info.promotion_type == 2 && goods_info.promotion_detail != ''}}">
             <view class="goods-header js-goods-header goods-activity clearfix">
@@ -80,6 +82,39 @@
                 </view>
             </view>
         </block>
+        <!-- 商品图，价格 -->
+        <block wx:if="{{saleState}}">
+            <view class="goods-header js-goods-header goods-activity clearfix">
+                <view class="goods-price {{timer_array.end==1?'gray':''}}">
+                    <view class="current-price activity-price">
+                        <!-- <view class='span'>￥</view> -->
+                        <view class="i js-goods-price price">￥{{(goods_info.promotion_price<goods_info.price)?goods_info.promotion_price:goods_info.price}}</view>
+                        <view class="span price-title js-price-title {{timer_array.end==1?'gray':''}}">
+                            每日秒杀
+                        </view>
+                    </view>
+                    <!-- <view class='em' class="original-price">{{goods_info.price}}</view> -->
+                    <view class="font-size-12 overview-countdown js-activity-tips started">
+                        <block wx:if='{{timer_array.end == 0}}'>
+                            <view class="countdown-title">距结束仅剩</view>
+                            <view class="js-discount-time countdown">
+                                <view class="span js-day">{{timer_array.day}}</view>
+                                天
+                                <view class="span js-hour">{{timer_array.hour}}</view>
+                                时
+                                <view class="span js-min">{{timer_array.minute}}</view>
+                                分
+                                <view class="span js-sec">{{timer_array.second}}</view>
+                                秒
+                            </view>
+                        </block>
+                        <block wx:else>
+                            <view class="countdown-title">{{timer_array.msg || '活动已结束'}}</view>
+                        </block>
+                    </view>
+                </view>
+            </view>
+        </block>
         <view class="buy_area">
             <view class="fn_wrap" style="position: relative;">
                 <view decode="{{true}}" class="h1 title" id="itemName">
@@ -92,12 +127,13 @@
                 </button>
             </view>
             <view class="price_wrap">
-                <view class='flex' wx:if="{{scale==1}}">
-                    <view class="price">
-                        ￥{{parseInt(goods_info.promotion_price)< parseInt(goods_info.price)?goods_info.promotion_price:goods_info.price}}
+                <view class='flex' wx:if="{{scale==1}}" data-scale="1">
+                    <view class="price" wx:if="{{!saleState}}">
+                        ￥{{(goods_info.promotion_price<goods_info.price)?goods_info.promotion_price:goods_info.price}}
                     </view>
                     <block wx:if='{{sum==1}}'>
-                        <view class="sos" id="priceTitle" wx:if="{{goods_info.market_price - goods_info.price > 0}}">
+                        <!-- <view wx:if="{{(goods_info.promotion_type == 3 && goods_info.promotion_detail != '')}}">原价：</view> -->
+                        <view class="sos" id="priceTitle" wx:if="{{goods_info.market_price > goods_info.promotion_price}}">
                             ￥{{goods_info.market_price}}
                         </view>
                     </block>
@@ -126,7 +162,12 @@
                         ￥{{parseInt(goods_info.promotion_price)< parseInt(goods_info.inside_price)?goods_info.promotion_price:goods_info.inside_price}}
                     </text>
                 </view>
+                <view wx:if="{{activeSecKillShow&&!saleState}}" class="seckill-preview">
+                    <text class="tip">秒杀</text>
+                    <text>{{activeSecKillShow}}</text>
+                </view>
             </view>
+            
             <!-- 限购 -->
             <block wx:if='{{goods_info.max_buy!=0}}'>
                 <view class="hr divider-line"></view>
@@ -589,7 +630,7 @@
                 <view class="li s-buy-pro">
                     <view class="span pro-img">
                         <!-- 商品SKU图片 -->
-                        <image src='{{mo_imgs.spec_value_data}}' class="js-thumbnail" catchtap='skuPreivewImg' data-urls='{{mo_imgs}}'></image>
+                        <image src='{{mo_imgs.spec_value_data_big_src}}' class="js-thumbnail" catchtap='skuPreivewImg' data-urls='{{mo_imgs}}'></image>
                     </view>
                     <view class="pro-info">
                         <!-- {{buyButtonStatus==3||buyButtonStatus==4?goods_info.goods_pintuan.tuangou_money:member_price}} -->
@@ -599,7 +640,7 @@
                             ￥{{parseInt(goods_info.promotion_price)< parseInt(goods_info.inside_price)?goods_info.promotion_price:goods_info.inside_price}}
                         </view>
                         <view class="p pro-price" id="price" wx:else>
-                            ￥{{parseInt(goods_info.promotion_price)< parseInt(goods_info.price)?goods_info.promotion_price:goods_info.price}}
+                            ￥{{goods_info.promotion_price<goods_info.price?goods_info.promotion_price:goods_info.price}}
                         </view>
                         <view style='color:#CC9933' wx:if="{{goods_info.vip_price>0}}">
                             会员价:￥{{goods_info.vip_price}}
@@ -741,9 +782,9 @@
                         <view id="global-cart" class="a new-btn buy-cart" catchtap='tapSwitch' data-url='/goods/cart/cart'>
                             <image src='/images/goods/cart_uncheck.png' mode='scaleToFill'></image>
                             <view class="span desc">购物车</view>
-                            <text class='cart_num' wx:if="{{unregistered==0 && tel!='' && goods_info.cart_count>0}}">
+                            <view class='cart_num' wx:if="{{unregistered==0 && tel!='' && goods_info.cart_count>0}}">
                                 {{goods_info.cart_count}}
-                            </text>
+                            </view>
                         </view>
                     </block>
                 </block>

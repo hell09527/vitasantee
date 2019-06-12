@@ -39,6 +39,7 @@
 }
 .goods_bottom image{
   width:36rpx;
+  height:32rpx;
   display: block;
 }
 .i.goods_tab {

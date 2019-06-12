@@ -1,0 +1,24 @@
+<view>
+<view class='alls'></view> 
+<view class='approve' >
+    <view >已认证信息</view>
+</view>
+<view class='info' >
+    <view class='name' >姓名</view>
+    <view class='in'>{{name}}</view>
+</view>
+ <view class='info' style=' margin-top:2px;'>
+    <view class='name' >证件类型</view>
+    <view class='in'>身份证</view>
+</view> 
+ <view class='info' style=' margin-top:2px;'>
+    <view class='name' >证件号</view>
+    <view class='in'>{{Idcard}}</view>
+</view> 
+</view>
+<view class='deposit' data-in='go' catchtap='againVerify' style="background:#eeb85b;">返回提现</view>
+<view class='deposit' data-in='again' catchtap='againVerify'>重新上传身份证</view>
+
+<view class='writer'>
+    <view class='head_text'>您在本平台上传的证件资料仅用于完善您的个人资料，真实准确的个人资料是提现成功的前提，感谢配合。</view>
+</view>

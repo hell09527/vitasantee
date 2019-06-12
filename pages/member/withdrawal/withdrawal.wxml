@@ -16,7 +16,7 @@
     <view class='head-top'>
 
       <view class='head-top-title'>
-           <view style='color:#fff;'> 可提现金额 
+           <view style='color:#000;'> 可提现金额 
               <span class='style' wx:if="{{remain}}" > ￥{{remainPrice}} </span>
               <span class='style' wx:if="{{!remain}}" > ￥{{rewardPrice}} </span>
                </view>
@@ -34,7 +34,7 @@
 
       <view class="head-text head-text-center">
         <!-- <text style='color:#4a4a4a;' wx:if='{{isBindInput}}'></text> -->
-        <input type='digit' placeholder='￥ 输入金额数值要大于{{minMoey}}且小于{{maxMoey}}'  placeholder-style='color:#4a4a4a;'  bindinput='priceValue' value='{{RunPrice}}'/>
+        <input type='digit' placeholder='￥ 输入金额数值要大于{{minMoey}}且小于{{maxMoey}}'  placeholder-style='color:#005882;' style='color:#005882;' bindinput='priceValue' value='{{RunPrice}}'/>
       </view>
            <view style='color:#585858;font-size: 14px;' wx:if='{{hint==0}}'>当日提现金额上限{{maxMoey}}元，提现到微信零钱，立即到账！</view>
            <view style='color:red;font-size: 14px;' wx:if='{{hint==1}}'>输入金额已超过单日可提现额度</view>
@@ -53,6 +53,18 @@
 
     </view>
   </view>
+
+    <view class='moneyBox'>
+         <view class='xuans'>
+          <view class='c_money'>
+            <view>个人信息认证</view>
+          </view>
+          <view class='edu' catchtap='open'>
+          <text wx:if='{{switchover==0}}'>前往提交信息</text>
+          <text wx:if='{{switchover==1}}' style='color:#ffb24c'>身份证已上传</text>
+          <image lazy-load="true" class="direction " src='https://static.bonnieclyde.cn/WechatIMG240.png'></image> </view>
+        </view>
+    </view>
 
   <view class='detail-box'>
     <view class='detail-head'>

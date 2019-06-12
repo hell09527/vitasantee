@@ -1,35 +1,68 @@
 
 @import "/templates/HomeOrShare-icon-template/HomeOrShare-icon-template.wxss";
 .discount_time_box{
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  left: 0;
+  right: 0;
   white-space:nowrap;
-  height: 140rpx;
+  height: 130rpx;
 }
 .discount_time_detail{
   background: #96989e;
-  padding:10rpx 20rpx;
+  padding: 12rpx 20rpx 18rpx;
+  box-sizing: border-box;
   font-size: 14px;
   color:#e4e4e6;
   position: relative;
   display: inline-block;
+  min-width: 20%;
+}
+.discount_time_detail.percent1{
+  width: 100%;
+  min-width: 100%;
+}
+.discount_time_detail.percent2{
+  width: 50%;
+  min-width: 50%;
+}
+.discount_time_detail.percent3{
+  width: 33.333%;
+  min-width: 33.333%;
+}
+.discount_time_detail.percent4{
+  width: 25%;
+  min-width: 25%;
+}
+.discount_time_detail.percent5{
+  width: 20%;
+  min-width: 20%;
 }
 .discount_time_detail>.discount_time{
   text-align: center;
   line-height: 50rpx;
 }
-.discount_time_detail_active{
+.discount_time_detail.discount_time_detail_active{
   color:#fff;
   font-size: 16px;
   background: #7ca8bd;
-  padding:10rpx 40rpx;
+  padding: 12rpx 40rpx 18rpx;
+  width: auto;
+}
+.discount_text{
+  text-align: center;
 }
 .discount_time_detail_active .discount_text{
   background: #fff;
-  text-align: center;
   padding:0 20rpx;
   color:#7ca8bd;
   border-radius: 18rpx;
+  max-width:130rpx;
+  margin:0 auto;
 }
 .discount_icon{
+  display: none;
   position: absolute;
   bottom:-28rpx;
   left:50%;

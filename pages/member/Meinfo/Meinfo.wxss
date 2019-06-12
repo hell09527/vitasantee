@@ -1,0 +1,49 @@
+.alls{
+    width: 100%;
+   padding:0 20px;
+background:#fff;
+
+}
+.info{
+    display: flex;
+    justify-content: space-between;
+    height:80rpx;
+    line-height:80rpx;
+    padding: 0 20rpx;
+    background:#fff;
+}
+.writer{
+    padding: 0 20rpx;
+    color:#999;
+}
+.approve{
+    width: 100%;
+    height:60rpx;
+    line-height:60rpx;
+    padding: 0 20rpx; 
+    margin-top: 40rpx;
+    color:#999;
+    background-color:rgba(247, 247, 247, 1);
+ 
+}
+.name{
+font-size:16px ;
+color: rgba(3, 3, 3, 1);
+font-family: SourceHanSansSC-regular;
+}
+.in{
+    color:#999;
+}
+.deposit {
+   width:700rpx;
+    height:80rpx;
+    line-height:80rpx;
+    color:#fff;
+    margin:0 auto;
+    background:#000;
+    margin-top:40rpx;
+    margin-bottom:40rpx;
+    text-align:center;
+    
+    }
+    

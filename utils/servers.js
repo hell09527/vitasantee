@@ -3,7 +3,10 @@
 
 const SERVERS = {};
 
-SERVERS.BASEURL = 'https://dev02.vitasantee.com/';
+SERVERS.IS_DEV = true;
+
+SERVERS.BASEURL = 'https://www.vitasantee.com/';
+SERVERS.DEVURL = 'https://dev02.vitasantee.com/';
 
 // 登录
 SERVERS.LOGIN = {
@@ -11,10 +14,11 @@ SERVERS.LOGIN = {
 }
 // 通用配置
 SERVERS.COMMON = {
-    getDefaultImages: 'api.php?s=login/getDefaultImages', //默认图片(包含商品图片、用户头像)
+    getDefaultImages: 'api.php?s=goods/getDefaultImages', //默认图片(包含商品图片、用户头像)
     getWebSiteInfo: 'api.php?s=login/getWebSiteInfo',//默认配置
     copyRightIsLoad: 'api.php?s=task/copyRightIsLoad',//版权信息
     getVertification: 'api.php?s=index/getVertification',//随机验证码
+    load_task: 'api.php?s=task/load_task',//后台计划任务
 }
 // 首页
 SERVERS.HOME = {
@@ -25,6 +29,13 @@ SERVERS.HOME = {
 SERVERS.TOPIC = {
     hotTopic: 'api.php?s=/activity/hotTopic', //热门话题列表
     activityInfo: 'api.php?s=/Activity/activityInfo', //话题详情
+}
+// 秒杀
+SERVERS.SECKILL = {
+    seckillIndex: 'api.php?s=promotion/seckillIndex', //首页秒杀数据
+    seckillList: 'api.php?s=promotion/seckillList', //秒杀列表
+    seckillGoodsList: 'api.php?s=promotion/seckillGoodsList', //秒杀id对应商品列表
+    creatSeckillTemplate: 'api.php?s=promotion/creatSeckillTemplate', // 秒杀预约提醒
 }
 // 商品
 SERVERS.GOODS = {
@@ -107,4 +118,122 @@ SERVERS.MEMBER = {
     newMyPath: "api.php?s=member/newMyPath", //用户浏览历史列表
     delMyPath: "api.php?s=member/delMyPath", //用户浏览历史删除
 }
+
+/**
+ * app.js仅初始化一次(批量初始化接口)
+ */
+SERVERS.init = function(state = true){
+    // 开发模式
+    this.IS_DEV = state;
+    // 循环初始化
+    let list = ['BASEURL','init','interceptors'];
+    for(let k1 in this){
+        if(this[k1] instanceof Object && list.indexOf(k1) == -1){
+            for(let k2 in this[k1]){
+                this[k1][k2] = ajax(this[k1][k2]);
+            }
+        }
+    }
+}
+
+// 默认请求拦截器(请求配置通用，只暴露请求与返回数据配置)
+SERVERS.interceptors = {
+    request: data => data,
+    response: res => res.data,
+};
+
+/**
+ * 请求数据过滤
+ * @param {object} data 请求数据
+ * @param {array}  list 过滤列表(默认：undefined,null,'')
+ */
+SERVERS.filterData = function(data,list = [undefined,null,'']){
+    let nObj = {};
+    for(let key in data){
+        if(list.indexOf(data[key]) == -1){
+            nObj[key] = data[key];
+        }
+    }
+    return nObj;
+}
+
+/**
+ * 请求统一合并封装
+ * @param {string} url 请求地址
+ */
+function ajax(url){
+    //是否为开发模式
+    let base = SERVERS.IS_DEV?SERVERS.DEVURL:SERVERS.BASEURL;
+    return {
+        url: url,
+        // get: data => fetchData(base + url, data , "GET"),
+        post: data => fetchData(base + url, data , "POST"),
+        // upload: data => '待添加'
+    }
+}
+/**
+ * 默认promise请求
+ * @param {string} url  请求地址
+ * @param {object} data 请求数据
+ * @param {string} method 请求方式
+ */ 
+function fetchData(url,data = {},method) {
+    // 设置请求头
+    let contentType = method == 'GET'?'application/json':'application/x-www-form-urlencoded;';
+    // 请求拦截处理
+    let interceptors = SERVERS.interceptors.request(data,url)
+    // 请求数据过滤
+    let filterData = SERVERS.filterData(interceptors);
+    // 数据序列化
+    let cdata = serilize(filterData);
+
+    return new Promise((resolve,reject) => {
+        wx.request({
+            url: url,
+            data: cdata,
+            header: {
+                'content-type': contentType
+            },
+            method: method,
+            dataType: 'json',
+            success: res => resolve(SERVERS.interceptors.response(res)),
+            fail: e => reject(e)
+        });
+    })
+}
+
+/**
+ * 序列化对象(~)
+ * @param {object} obj 转换数据
+ */
+function serilize(obj){
+    let query = '';
+    let name, value, fullSubName, subName, subValue, innerObj, i;
+
+    for (name in obj) {
+      value = obj[name];
+
+      if (value instanceof Array) {
+        for (i = 0; i < value.length; ++i) {
+          subValue = value[i];
+          fullSubName = name + '[' + i + ']';
+          innerObj = {};
+          innerObj[fullSubName] = subValue;
+          query += serilize(innerObj) + '&';
+        }
+      } else if (value instanceof Object) {
+        for (subName in value) {
+          subValue = value[subName];
+          fullSubName = name + '[' + subName + ']';
+          innerObj = {};
+          innerObj[fullSubName] = subValue;
+          query += serilize(innerObj) + '&';
+        }
+      } else if (value !== undefined && value !== null) {
+        query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
+      }
+    }
+    return query.length ? query.substr(0, query.length - 1) : query;
+}
+
 module.exports = SERVERS;

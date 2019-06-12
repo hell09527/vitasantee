@@ -1,11 +1,11 @@
 
-<!-- <wxs src="../../wxs/common.wxs" module="common"></wxs> -->
+<wxs src="../../wxs/common.wxs" module="common"></wxs>
 <!-- 引入tempalte -->
 <import src="/templates/top-template/top-template.wxml" />
 <!-- <import src="/templates/goods-list-template/goods-list-template.wxml" /> -->
 <import src="/templates/goodsScreening-template/goodsScreening-template.wxml" />
 <!-- <import src="/templates/coupon-mask-template/coupon-mask-template.wxml" /> -->
-<scroll-view class="scroll-view" bindtouchstart="handletouchtart" bindtouchend="handletouchend" bindtouchmove="handletouchmove">
+<view class="scroll-view" bindtouchstart="handletouchtart" bindtouchend="handletouchend" bindtouchmove="handletouchmove">
   <form bindsubmit='songGift' report-submit="true">
     <!-- 等待标识 -->
     <view class="motify {{prompt==''?'hide':''}}">
@@ -24,8 +24,9 @@
         </view>
       </view>
       <view class="item-ans">
-        <!-- 轮播图 -->
-        <view class="index_slide" wx:if='{{imgUrls[0] != undefined}}'>
+        <!-- <view style="height:53px;background-color: #e40046;"></view> -->
+        <!-- 轮播图 wx:if='{{imgUrls[0] != undefined}}' -->
+        <view class="index_slide">
           <swiper autoplay="true" circular='true' class='index-swiper' bindchange='swiperChange' interval='3500' duration='500' style='height:{{swiperHeight}}px'>
             <block wx:for="{{imgUrls}}" wx:key="" wx:for-item='imgs'>
               <swiper-item>
@@ -52,14 +53,13 @@
             </view>
           </block>
         </view>
-        <!-- 限时秒杀 -->
+        <!-- 限时折扣 -->
         <view class='Timelimit' wx:if="{{discount_list.length>0}}">
-          <view class='recommended_title' style='padding:20rpx;'>
+          <view class='recommended_title' style='padding:20rpx;background: #fff;'>
             <view class='timeLimit-title'>
               <view style='position: relative'>
                 <view class='recommended_title_text'>
-                  <text style='color:#e40046'>每日</text>
-                  秒杀
+                  <text style='color:#e40046'>限时</text>折扣
                 </view>
               </view>
             </view>
@@ -94,6 +94,52 @@
                 <view class='Timelimit_price'>
                   ￥{{item.promotion_price}}
                   <text style='text-decoration:line-through;'>￥{{item.promotion_price}}</text>
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
+        <!-- 每日秒杀 -->
+        <view class='Timelimit' wx:if="{{seckill_list.length>0}}"  catchtap='toSecKill'>
+          <view class='recommended_title' style='padding:20rpx;background: #fff;'>
+            <view class='timeLimit-title'>
+              <view style='position: relative'>
+                <view class='recommended_title_text'>
+                  <text style='color:#e40046'>每日</text>秒杀
+                </view>
+              </view>
+            </view>
+            <view class='timeLimit-box'>
+              <block wx:if="{{seckill_timer.end == 0}}">
+                <view class="span timeLimit-time">{{common.N(seckill_timer.hour)}}</view>
+                <view class='em'>:</view>
+                <view class="span timeLimit-time">{{common.N(seckill_timer.minute)}}</view>
+                <view class='em'>:</view>
+                <view class="span timeLimit-time">{{common.N(seckill_timer.second)}}</view>
+              </block>
+              <block wx:else>
+                <view class="span">{{seckill_timer.tips}}</view>
+              </block>
+            </view>
+            <view class='flex'>
+              更多
+              <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" class="more" mode="widthFix" />
+            </view>
+          </view>
+          <view class='Timelimit_item'>
+            <block wx:for='{{seckill_list}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+              <view class='Timelimit_item_detail' wx:if='{{index<4}}' catchtap='toGood' data-id='{{item.goods_id}}'>
+                <!-- 已抢光 -->
+                <view wx:if='{{item.stock==0}}' class='Timelimit_no'>已抢光</view>
+                <image src="{{item.picture.pic_cover_small}}" lazy-load='true' mode="aspectFill" style="width: 100%;height: 68px;"/>
+                <!-- 精度条 -->
+                <!-- <view class="Timelimit_progress {{item.stock==0?'Timelimit_progress_no':''}}">
+                    <view class="Timelimit_progress_active"></view>
+                  </view> -->
+                <text class='Timelimit_text'>{{item.goods_name}}</text>
+                <view class='Timelimit_price'>
+                  ￥{{item.seckill_price}}
+                  <view style='text-decoration:line-through;'>￥{{item.price}}</view>
                 </view>
               </view>
             </block>
@@ -222,7 +268,7 @@
     </view>
     <!-- <text class="ke_fu">客服</text> -->
   </button>
-</scroll-view>
+</view>
 <!-- 新人提示 -->
 <view class='collect-prompt' wx:if='{{is_login==1}}' catchtap='toClosePrompt'>
   <view class='prompt-text'>

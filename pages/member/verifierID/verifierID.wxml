@@ -1,0 +1,33 @@
+<!-- 基本资料 -->
+  <view class='basic-infor' >
+    <view style='margin:20rpx 0;'>
+      <view class='realname-title'>上传您的身份证正反面照片</view>
+      <view class='titel-bottom'>（仅作为认证需要）</view>
+    </view>
+    <view class='identityCard'>
+      <view class="identityCard_item_box">
+        <view class="identityCard_item">
+          <image src="{{FilePaths}}" mode="aspectFill" class="paths" wx:if='{{FilePaths}}' catchtap='preivewImg' data-img='{{FilePaths}}'/>
+          <view class="imgs FilePaths" bindtap="frontimage" wx:else></view>
+        </view>
+        <image src='https://static.bonnieclyde.cn/%E5%88%A0%E9%99%A4ICON@2x.png' wx:if='{{FilePaths}}' class='identityCard_del' catchtap='toDelImg' data-img='face'/>
+      </view>
+      <view class="identityCard_item_box">
+        <view class="identityCard_item">
+          <image src="{{recitePaths}}" mode="aspectFill" class="paths" wx:if='{{recitePaths}}' catchtap='preivewImg' data-img='{{recitePaths}}'/>
+          <view class="imgs recitePaths" bindtap="reciteimage" wx:else></view>
+        </view>
+        <image src='https://static.bonnieclyde.cn/%E5%88%A0%E9%99%A4ICON@2x.png' wx:if='{{recitePaths}}' class='identityCard_del' catchtap='toDelImg' data-img='back'/>
+      </view>
+    </view>
+    <view class='identityCard' wx:if='{{FilePaths||recitePaths}}'>
+      <view style='color:#aaa;width:100%;text-align:center;'>直接点击可更换图片</view>
+    </view>
+     <view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25'color='#fff' ></icon>
+    <view class="motify-inner">{{prompt}}</view>
+  </view>
+  <view class='writer'>
+    <view class='head_text'>您在本平台上传的证件资料仅用于完善您的个人资料，真实准确的个人资料是提现成功的前提，感谢配合。</view>
+</view>
+ </view>

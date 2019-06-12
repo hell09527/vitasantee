@@ -24,8 +24,18 @@ Component({
     }
   },
   data: {
-
+    list: []
   },
+  // observers:{
+  //   'brandGoods':function(brandGoods){
+  //     let list = brandGoods.map(item => {
+  //       let tmp = item.sku_list.sort((a,b)=>a.promote_price-b.promote_price);
+  //       if(tmp.length>0)item.promotion_price = tmp[0].promote_price;
+  //       return item;
+  //     });
+  //     this.setData({ list });
+  //   }
+  // },
   methods: {
     // 商品详情
     toGood(e) {

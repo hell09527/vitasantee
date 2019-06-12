@@ -1,5 +1,6 @@
 var aldstat = require("./utils/ald-stat.js");
 var SERVERS = require('./utils/servers');
+
 App({
   /**
  /a/dsa sadaswqwqewqkhhjhjhqqweqwewqewe  * 全局变量
@@ -49,7 +50,37 @@ App({
   },
   //app初始化函数
   onLaunch: function () {
-    console.log(SERVERS);
+    let that = this;
+
+    // 请求初始化(设置开发模式)
+    SERVERS.init(false);
+
+    //请求拦截函数
+    SERVERS.interceptors.request = function (data) {
+      wx.showLoading({
+        title: '加载中...'
+      });
+      data.token = that.globalData.token;
+      return data;
+    };
+    SERVERS.interceptors.response = function (res) {
+      wx.hideLoading();
+      let { code, message } = res.data;
+      if (code == -50) {
+        that.showModal({
+          content: message,
+        })
+      } else if (code == -10) {
+        that.showModal({
+          content: message,
+          code: -10,
+        })
+      }
+      return res.data;
+    };
+
+
+
     const updateManager = wx.getUpdateManager()
     updateManager.onCheckForUpdate(function (res) {
 
@@ -69,7 +100,7 @@ App({
     updateManager.onUpdateFailed(function () {
       // 新的版本下载失败
     })
-    let that = this;
+
 
     that.unregisteredCallback().then((result) => {
       console.log(result)
@@ -79,6 +110,7 @@ App({
     that.defaultImg();
     // that.webSiteInfo();
     that.copyRightIsLoad();
+    that.loadTask();
   },
 
   // 判断是否登录
@@ -147,28 +179,22 @@ App({
     if (encryptedData == undefined || iv == undefined) {
       return false;
     }
-    that.sendRequest({
-      url: "api.php?s=Login/getWechatEncryptInfo",
-      data: {
-        code: code,
-        encryptedData: encryptedData,   //微信信息
-        iv: iv,
-        store_id
-      },
-      success: function (res) {
-        let code = res.code;
-        if (code == 0 || code == 10) {
-
-          // that.setOpenid(res.data);
-          that.setOpenid(res.data.openid)
-          that.globalData.token = res.data.token;
-          if (that.employIdCallback) {
-            that.employIdCallback(res.data.token)
-          } that.setToken(res.data.token);
-        }
-        // console.log(res)
+    // 登录接口
+    SERVERS.LOGIN.getWechatEncryptInfo.post({
+      code: code,
+      encryptedData: encryptedData,   //微信信息
+      iv: iv,
+      store_id
+    }).then(res => {
+      let code = res.code;
+      if (code == 0 || code == 10) {
+        that.setOpenid(res.data.openid);
+        that.setToken(res.data.token);
+        if (that.employIdCallback) {
+          that.employIdCallback(res.data.token)
+        } 
       }
-    });
+    }).catch(e => console.log(e));
   },
 
   /**
@@ -435,7 +461,7 @@ App({
    */
   defaultImg: function () {
     let that = this;
-    that.asynRequest("goods/getDefaultImages").then(res => {
+    SERVERS.COMMON.getDefaultImages.post().then(res => {
       let { code, data } = res;
       if (code == 0) {
         that.globalData.defaultImg = data;
@@ -450,7 +476,7 @@ App({
    */
   webSiteInfo: function () {
     let that = this;
-    that.asynRequest('login/getWebSiteInfo').then(res => {
+    SERVERS.COMMON.getWebSiteInfo.post().then(res => {
       let { code, data } = res;
       if (code == 0) {
         that.globalData.webSiteInfo = data;
@@ -481,7 +507,7 @@ App({
    */
   copyRightIsLoad: function (e) {
     let that = this;
-    that.asynRequest("task/copyRightIsLoad").then(res => {
+    SERVERS.COMMON.copyRightIsLoad.post().then(res => {
       let { code, data } = res.code;
       if (code == 0) {
         let copyRight = data;
@@ -514,7 +540,12 @@ App({
     d[parm] = 0;
     that.setData(d);
   },
-
+  /**
+   * 后台计划任务
+   */
+  loadTask() {
+    SERVERS.COMMON.load_task.post().then(res => console.log(res)).catch(e => console.log(e));
+  },
   /**
    * 随机生成验证码
    */

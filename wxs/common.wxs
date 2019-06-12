@@ -10,31 +10,32 @@ common.test = function(str){
 /**
  * 时间戳转化为年 月 日 时 分 秒 
  * number: 传入时间戳 
- * format：返回格式，支持自定义，但参数必须与formateArr里保持一致 
+ * format：返回格式，支持自定义，但参数必须与fora里保持一致 
  */
 common.formatTime = function(number, format) {
+    if(number == 0)return '\n';
     var format = format?format:'Y-M-D h:m:s';
-    var formateArr = ['Y', 'M', 'D', 'h', 'm', 's'];
-    var returnArr = [];
+    var fora = ['Y', 'M', 'D', 'h', 'm', 's'];
+    var ret = [];
 
     var date = getDate(number * 1000);
-    returnArr.push(date.getFullYear());
-    returnArr.push(formatNumber(date.getMonth() + 1));
-    returnArr.push(formatNumber(date.getDate()));
+    ret.push(date.getFullYear());
+    ret.push(N(date.getMonth() + 1));
+    ret.push(N(date.getDate()));
 
-    returnArr.push(formatNumber(date.getHours()));
-    returnArr.push(formatNumber(date.getMinutes()));
-    returnArr.push(formatNumber(date.getSeconds()));
-    returnArr.forEach(function(item,i){
-        format = format.replace(formateArr[i], returnArr[i]);
+    ret.push(N(date.getHours()));
+    ret.push(N(date.getMinutes()));
+    ret.push(N(date.getSeconds()));
+    ret.forEach(function(item,i){
+        format = format.replace(fora[i], ret[i]);
     });
     return format;
 }
+
 //数据转化
 function N(n) {
-    n = n.toString();
-    return n[1] ? n : '0' + n;
+    return n < 10 ? '0' + n : n;
 }
-
+common.N = N;
 
 module.exports = common;

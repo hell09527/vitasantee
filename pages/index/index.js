@@ -1,4 +1,7 @@
 const app = getApp()
+const dateTime = require('../../utils/util.js');
+const SERVERS = require('../../utils/servers.js');
+
 Page({
   data: {
     prompt: '',
@@ -9,17 +12,17 @@ Page({
     discount_list: {}, //限时折扣
     // canIUse: wx.canIUse('button.open-type.getUserInfo'),
     TimelimitGoods: [{
-        isHav: 1,
-      },
-      {
-        isHav: 0,
-      },
-      {
-        isHav: 1,
-      },
-      {
-        isHav: 1,
-      },
+      isHav: 1,
+    },
+    {
+      isHav: 0,
+    },
+    {
+      isHav: 1,
+    },
+    {
+      isHav: 1,
+    },
     ], //限时抢购
     scrollLeft: 0, //tab标题的滚动条位置
     winHeight: "", //窗口高度
@@ -34,15 +37,17 @@ Page({
     page: 1,
     // category_goods: [], //分类商品
     isCouponMask: true, //优惠券弹框
-    isInput:1,
-    isHide:0,
-    new_img:'',
-    index_goods_img:'',
-    isTop:0,   //回到顶部
+    isInput: 1,
+    isHide: 0,
+    new_img: '',
+    index_goods_img: '',
+    isTop: 0,   //回到顶部
+    seckill_timer: {}, //秒杀倒计时
+    seckill_timer_obj: null
   },
 
 
-  onLoad: function(options) {
+  onLoad: function (options) {
     let that = this;
     // 极选师分润
     if (options.uid) {
@@ -65,16 +70,17 @@ Page({
     }
 
     let times = 0;
-    let load_timer = setInterval(function() {
+    let load_timer = setInterval(function () {
       times++;
       let token = app.globalData.token;
+      console.log(token)
       if (token != '') {
         // app.showBox(that, '登陆成功');
         that.setData({
           maskStatus: 0,
         })
         clearInterval(load_timer);
-      } else if (times==15){
+      } else if (times == 15) {
         app.showBox(that, '登录超时...');
         that.setData({
           maskStatus: 0,
@@ -85,11 +91,10 @@ Page({
     }, 1000);
 
     that.indexInit(that);
-
   },
 
   // 商品分类点击
-  selectCheck: function(e) {
+  selectCheck: function (e) {
     let that = this;
     let id = e.currentTarget.dataset.id;
     let child = e.currentTarget.dataset.child;   //第一个二级分类的id
@@ -102,26 +107,26 @@ Page({
 
 
   // 关闭领取优惠券
-  couponReceive: function() {
+  couponReceive: function () {
     this.setData({
       isCouponMask: false,
     })
   },
-  closeCouponMask: function() {
+  closeCouponMask: function () {
     this.setData({
       isCouponMask: false,
     })
   },
 
-//搜索框点击
-  toInput:function(){
+  //搜索框点击
+  toInput: function () {
     this.setData({
       isInput: 0,
     })
   },
 
   // 搜索
-  searchInput: function(e) {
+  searchInput: function (e) {
     var val = e.detail.value;
     // console.log(e.detail.value);
     this.setData({
@@ -138,29 +143,29 @@ Page({
   },
 
   // 跳转热卖推页
-  toHotProduct: function() {
+  toHotProduct: function () {
     wx.navigateTo({
       url: '/pages/index/hotProduct/hotProduct',
     })
   },
 
   // 跳转新品推荐页
-  toNewProduct: function() {
+  toNewProduct: function () {
     wx.navigateTo({
       url: '/pages/index/newProduct/newProduct',
     })
   },
 
   // 跳转限时抢购
-  toDiscount: function() {
-    // wx.navigateTo({
-    //   url: '/pages/index/discount/discount',
-    // })
+  toDiscount: function () {
+    wx.navigateTo({
+      url: '/pages/index/discount/discount',
+    })
   },
 
   // 跳转商品详情页
 
-  toGood: function(e) {
+  toGood: function (e) {
     var that = this;
     var id = e.currentTarget.dataset.id;
     var url = e.currentTarget.dataset.url;
@@ -176,41 +181,38 @@ Page({
   },
 
   //获取会员所有信息
-  SY_reuse: function() {
+  SY_reuse: function () {
     let that = this;
-    app.sendRequest({
-      url: "api.php?s=member/getMemberDetail",
-      success: function(res) {
-        let data = res.data
-        if (res.code == 0) {
-          let is_vip = data.is_vip;
-          app.globalData.is_vip = data.is_vip;
-          app.globalData.distributor_type = data.distributor_type;
-          app.globalData.uid = data.uid;
-          app.globalData.vip_gift = data.vip_gift;
-          app.globalData.vip_goods = data.vip_goods;
-          app.globalData.vip_overdue_time = data.vip_overdue_time;
-          // console.log(data.user_info.user_tel)
-          app.globalData.user_tel = data.user_info.user_tel;
-          //  console.log(app.globalData.is_vip)
-          that.setData({
-            is_vip,
-            tel: data.user_info.user_tel
-          })
-        }
+    SERVERS.MEMBER.getMemberDetail.post().then(res => {
+      let data = res.data
+      if (res.code == 0) {
+        let is_vip = data.is_vip;
+        app.globalData.is_vip = data.is_vip;
+        app.globalData.distributor_type = data.distributor_type;
+        app.globalData.uid = data.uid;
+        app.globalData.vip_gift = data.vip_gift;
+        app.globalData.vip_goods = data.vip_goods;
+        app.globalData.vip_overdue_time = data.vip_overdue_time;
+        // console.log(data.user_info.user_tel)
+        app.globalData.user_tel = data.user_info.user_tel;
+        //  console.log(app.globalData.is_vip)
+        that.setData({
+          is_vip,
+          tel: data.user_info.user_tel
+        })
       }
-    })
+    }).catch(e => console.log(e));
   },
 
   // 跳转话题列表页
-  toTopicList: function() {
+  toTopicList: function () {
     wx.navigateTo({
       url: '/pages/index/topicList/topicList',
     })
   },
 
   // 首页轮播跳转
-  toSwiperDetail: function(event) {
+  toSwiperDetail: function (event) {
     let url = event.currentTarget.dataset.url;
     wx.navigateTo({
       url: '/' + url,
@@ -218,7 +220,7 @@ Page({
   },
 
   // 活动点击
-  toProjectIndex: function (event){
+  toProjectIndex: function (event) {
     let projectData = {
       id: event.currentTarget.dataset.id,
       title: event.currentTarget.dataset.title,
@@ -232,11 +234,17 @@ Page({
     })
   },
 
-  onShow: function() {
+  onShow: function () {
     let that = this;
+
+   
+
+
+
+
     this.setData({
-      search_text:'',
-      isInput:1,
+      search_text: '',
+      isInput: 1,
     })
 
     if (app.globalData.token && app.globalData.token != '') {
@@ -250,20 +258,14 @@ Page({
         }
       }
     }
-    app.sendRequest({
-      url: "api.php?s=goods/getDefaultImages",
-      data: {},
-      success: function (res) {
-        let code = res.code;
-        let data = res.data;
-        if (code == 0) {
-          that.data.defaultImg = data;
-        }
-      }
-    });
+    // 默认图片
+    SERVERS.COMMON.getDefaultImages.post().then(res => {
+      let { code, data } = res;
+      if (code == 0) that.data.defaultImg = data;
+    }).catch(e => console.log(e));
   },
 
-  toClosePrompt:function(){
+  toClosePrompt: function () {
     this.setData({
       is_login: 0,
     })
@@ -272,19 +274,19 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function() {
+  onShareAppMessage: function () {
     let title = '维美善特';
     let uid = app.globalData.uid;
     let path = '/pages/index/index';
-    path += app.globalData.distributor_type == 0?'':('?uid='+uid);
+    path += app.globalData.distributor_type == 0 ? '' : ('?uid=' + uid);
     return {
       title: '维美善特',
       path: path,
       // imageUrl: imgUrl,
-      success: function(res) {
+      success: function (res) {
         app.showBox(that, '分享成功');
       },
-      fail: function(res) {
+      fail: function (res) {
         app.showBox(that, '分享失败');
       }
     }
@@ -295,7 +297,7 @@ Page({
   /**
    * 商品楼层图片加载失败
    */
-  errorBlockImg: function(e) {
+  errorBlockImg: function (e) {
     let that = this;
     let index = e.currentTarget.dataset.index;
     let key = e.currentTarget.dataset.key;
@@ -317,7 +319,7 @@ Page({
   /**
    * 限时折扣图片加载失败
    */
-  errorDiscountImg: function(e) {
+  errorDiscountImg: function (e) {
     let that = this;
     let index = e.currentTarget.dataset.index;
     let discount_list = that.data.discount_list;
@@ -338,7 +340,7 @@ Page({
   /**
    * 计时
    */
-  timing: function(that, timer_array) {
+  timing: function (that, timer_array) {
     let current_time = that.data.current_time;   //当前时间
     let count_second = (timer_array.end_time * 1000 - current_time) / 1000;
     //首次加载
@@ -367,7 +369,7 @@ Page({
       })
     }
     //开始计时
-    let timer = setInterval(function() {
+    let timer = setInterval(function () {
       if (count_second > 0) {
         count_second--;
         //时间计算
@@ -399,338 +401,341 @@ Page({
   /**
    * 首页初始化
    */
-  indexInit: function(that) {
+  indexInit: function (that) {
+    
+    // 初始化默认请求接口
+    this.initIndexData();
+
+    // 商品分类
+    this.initGoodsList();
+
+    // 获取秒杀
+    this.initSecKill();
+
+    // 话题
+    this.initTopic();
+
+    // 新品
+    this.initNewGoods();
+     
+    // 热卖
+    this.initHotGoods();
+
+    // 猜你喜欢
+    this.initRecommendGoods();
+
+    // 登录状态
+    that.setData({
+      is_login: app.globalData.unregistered == 0?0:1,
+      unregistered: app.globalData.unregistered
+    })
+  },
+  // 默认首页数据
+  initIndexData() {
+    let that = this;
+    SERVERS.HOME.getIndexData.post().then(res => {
+      if (res.code == 0) {
+        that.detailIndexData(res);
+        wx.stopPullDownRefresh();
+      }
+    }).catch(e => console.log(e))
+  },
+  
+  //  获取话题
+  initTopic() {
+    let that = this;
+    SERVERS.TOPIC.hotTopic.post({
+      limit: 2
+    }).then(res => {
+      that.setData({
+        activities: res.data.data
+      });
+    }).catch(e => console.log(e));
+  },
+  //商品分类
+  initGoodsList() {
+    let that = this;
+    SERVERS.GOODS.goodsClassificationList.post().then(res => {
+      let { code, data } = res;
+      if (code == 0) {
+        let category_list = data.goods_category_list.map(item => {
+          item.isSelect = false;
+          item.category_pic = app.IMG(item.category_pic);
+          return item;
+        });
+        that.setData({ category_list });
+      }
+    }).catch(e => console.log(e));
+  },
+  // 获取新品的标题图片
+  initNewGoods(){
+    let that = this;
+    SERVERS.GOODS.getNewGoods.post().then(res => {
+      let { code, data } = res;
+      if (code == 0) {
+        let adv_index = data.adv_new;
+        let adv_list = [];
+        if (adv_index.is_use != 0) {
+          adv_list = adv_index.adv_list.map(item => {
+            item.adv_image = app.IMG(item.adv_image);
+            return item;
+          });
+        }
+        that.setData({
+          new_img: adv_list[0],
+        });
+      }
+    }).catch(e => console.log(e));
+  },
+  // 热卖
+  initHotGoods(){
+    let that = this;
+    SERVERS.GOODS.getHotSaleGoods.post().then(res => {
+      let { code, data } = res;
+      if (code == 0) {
+        var adv_index = data.adv_hot;
+        let adv_list = [];
+        if (adv_index.is_use != 0) {
+          adv_list = adv_index.adv_list.map(item => {
+            item.adv_image = app.IMG(item.adv_image);
+            return item;
+          });
+        }
+        that.setData({
+          index_goods_img: adv_list[0],
+        });
+      }
+    }).catch(e => console.log(e));
+  },
+   // 获取品牌推荐(猜你喜欢)
+  initRecommendGoods(){
+    let that = this;
+    let page = that.data.page;
+    SERVERS.GOODS.getIndexGoodsList.post({
+      page_index: page,
+      page_size: 10
+    }).then(res => {
+      let brand_goods = that.data.brand_goods;
+      let tmp = res.data.data.map(i => {
+        i.pic_cover_small = app.IMG(i.pic_cover_small);
+        return i;
+      });
+      if(page > 1){
+        brand_goods = brand_goods.concat(tmp);
+      }else{
+        brand_goods = tmp;
+      }
+      that.setData({
+        brand_goods,
+        isNoGoods: tmp.length == 0,
+        page: page + 1,
+      })
+    }).catch(e => console.log(e));
+  },
+  //秒杀数据
+  initSecKill() {
+    let that = this;
+    clearTimeout(this.data.seckill_timer_obj);
+    SERVERS.SECKILL.seckillIndex.post().then(res => {
+      if (res.code == 0 && res.data) {
+        let seckill_timer = {};
+        let seckill_list = res.data.goodsList.data;
+        seckill_list.map(i => {
+          i.picture.pic_cover_small = app.IMG(i.picture.pic_cover_small);
+          // i.seckill_price = parseFloat(i.seckill_price);
+          return i;
+        });
+        that.setData({ seckill_list });
+        let now = Date.now();
+        let start = res.data.start_time*1000;
+        let end = res.data.end_time*1000;
+        console.log(now)
+        if(now < start){
+          that.setData({
+            seckill_timer:{
+              end: 1,
+              tips: '活动将于'+ dateTime.formatTime(res.data.start_time,'M月D日 h时') + '开始！'
+            }
+          })
+        }else if(now > end){
+          // dateTime.formatTime(res.data.end_time,'Y-M-D h:m:s') + 
+          that.setData({
+            seckill_timer:{
+              end: 1,
+              tips: '活动已结束！'
+            }
+          })
+        }else{
+          that.setSecKillTimer(res.data.end_time);
+          // that.setSecKillTimer(1559633812);
+        }
+      }
+    }).catch(e => console.log(e));
+  },
+  // 处理首页数据
+  detailIndexData(res) {
+    let that = this;
     let base = app.globalData.siteBaseUrl;
     let timeArray = {};
+    // console.log(res)
+    let code = res.code;
+    let indicatorDots = true;
+    if (code == 0) {
+      let data = res.data;
+      //当前时间初始化
+      let current_time = data.current_time;
+      that.setData({
+        current_time: current_time
+      })
 
-    app.sendRequest({
-      url: 'api.php?s=index/getIndexData',
-      data: {},
-      success: function(res) {
-        // console.log(res)
-        let code = res.code;
-        let indicatorDots = true;
-        if (code == 0) {
-          let data = res.data;
-          //当前时间初始化
-          let current_time = data.current_time;
-          that.setData({
-            current_time: current_time
-          })
+      //广告轮播初始化
+      if (data.adv_list&& data.adv_list.adv_index&& data.adv_list.adv_index.adv_list) {
+        let adv_index = data.adv_list.adv_index;
+        let adv_list = adv_index.adv_list;
 
-          //广告轮播初始化
-          if (data.adv_list != undefined && data.adv_list.adv_index != undefined && data.adv_list.adv_index.adv_list != undefined) {
-            let adv_index = data.adv_list.adv_index;
-            let adv_list = adv_index.adv_list;
-
-            if (adv_list.length == 1) {
-              indicatorDots = false;
-            }
-            if (adv_index.is_use != 0) {
-              for (let index in adv_list) {
-                let img = adv_list[index].adv_image;
-                adv_list[index].adv_image = that.IMG(img);
-              }
-            } else {
-              adv_list = [];
-            }
-            that.setData({
-              imgUrls: adv_list,
-              swiperHeight: adv_index.ap_height
-            })
-          } else {
-            that.setData({
-              imgUrls: [],
-            })
-          }
-          //优惠券初始化
-          for (let index in data.coupon_list) {
-            data.coupon_list[index].status = 1;
-          }
-          //限时折扣初始化
-          let discount_list = data.discount_list.data;
-          for (let index in discount_list) {
-            let img = discount_list[index].picture.pic_cover_small;
-            discount_list[index].picture.pic_cover_small = that.IMG(img);
-          }
-
-          // console.log(discount_list[0].end_time)
-          if (discount_list.length>0){
-            timeArray = {};
-            timeArray.end = 0;
-            timeArray.end_time = discount_list[0].end_time;
-            that.timing(that, timeArray);
-          }
-          //商品楼层图片处理
-          // console.log(data);
-          let four_list = data.four_list;
-          let block_list = data.block_list;
-          let top_list = data.top_goods_list;
-          let index_goods_list = data.index_goods_list;
-          let new_pro = data.new_pro;
-          let small_sample_list = data.small_sample_list;
-          let exponent = "";
-
-          for (let key in new_pro) {
-            let img = new_pro[key].new_pic;
-            new_pro[key].new_pic = that.IMG(img);
-          }
-          for (let index in small_sample_list) {
-            let img = small_sample_list[index].pic_cover_big;
-            small_sample_list[index].pic_cover_small = that.IMG(img);
-            small_sample_list[index].exponent = exponent;
-          }
-
-          for (let index in top_list) {
-            let img = top_list[index].pic_cover_big;
-            exponent = (parseInt(top_list[index].material_black) + parseInt(top_list[index].material_black) + parseInt(top_list[index].effect_black)) / 3
-            top_list[index].pic_cover_small = that.IMG(img);
-            top_list[index].exponent = exponent;
-            that.setData({
-              exponent: exponent
-            })
-          }
-
-          for (let index in index_goods_list) {
-            let img = index_goods_list[index].pic_cover_big;
-            exponent = (parseInt(index_goods_list[index].material_black) + parseInt(index_goods_list[index].material_black) + parseInt(index_goods_list[index].effect_black)) / 3
-            index_goods_list[index].pic_cover_small = that.IMG(img);
-            index_goods_list[index].exponent = exponent;
-            index_goods_list[index].isActive = false;
-            that.setData({
-              exponent: exponent
-            })
-          }
-
-
-          for (let index in block_list) {
-            for (let key in block_list[index].goods_list) {
-              let img = block_list[index].goods_list[key].pic_cover_small;
-              block_list[index].goods_list[key].pic_cover_small = that.IMG(img);
-            }
-          }
-          let sqk_alls = data.block_list[0];
-
-
-
-
-          that.setData({
-            Base: base,
-            indicatorDots: indicatorDots,
-            index_notice: data.notice.data,
-            goods_platform_list: data.goods_platform_list,
-            sqk_alls: '',
-            block_list: block_list,
-            top_list: top_list, //Top10
-            index_goods_list: index_goods_list, //商品列表
-            new_pro: new_pro, //新品推荐
-            topShopsIcon: data.icon,
-            coupon_list: data.coupon_list,
-            discount_list: discount_list,
-            small_sample_list: small_sample_list,
-            four_list: four_list,
-          });
+        if (adv_list.length == 1) {
+          indicatorDots = false;
         }
-        // console.log(res);
-      }
-    })
-
-    //  获取话题
-    app.sendRequest({
-      url: "api.php?s=/activity/hotTopic",
-      data: {
-        limit: 2
-      },
-      method: 'POST',
-      success: function(res) {
-        // console.log(res.data.data);
-
-        that.setData({
-          activities: res.data.data
-        })
-      }
-    });
-
-      //商品分类
-    app.sendRequest({
-      url: 'api.php?s=goods/goodsClassificationList',
-      data: {},
-      success: function (res) {
-        let code = res.code;
-        let data = res.data;
-        console.log(res);
-        if (code == 0) {
-          let goods_category_list = data.goods_category_list;
-          for (let index in goods_category_list) {
-            goods_category_list[index].isSelect = false;
-            //一级分类图片处理
-            let first_img = goods_category_list[index].category_pic;
-            goods_category_list[index].category_pic = app.IMG(first_img);
+        if (adv_index.is_use != 0) {
+          for (let index in adv_list) {
+            let img = adv_list[index].adv_image;
+            adv_list[index].adv_image = app.IMG(img);
           }
-          that.setData({
-            category_list: goods_category_list,
-          })
-          wx.stopPullDownRefresh()
-        }
-      }
-    });
-
-
-    var isNoGoods;
-    var page = that.data.page;
-    // 获取品牌推荐(猜你喜欢)
-    app.sendRequest({
-      url: "api.php?s=goods/getIndexGoodsList",
-      data: {
-        page_index:1,
-        page_size:10,
-      },
-      method: 'POST',
-      success: function (res) {
-        // console.log(res);
-        var brand_goods = res.data.data;
-        if (brand_goods[0] != undefined) {
-          //图片处理
-          for (let index in brand_goods) {
-            let img = brand_goods[index].pic_cover_small;
-            brand_goods[index].pic_cover_small = app.IMG(img);
-          }
-          isNoGoods = false;
         } else {
-          isNoGoods = true;
+          adv_list = [];
         }
-
+        console.log(adv_list);
+        
         that.setData({
-          brand_goods,
-          isNoGoods,
-          page:2,
+          imgUrls: adv_list,
+          swiperHeight: adv_index.ap_height
+        })
+      } else {
+        that.setData({
+          imgUrls: [],
         })
       }
-    });
+      //优惠券初始化
+      for (let index in data.coupon_list) {
+        data.coupon_list[index].status = 1;
+      }
+      //限时折扣初始化
+      let discount_list = data.discount_list.data;
+      for (let index in discount_list) {
+        let img = discount_list[index].picture.pic_cover_small;
+        discount_list[index].picture.pic_cover_small = app.IMG(img);
+      }
 
-    // 获取新品的标题图片
-    app.sendRequest({
-      url: 'api.php?s=Goods/getNewGoods',
-      data: {},
-      success: function (res) {
-        // console.log(res)
-        let code = res.code;
-        if (code == 0) {
-          let data = res.data;
+      // console.log(discount_list[0].end_time)
+      if (discount_list.length > 0) {
+        timeArray = {};
+        timeArray.end = 0;
+        timeArray.end_time = discount_list[0].end_time;
+        that.timing(that, timeArray);
+      }
+      //商品楼层图片处理
+      // console.log(data);
+      let four_list = data.four_list;
+      let block_list = data.block_list;
+      let top_list = data.top_goods_list;
+      let index_goods_list = data.index_goods_list;
+      let new_pro = data.new_pro;
+      let small_sample_list = data.small_sample_list;
+      let exponent = "";
 
-          let new_pro = data.list_new;
-          var adv_index = data.adv_new;
-          let adv_list = adv_index.adv_list;
-          if (adv_index.is_use != 0) {
-            for (let index in adv_list) {
-              let img = adv_list[index].adv_image;
-              adv_list[index].adv_image = app.IMG(img);
-            }
-          } else {
-            adv_list = [];
-          }
-          // console.log(adv_list);
-          that.setData({
-            new_img: adv_list[0],
-          });
+      for (let key in new_pro) {
+        let img = new_pro[key].new_pic;
+        new_pro[key].new_pic = app.IMG(img);
+      }
+      for (let index in small_sample_list) {
+        let img = small_sample_list[index].pic_cover_big;
+        small_sample_list[index].pic_cover_small = app.IMG(img);
+        small_sample_list[index].exponent = exponent;
+      }
+
+      for (let index in top_list) {
+        let img = top_list[index].pic_cover_big;
+        exponent = (parseInt(top_list[index].material_black) + parseInt(top_list[index].material_black) + parseInt(top_list[index].effect_black)) / 3
+        top_list[index].pic_cover_small = app.IMG(img);
+        top_list[index].exponent = exponent;
+        that.setData({
+          exponent: exponent
+        })
+      }
+
+      for (let index in index_goods_list) {
+        let img = index_goods_list[index].pic_cover_big;
+        exponent = (parseInt(index_goods_list[index].material_black) + parseInt(index_goods_list[index].material_black) + parseInt(index_goods_list[index].effect_black)) / 3
+        index_goods_list[index].pic_cover_small = app.IMG(img);
+        index_goods_list[index].exponent = exponent;
+        index_goods_list[index].isActive = false;
+        that.setData({
+          exponent: exponent
+        })
+      }
+
+
+      for (let index in block_list) {
+        for (let key in block_list[index].goods_list) {
+          let img = block_list[index].goods_list[key].pic_cover_small;
+          block_list[index].goods_list[key].pic_cover_small = app.IMG(img);
         }
       }
-    })
+      let sqk_alls = data.block_list[0];
 
-    // 热卖标题图片
-    app.sendRequest({
-      url: 'api.php?s=Goods/getHotSaleGoods',
-      data: {},
-      success: function (res) {
-        // console.log(res)
-        let code = res.code;
-        if (code == 0) {
-          let data = res.data;
-
-          // console.log(data);
-          let new_pro = data.list_hot;
-          var adv_index = data.adv_hot;
-          let adv_list = adv_index.adv_list;
-          if (adv_index.is_use != 0) {
-            for (let index in adv_list) {
-              let img = adv_list[index].adv_image;
-              adv_list[index].adv_image = app.IMG(img);
-            }
-          } else {
-            adv_list = [];
-          }
-
-          that.setData({
-            index_goods_img: adv_list[0],
-          });
-        }
-      }
-    })
-
-    // console.log(app.globalData.unregistered)
-    if (app.globalData.unregistered==0){
       that.setData({
-        is_login: 0,
-        unregistered: app.globalData.unregistered
-      })
-    } else {
-      that.setData({
-        is_login: 1,
-        unregistered: app.globalData.unregistered
-      })
+        Base: base,
+        indicatorDots: indicatorDots,
+        index_notice: data.notice.data,
+        goods_platform_list: data.goods_platform_list,
+        sqk_alls: '',
+        block_list: block_list,
+        top_list: top_list, //Top10
+        index_goods_list: index_goods_list, //商品列表
+        new_pro: new_pro, //新品推荐
+        topShopsIcon: data.icon,
+        coupon_list: data.coupon_list,
+        discount_list: discount_list,
+        small_sample_list: small_sample_list,
+        four_list: four_list,
+      });
     }
-
-
+    // console.log(res);
   },
-
+  setSecKillTimer(timestamp) {
+    let that = this;
+    let seckill_timer_obj = null;
+    let seckill_timer = dateTime.calcDateTime(timestamp);
+    // console.log(seckill_timer);
+    if (seckill_timer) {
+      seckill_timer.end = 0;
+      that.setData({ seckill_timer });
+      seckill_timer_obj = setTimeout(() => {
+        that.setSecKillTimer(timestamp);
+      }, 1000);
+      that.setData({ seckill_timer_obj });
+    } else {
+      that.setData({ seckill_timer, seckill_timer_obj });
+      clearTimeout(that.data.seckill_timer_obj);
+    }
+  },
+  toSecKill() {
+    wx.navigateTo({
+      url: '/pages/index/discount/discount?type=2'
+    })
+  },
   /**
    * 收藏
    */
-  collect(e){
+  collect(e) {
     console.log(e.detail)
     let { index, is_fav, state, message } = e.detail;
     let brand_goods = this.data.brand_goods;
     app.showBox(this, message);
-    if(state){
+    if (state) {
       brand_goods[index].is_member_fav_goods = is_fav;
       this.setData({ brand_goods });
     }
-  },
-  toCollect: function (e) {
-    let that = this;
-    let goodsList = that.data.brand_goods;
-    var id = e.currentTarget.dataset.id;
-    var name = e.currentTarget.dataset.name;
-    var index = e.currentTarget.dataset.index;
-    let is_fav = goodsList[index].is_member_fav_goods;
-    let method = is_fav == 0 ? 'FavoritesGoodsorshop' : 'cancelFavorites';
-    let message = is_fav == 0 ? '收藏' : '取消收藏';
-    is_fav = is_fav == 0 ? 1 : 0;
-    goodsList[index].is_member_fav_goods = is_fav;
-
-    app.sendRequest({
-      url: 'api.php?s=member/' + method,
-      data: {
-        fav_id: id,
-        fav_type: 'goods',
-        log_msg: name
-      },
-      success: function (res) {
-        let code = res.code;
-        let data = res.data;
-        if (code == 0) {
-          if (data > 0) {
-            app.showBox(that, message + '成功');
-
-            that.setData({
-              brand_goods: goodsList
-            })
-          } else {
-            app.showBox(that, message + '失败');
-          }
-        }
-      }
-    });
   },
 
   /**触发*/
@@ -743,30 +748,14 @@ Page({
       })
     }
   },
-  
-
+  // 轮播切换
   swiperChange: function (e) {
-    // console.log(e.detail.current)
     this.setData({
       swiperCurrent: e.detail.current
     })
   },
-
-  /**
-   * 图片路径处理
-   */
-  IMG: function(img) {
-    let base = app.globalData.siteBaseUrl;
-    img = img == undefined ? '' : img;
-    img = img == 0 ? '' : img;
-    if (img.indexOf('http://') == -1 && img.indexOf('https://') == -1 && img != '') {
-      img = base + img;
-    }
-    return img;
-  },
-
   // 新品推送
-  songGift: function(event) {
+  songGift: function (event) {
     let that = this
     // let out_trade_no = that.data.out_trade_no
     wx.request({
@@ -779,7 +768,7 @@ Page({
       header: {
         'content-type': 'application/x-www-form-urlencoded;'
       },
-      success: function(res) {
+      success: function (res) {
         // console.log(res);
       }
     })
@@ -788,48 +777,9 @@ Page({
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom: function () {
-    var that = this;
-    let page = that.data.page;
-    let brand_goods = that.data.brand_goods;
-    // 获取品牌推荐(猜你喜欢)
-    app.sendRequest({
-      url: "api.php?s=goods/getIndexGoodsList",
-      data: {
-        page_index: page,
-        page_size: 10,
-      },
-      method: 'POST',
-      success: function (res) {
-        // console.log(res);
-        let new_brand_list = res.data.data;
-        if (new_brand_list[0] != undefined) {
-          page++;
-          brand_goods = brand_goods.concat(new_brand_list)
-          // console.log(brand_goods)
-
-          for (let key in brand_goods) {
-            let img = brand_goods[key].pic_cover_small;
-            brand_goods[key].pic_cover_small = app.IMG(img);
-          }
-          that.setData({
-            brand_goods: brand_goods,
-            page: page,
-            isNoGoods: false,
-          })
-        } else {
-          that.setData({
-            isNoGoods: true,
-          })
-        }
-
-        // that.setData({
-        //   brand_goods: res.data
-        // })
-      }
-    });
+  onReachBottom(){
+    this.initRecommendGoods();
   },
-
   /**
    * 领取优惠券
    */
@@ -840,6 +790,12 @@ Page({
     let flag = true;
     let status = 1;
     if (flag) {
+      // SERVERS.MEMBER.receiveGoodsCoupon.post({
+      //   coupon_type_id: coupon_type_id
+      // }).then(res => {
+      //   let { code, data } = res;
+
+      // }).catch(e => console.log(e));
       app.sendRequest({
         url: 'api.php?s=goods/receiveGoodsCoupon',
         data: {
@@ -878,8 +834,8 @@ Page({
     }
   },
 
-  onPullDownRefresh:function(){
-    var that=this;
+  onPullDownRefresh: function () {
+    var that = this;
     // if (this.data.isRefreshing || this.data.isLoadingMoreData) {
     //   return
     // }
@@ -892,11 +848,11 @@ Page({
 
   onPageScroll: function (e) {
     // console.log(e.scrollTop)
-    if (e.scrollTop>1580){
+    if (e.scrollTop > 1580) {
       this.setData({
         isTop: 1
       })
-    }else{
+    } else {
       this.setData({
         isTop: 0
       })

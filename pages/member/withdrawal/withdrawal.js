@@ -19,7 +19,8 @@ Page({
     remain: true,//提现方式
     RunPrice:'', //可提现金额
     hint:0,//hint提示
-    Astop:true //提现按钮是否禁用
+    Astop:true,//提现按钮是否禁用
+    switchover: 0,//切换提现还是验证身份证 carry: {}, //携带数据
 
   },
 
@@ -53,12 +54,21 @@ Page({
             }
           }
         }
+
+        console.log(res.data.switchover.switchover);
+        let carry = {
+          name: res.data.switchover.real_name,
+          issue: res.data.switchover.idCard,
+        }
+
         that.setData({
           remainPrice: res.data.account.balance,  //分润余额
           rewardPrice: res.data.account.bonus,  //奖励余额
           separationRecords,   //账单明细
           maxMoey: parseFloat(res.data.config.withdraw_cash_max) - parseFloat(res.data.config.withdraw_cash_sum),    //当日最高提现金额
-          minMoey: res.data.config.withdraw_cash_min,    //当日最低提现金额
+          minMoey: res.data.config.withdraw_cash_min,    //当日最低提现金额 
+           switchover: res.data.switchover.switchover,
+          carry
         })
       }
     })
@@ -229,6 +239,23 @@ Page({
     
     
   
+  },
+  open: function () {
+    let _lol = this;
+    let IN = _lol.data.carry;
+    console.log(IN )
+    let switchover = _lol.data.switchover;
+    if (switchover == 0) {
+      wx.navigateTo({
+        url: '/pages/member/verifierID/verifierID',
+      })
+    } else {
+      wx.navigateTo({
+        url: '/pages/member/Meinfo/Meinfo?info=' + JSON.stringify(IN),
+      })
+    }
+
+
   },
 
   // 申请提现

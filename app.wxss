@@ -5,7 +5,9 @@ view{
   box-sizing: border-box;
 }
 image{
-  height: 120rpx;
+  height: auto;
+  /* vertical-align: bottom; */
+  /* display:block; */
 }
 .table {
   display: table;

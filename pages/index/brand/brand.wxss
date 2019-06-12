@@ -73,7 +73,11 @@ scroll-view{
   /* height:100%; */
   padding:20rpx 10rpx;
   box-sizing: border-box;
-  height:100vh;
+  height: calc(100vh - 53px);
+}
+.classify-right::-webkit-scrollbar{
+  color: transparent;
+  display: none;
 }
 .classify-right>image{
   width:100%;

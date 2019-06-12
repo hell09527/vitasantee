@@ -8,9 +8,11 @@
     <view class="cf-content" data-reactid="4">
           <!-- <view class="cf-tab-item {{_no=='0'?'select':''}}" catchtap='topNav' data-id="0"><view class='a'>分润统计</view></view>
       <view class="cf-tab-item {{_no=='1'?'select':''}}" catchtap='topNav' data-id="1"><view class='a'>商品排行</view></view> -->
-
+     <view class="cf-tab-item {{_no=='2'?'select':''}}" catchtap='topNav' data-id="2">分润统计</view>
+     <view class="cf-tab-item {{_no=='3'?'select':''}}" catchtap='topNav' data-id="3">商品排行</view>
       <view class="cf-tab-item {{_no=='0'?'select':''}}" catchtap='topNav' data-id="0">订单统计</view>
       <view class="cf-tab-item {{_no=='1'?'select':''}}" catchtap='topNav' data-id="1">小程序码</view>
+  
     </view>
   </view>
 <block>
@@ -119,7 +121,7 @@
         </view>
         <!-- 分润时长  end--> 
         <!-- 极选师星级制 start-->
-        <view class='Star_system'>
+        <!-- <view class='Star_system'>
           <view class='headline'>惠选师星级制</view>
           <view class='head_text'>惠选师向新会员/普通会员推广商品，新用户/普通用户通过惠选师的小程序分享卡片/小程序码进入小程序，并产生消费，用户购买商品的金额转化为惠选师的累计商品成交金额。</view>
           <view class='head_text'>考核期内，惠选师的累计商品成交金额达到当前星级的升星额度，则自动上升一个星级。</view>
@@ -138,14 +140,14 @@
               </view>
             </block>
           </view>
-        </view>
+        </view> -->
         <!-- 极选师星级制 end-->
         <!-- 星级奖励计算规则 start-->
-        <view class='regulation'>
+        <!-- <view class='regulation'>
           <view class='headline'>星级奖励计算规则</view>
           <view class='head_text'>(超出升级标准的部分金额 - 星级升级标准金额) * 星级奖励比例 = 星级额外奖励最终金额</view>
           <view class='head_text'>假设惠选师考核期内升到了二星级，则考核日，惠选师获得星级奖励金额 = 一星级奖励金额 + 二星级奖励金额</view>
-          </view>
+          </view> -->
           <!-- 星级奖励计算规则 end-->
           <!-- 极选师推荐制 start-->
           <view class="recommend">
@@ -172,10 +174,10 @@
   <!-- 商品排行 -->
   <view  wx:if='{{_no== 3}}' class="slick"> 
   <view class="all" >
-    <view class='top_shop_box'>
+    <!-- <view class='top_shop_box'>
       <view class="top_shop {{isTopClick==1?'top_shop_click':''}}" catchtap='isTopClick' data-index='1'>商品推荐排行榜</view>
       <view class="top_shop {{isTopClick==2?'top_shop_click':''}}" catchtap='isTopClick' data-index='2'>商品销售排行榜</view>
-    </view>
+    </view> -->
     <view class="table">
       <!-- <view class="bg-w">
         <view class="sequence">排名</view>
@@ -183,9 +185,9 @@
         <view class="name">名称</view>
         <view class="ratio">分润</view>
       </view> -->
-
+<!-- wx:if="{{isTopClick==1}}" -->
       <!-- 商品推荐排行榜 -->
-      <block wx:for="{{listData}}" wx:key="{{code}}"wx:for-item='item' wx:for-index='index' wx:if="{{isTopClick==1}}">
+      <block wx:for="{{listData}}" wx:key="{{code}}"wx:for-item='item' wx:for-index='index' >
         <view class="tr" catchtap='skipClick' data-url='/goods/goodsdetail/goodsdetail?goods_id={{item.goods_id}}&&goods_name={{item.goods_name}}'>
           <template is="listItemTemplate" data="{{...item,index}}" />
           <!-- 第一 -->
@@ -214,31 +216,31 @@
 
       <!-- 商品销售排行榜 -->
 
-      <block wx:for="{{saveData}}" wx:key="{{code}}"wx:for-item='item' wx:for-index='index' wx:if="{{isTopClick==2}}">
+      <!-- <block wx:for="{{saveData}}" wx:key="{{code}}"wx:for-item='item' wx:for-index='index' wx:if="{{isTopClick==2}}">
         <view class="tr" catchtap='skipClick' data-url='/goods/goodsdetail/goodsdetail?goods_id={{item.goods_id}}&&goods_name={{item.goods_name}}'>
           <template is="listItemTemplate" data="{{...item,index}}" />
           <!-- 第一 -->
-          <view class="ratio" style='color:#d0021b' wx:if='{{index==0}}'>
+          <!-- <view class="ratio" style='color:#d0021b' wx:if='{{index==0}}'>
             <text>销量</text>
             <text>{{item.sales}}</text>
-          </view>
+          </view> -->
           <!-- 第二 -->
-          <view class="ratio" style='color:#f57923' wx:elif='{{index==1}}'>
+          <!-- <view class="ratio" style='color:#f57923' wx:elif='{{index==1}}'>
             <text>销量</text>
             <text>{{item.sales}}</text>
-          </view>
+          </view> -->
           <!-- 第三 -->
-          <view class="ratio" style='color:#f9b649' wx:elif='{{index==2}}'>
+          <!-- <view class="ratio" style='color:#f9b649' wx:elif='{{index==2}}'>
             <text>销量</text>
             <text>{{item.sales}}</text>
-          </view>
+          </view> -->
           <!-- 其他 -->
-          <view class="ratio" wx:else>
+          <!-- <view class="ratio" wx:else>
             <text>销量</text>
             <text>{{item.sales}}</text>
           </view>
         </view>
-      </block>
+      </block> --> 
 
       </view>
     </view>
@@ -254,7 +256,7 @@
         <view class='a'>本月</view>
       </view> -->
     </view> 
-    <view style='background:#fff'>
+      <view style='background:#fff'>
       <block wx:for='{{order_list}}' wx:key='order_id' wx:for-item='order' wx:for-index='index'>
         <view class="lie_bi">
           <view class="iem">
@@ -268,13 +270,21 @@
                   <image class="shop_src" src="{{goods.picture.pic_cover_small==''?0:goods.picture.pic_cover_small}}" binderror='errorImg' data-index='{{index}}' data-key='{{key}}'></image>
                   <view class="shop_name">
                     <view class="shop-title">{{goods.goods_name}}</view>
-                    <text class="j_e">X{{goods.num}}</text>
-                    <view class="sta">状态:{{order.status_name}}</view>
+                    <view wx:if='{{goods.sku_name!=""}}' >{{goods.sku_name}}</view>
+                     <view class="number">￥{{goods.goods_money}}</view>
                   </view>
-                  <view class="number">￥{{goods.goods_money}}</view>
+                  <view class="j_e">    x {{goods.num}}</view>
                 </view>
-                <view class="num">
-                  <block wx:if="{{order.order_status==4}}">
+                 <view class="num">
+                   <view class="part-status" >
+                    <view class="sta" style='font-size: 16px;color:red;'>{{order.status_name}}</view>
+                   </view>
+                   <view class="gather">
+                   <view class="fill-run">
+                      <view class="runs">分润￥{{goods.direct_separation}}</view>
+                      <view class="run">(分润比例  {{goods.fraction}})</view>
+                   </view>
+                    <block wx:if="{{order.order_status==4}}">
                     <view class="sta">分润已入账</view>
                   </block>
                   <block wx:if="{{order.order_status==2||order.order_status==3}}">
@@ -282,19 +292,21 @@
                   </block>
                   <block wx:else>
                     <view class="sta"></view>
-                  </block>
-
-                  <view class="L_f">
-                    <view class="run" wx:if='{{goods.fraction!=0}}'>分润比例  {{goods.fraction}}%</view>
-                    <view class="runs" wx:if='{{goods.direct_separation!=0}}'>直接分润金额 ￥{{goods.direct_separation}}</view>
+                  </block> 
+                   </view>
                   </view>
-                </view>
               </view>
             </block>
+            <view class="use-info" >
+              <image class="use-heading" src="{{order.headimg}}"  />
+               <view class="use-name" style='margin-left:20rpx;'>{{order.buyer_name}}</view> 
+            </view>
           </view>
         </view>
       </block>
     </view>
+
+  <!-- </view> -->
 
   </view>
       

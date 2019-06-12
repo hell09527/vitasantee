@@ -12,6 +12,7 @@ scroll-view{
 .userInfo-detail>image{
   border-radius: 50%;
   width:100rpx;
+  height: 100rpx;
   margin-right: 20rpx;
   display: block;
 }
@@ -137,7 +138,7 @@ scroll-view{
 
 .userInfo-list{
   background: #fff;
-  margin-bottom: 60px;
+  margin-bottom: 10px;
 }
 .list-item{
   display: flex;
