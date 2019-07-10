@@ -64,7 +64,6 @@ Page({
             let img = goods_list[index].pic_cover_mid;
             goods_list[index].pic_cover_mid = app.IMG(img);
           }
-
           that.setData({
             goods_list: goods_list
           })

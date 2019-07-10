@@ -17,7 +17,13 @@
   width: 100%;
    /* height: auto !important;   */
 }
-
+.sticky{
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+}
  image{
   vertical-align:bottom;
 }

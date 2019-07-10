@@ -1,5 +1,6 @@
 {
   "navigationBarTitleText": "商品列表",
+  "backgroundColor": "#e40046",
   "usingComponents":{
     "goods-list": "/components/common/goodsList/goodsList"
   }

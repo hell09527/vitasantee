@@ -1,0 +1,47 @@
+<!--pages/index/assemble/assemble.wxml-->
+<import src="/templates/new-product-template/new-product-template.wxml" />
+<view class="assemble-content">
+    <!-- 拼团商品列表 -->
+    <view wx:if="{{barIndex == 0}}" class="assemble-shop-box">
+        <view class="assemble-shop-bar">
+            <view wx:for="{{shopBarList}}" wx:key="{{index}}" class="assemble-shop-bar-item {{shopBarIndex == index?' active':''}}" data-index="{{index}}" bindtap="shopBarChange">{{item.title}}</view>
+        </view>
+        <view class="assemble-shop-list">
+            <view wx:for="{{shopList}}" wx:key="{{index}}" class="assemble-shop-item">
+                <template is="newProductTemplate" data="{{...item,index,unregistered,tel,assembeTypeState: '一起拼'}}" />
+            </view>
+            <view wx:if="{{shopList&&shopList.length == 0}}" class="empty">
+                暂无拼团商品数据
+            </view>
+        </view>
+    </view>
+    <!-- 我的拼团 -->
+    <view wx:if="{{barIndex == 1}}" class="assemble-mine-list">
+        <view wx:for="{{mineList}}" wx:key="{{index}}" class="assemble-mine-item">
+            <template is="newProductTemplate" data="{{...item,index,unregistered,tel,is_member_fav_goods:3,isNotDesc:true}}" />
+            <view class="assemble-mine-status {{' ' + assembleStatusColor[item.status]}}">
+                <view class="status-desc">
+                    <view class="status-show">
+                        {{assembleStatusList[item.status]}}
+                        <text>({{assembleTypeList[item.type]}})</text>
+                    </view>
+                    <view wx:if="{{item.status == 1}}" class="timer">
+                        <text>剩余 </text>
+                        <text style="color:#e40046;">{{item.assemble_time_show}}</text>
+                        <text> 结束 还缺{{item.people_num - item.join_num}}人成团</text>
+                    </view>
+                </view>
+                <button wx:if="{{item.status == 1}}" data-ptid="{{item.pt_startup_id}}" class="status-btn" open-type='share' data-img="{{item.pic_cover_small}}">{{assembleBtnList[item.status]}}</button>
+                <view wx:else class="status-btn" data-oid="{{item.order_id}}" data-status="{{item.status}}" bindtap="operate">{{assembleBtnList[item.status]}}</view>
+            </view>
+        </view>
+        <view wx:if="{{mineList&&mineList.length == 0}}" class="empty">
+            暂无拼团数据
+        </view>
+          
+    </view>
+</view>
+<!-- 底部tab栏 -->
+<view class="assemble-bottom-bar {{isIphoneX?'pb40':''}}">
+    <view wx:for="{{bottomBarList}}" wx:key="{{index}}" class="{{barIndex == index?'active':''}}" data-index="{{index}}" bindtap="tabChangeClick">{{item.name}}</view>
+</view>

@@ -21,7 +21,7 @@
       </view>
     </view>
     <!-- 选择分享分销者  start -->
-    <view class='lise'>
+    <!-- <view class='lise'>
       <picker wx:if='{{edit == 1 && distributor_type==1}}' class='roots' range='{{region}}' range-key="name" value="{{Index}}" bindchange="bindRegionChange" custom-item="{{customItem}}">
         <view class="picker" wx:if='{{personnel==""}}'>设置分销:未指定</view>
         <view wx:if='{{personnel!=""}}' class="picker">设置分销:{{personnel}}</view>
@@ -34,7 +34,7 @@
           直接分销:未指定
         </view>
       </block>
-    </view>
+    </view> -->
     <!-- 选择分享分销者  end -->
     <view class="cart-prolist">
       <view class="ul cart-prolist-ul " data-index="{{index}}" wx:for='{{list}}' wx:key='cart_id' wx:for-item='cart' wx:for-index='k'>
@@ -133,7 +133,7 @@
       <!-- 购物单信息 -->
       <view class='weChat-cart'>
         <image src='https://static.vitasantee.com/stodownload%20%281%29.jpeg' mode='widthFix'></image>
-        <navigator target="miniProgram" open-type="navigate" app-id="wx56c8f077de74b07c" path="/open/function-introduction/function-introduction" extra-data="" version="release">
+        <navigator target="miniProgram" open-type="navigate" app-id="wx56c8f077de74b07c" path="/open/function-introduction/function-introduction" style="font-size: 14px;" extra-data="" version="release">
           已同步至好物圈
         </navigator>
       </view>
@@ -199,18 +199,6 @@
       </view>
       <!-- 推荐商品 -->
       <goods-list brandGoods="{{goodsList}}" unregistered="{{unregistered}}" tel="{{tel}}" bindcollect="collect"></goods-list>
-      <!-- <view class='brand_goods'>
-        <view class='left'>
-          <block wx:for='{{goodsList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
-            <template is="goodsListTemplate" data="{{...item,index,tel,unregistered}}" wx:if='{{index%2==0}}'/>
-          </block>
-        </view>
-        <view class='right'>
-          <block wx:for='{{goodsList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
-            <template is="goodsListTemplate" data="{{...item,index,tel,unregistered}}" wx:if='{{index%2==1}}'/>
-          </block>
-        </view>
-      </view> -->
     </view>
   </block>
 </scroll-view>

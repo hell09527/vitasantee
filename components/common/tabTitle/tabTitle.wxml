@@ -1,0 +1,12 @@
+<!--components/common/tabTitle/tabTitle.wxml-->
+<view style="height:{{barHeight}}px;background:#e40046;"></view>
+<view class="nav flex {{isAndroid?'android':'ios'}}" style="padding-top:{{statusBarHeight}}px;height:{{barHeight}}px;line-height:{{barHeight - statusBarHeight - 6}}px">
+    <view class="nav-left flex">
+        <slot name="left"></slot>
+    </view>
+    <view class="nav-title">{{title}}</view>
+    <view class="nav-right flex">
+        <!-- 正常无法使用，请保持两端宽度相同!!!(被微信更多与退出圆圈遮盖) -->
+        <slot name="right"></slot>
+    </view>
+</view>

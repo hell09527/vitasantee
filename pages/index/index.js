@@ -1,6 +1,8 @@
 const app = getApp()
 const dateTime = require('../../utils/util.js');
+const core = require('../../utils/core.js');
 const SERVERS = require('../../utils/servers.js');
+const assembleData = require('../../utils/tmp.js');
 
 Page({
   data: {
@@ -43,11 +45,18 @@ Page({
     index_goods_img: '',
     isTop: 0,   //回到顶部
     seckill_timer: {}, //秒杀倒计时
-    seckill_timer_obj: null
+    seckill_timer_obj: null,
+    assemble_list: [],
+    loaded: false,
+    swiperCurrent: 0
   },
 
 
   onLoad: function (options) {
+    wx.showLoading({
+      title: '加载中...',
+      mask: true
+    });
     let that = this;
     // 极选师分润
     if (options.uid) {
@@ -71,19 +80,19 @@ Page({
 
     let times = 0;
     let load_timer = setInterval(function () {
+      console.log('logining');
       times++;
       let token = app.globalData.token;
-      console.log(token)
       if (token != '') {
         // app.showBox(that, '登陆成功');
         that.setData({
-          maskStatus: 0,
+          maskStatus: 0
         })
         clearInterval(load_timer);
       } else if (times == 15) {
         app.showBox(that, '登录超时...');
         that.setData({
-          maskStatus: 0,
+          maskStatus: 0
         })
         clearInterval(load_timer);
         return;
@@ -92,7 +101,15 @@ Page({
 
     that.indexInit(that);
   },
-
+  // 去拼购页面
+  toAssemblePage(){
+    // wx.navigateTo({
+    //   url: '/pages/index/assembleInvite/assembleInvite?isAssemble=true&goods_id=15&pt_goods_id=3&pt_startup_id=23'
+    // });
+    wx.navigateTo({
+      url: '/pages/index/assemble/assemble'
+    });
+  },
   // 商品分类点击
   selectCheck: function (e) {
     let that = this;
@@ -167,17 +184,17 @@ Page({
 
   toGood: function (e) {
     var that = this;
-    var id = e.currentTarget.dataset.id;
-    var url = e.currentTarget.dataset.url;
-    if (url) {
-      wx.navigateTo({
-        url: '/' + url,
-      })
-    } else {
-      wx.navigateTo({
-        url: '/pages/goods/goodsdetail/goodsdetail?goods_id=' + id,
-      })
+    let { id, url, type, ptid } = e.currentTarget.dataset;
+    let redirect = '';
+    if(url){
+      redirect = '/' + url;
+    }else{ 
+      redirect = '/pages/goods/goodsdetail/goodsdetail?goods_id=' + id;
+      // 拼购添加参数
+      if(type == 'assemble')redirect+='&isAssemble=true&pt_goods_id=' + ptid;
     }
+    if(redirect == '#')return;
+    wx.navigateTo({ url: redirect });
   },
 
   //获取会员所有信息
@@ -198,7 +215,8 @@ Page({
         //  console.log(app.globalData.is_vip)
         that.setData({
           is_vip,
-          tel: data.user_info.user_tel
+          tel: data.user_info.user_tel,
+          is_login: 0
         })
       }
     }).catch(e => console.log(e));
@@ -221,31 +239,37 @@ Page({
 
   // 活动点击
   toProjectIndex: function (event) {
-    let projectData = {
-      id: event.currentTarget.dataset.id,
-      title: event.currentTarget.dataset.title,
-    }
+    let { id, title } = event.currentTarget.dataset;
+    let projectData = { id, title };
     // 跳转活动详情页
     app.aldstat.sendEvent('首页活动点击', {
       "活动名称": event.currentTarget.dataset.title
     });
     wx.navigateTo({
-      url: '/pages/index/projectIndex/projectIndex?data=' + JSON.stringify(projectData),
+      url: '/pages/index/projectIndex/projectIndex?id=' + id,
     })
   },
 
   onShow: function () {
     let that = this;
-
-   
-
-
-
-
+    
     this.setData({
       search_text: '',
       isInput: 1,
-    })
+      is_login: app.globalData.unregistered,
+      unregistered: app.globalData.unregistered
+    });
+
+    let setLoginState = state => {
+      that.setData({
+        is_login: state,
+        unregistered: state
+      });
+    }
+    // 检测是否授权(授权可登录否则无法登陆)
+    core.checkAuthorize('scope.userInfo').then(res => setLoginState(0)).catch(e => setLoginState(1));
+    
+    
 
     if (app.globalData.token && app.globalData.token != '') {
       //判断是否是付费会员的接口
@@ -370,6 +394,7 @@ Page({
     }
     //开始计时
     let timer = setInterval(function () {
+      console.log('timer');
       if (count_second > 0) {
         count_second--;
         //时间计算
@@ -401,8 +426,66 @@ Page({
   /**
    * 首页初始化
    */
-  indexInit: function (that) {
-    
+  indexInit: function (that) {  
+    // let data = {
+    //   limit: 2
+    // }
+    // 所有首页数据
+    // Promise.all([
+    //   SERVERS.HOME.getIndexData.post(),
+    //   SERVERS.TOPIC.hotTopic.post(data),
+    //   SERVERS.GOODS.goodsClassificationList.post(),
+    //   SERVERS.GOODS.getNewGoods.post(),
+    //   SERVERS.GOODS.getHotSaleGoods.post(),
+    //   SERVERS.SECKILL.seckillIndex.post(),
+    //   SERVERS.GOODS.pintuanGoodsList.post()
+    // ]).then(( [home, hotTopic, classList, newGoods, hotSaleGoods, secKillList, pinTuanList] ) => {
+    //   // 初始化首页接口数据
+    //   that.detailIndexData(home);
+    //   // 热门话题
+    //   let activities = hotTopic.data.data;
+    //   // 商品分类
+    //   let category_list = classList.data.goods_category_list.map(item => {
+    //     item.isSelect = false;
+    //     item.category_pic = app.IMG(item.category_pic);
+    //     return item;
+    //   });
+    //   // 新品推荐
+    //   let adv_index_new = newGoods.data.adv_new;
+    //   let adv_list_new = [];
+    //   if (adv_index_new.is_use != 0) {
+    //     adv_list_new = adv_index_new.adv_list.map(item => {
+    //       item.adv_image = app.IMG(item.adv_image);
+    //       return item;
+    //     });
+    //   }
+    //   // 热卖推荐
+    //   var adv_index_hot = hotSaleGoods.data.adv_hot;
+    //   let adv_list_hot = [];
+    //   if (adv_index_hot.is_use != 0) {
+    //     adv_list_hot = adv_index_hot.adv_list.map(item => {
+    //       item.adv_image = app.IMG(item.adv_image);
+    //       return item;
+    //     });
+    //   }
+    //   // 秒杀
+    //   that.secKillListDetail(secKillList);
+
+    //   // 拼团
+    //   let assemble_list = pinTuanList.data.data.map(item => {
+    //     item.pic_cover_small = item.picture.pic_cover_small;
+    //     return item;
+    //   });
+    //   that.setData({
+    //     loaded: true,
+    //     activities,
+    //     category_list,
+    //     assemble_list,
+    //     new_img: adv_list_new[0],
+    //     index_goods_img: adv_list_hot[0],
+    //   });
+    //   wx.stopPullDownRefresh();
+    // }).catch(e => console.log(e));
     // 初始化默认请求接口
     this.initIndexData();
 
@@ -415,6 +498,9 @@ Page({
     // 话题
     this.initTopic();
 
+    // 拼团
+    this.initAssembleList();
+
     // 新品
     this.initNewGoods();
      
@@ -423,12 +509,6 @@ Page({
 
     // 猜你喜欢
     this.initRecommendGoods();
-
-    // 登录状态
-    that.setData({
-      is_login: app.globalData.unregistered == 0?0:1,
-      unregistered: app.globalData.unregistered
-    })
   },
   // 默认首页数据
   initIndexData() {
@@ -464,6 +544,19 @@ Page({
           return item;
         });
         that.setData({ category_list });
+      }
+    }).catch(e => console.log(e));
+  },
+  // 拼团
+  initAssembleList(){
+    let that = this;
+    SERVERS.GOODS.pintuanGoodsList.post().then(res => {
+      if(res.code == 0){
+        let assemble_list = res.data.data.map(item => {
+          item.pic_cover_small = item.picture.pic_cover_small;
+          return item;
+        });
+        that.setData({ assemble_list });
       }
     }).catch(e => console.log(e));
   },
@@ -572,6 +665,43 @@ Page({
       }
     }).catch(e => console.log(e));
   },
+  secKillListDetail(res){
+    let that = this;
+    clearTimeout(this.data.seckill_timer_obj);
+    if (res.code == 0 && res.data) {
+      let seckill_timer = {};
+      let seckill_list = res.data.goodsList.data;
+      seckill_list.map(i => {
+        i.picture.pic_cover_small = app.IMG(i.picture.pic_cover_small);
+        // i.seckill_price = parseFloat(i.seckill_price);
+        return i;
+      });
+      that.setData({ seckill_list });
+      let now = Date.now();
+      let start = res.data.start_time*1000;
+      let end = res.data.end_time*1000;
+      console.log(now)
+      if(now < start){
+        that.setData({
+          seckill_timer:{
+            end: 1,
+            tips: '活动将于'+ dateTime.formatTime(res.data.start_time,'M月D日 h时') + '开始！'
+          }
+        })
+      }else if(now > end){
+        // dateTime.formatTime(res.data.end_time,'Y-M-D h:m:s') + 
+        that.setData({
+          seckill_timer:{
+            end: 1,
+            tips: '活动已结束！'
+          }
+        })
+      }else{
+        that.setSecKillTimer(res.data.end_time);
+        // that.setSecKillTimer(1559633812);
+      }
+    }
+  },
   // 处理首页数据
   detailIndexData(res) {
     let that = this;
@@ -604,8 +734,6 @@ Page({
         } else {
           adv_list = [];
         }
-        console.log(adv_list);
-        
         that.setData({
           imgUrls: adv_list,
           swiperHeight: adv_index.ap_height
@@ -711,6 +839,7 @@ Page({
       seckill_timer.end = 0;
       that.setData({ seckill_timer });
       seckill_timer_obj = setTimeout(() => {
+        // console.log('setSecKillTimer');
         that.setSecKillTimer(timestamp);
       }, 1000);
       that.setData({ seckill_timer_obj });
@@ -790,41 +919,29 @@ Page({
     let flag = true;
     let status = 1;
     if (flag) {
-      // SERVERS.MEMBER.receiveGoodsCoupon.post({
-      //   coupon_type_id: coupon_type_id
-      // }).then(res => {
-      //   let { code, data } = res;
-
-      // }).catch(e => console.log(e));
-      app.sendRequest({
-        url: 'api.php?s=goods/receiveGoodsCoupon',
-        data: {
-          coupon_type_id: coupon_type_id
-        },
-        success: function (res) {
-          // console.log(res)
-          let code = res.code;
-          let data = res.data;
-          if (code == 0) {
-            if (data > 0) {
-              app.showBox(that, '领取成功');
-            } else if (data == -2011) {
-              app.showBox(that, '来迟了，已经领完了');
-              status = 0;
-            } else if (data == -2019) {
-              app.showBox(that, '领取已达到上限');
-              status = 0;
-            } else {
-              app.showBox(that, '未获取到优惠券信息');
-              status = 0;
-            }
-            let d = {};
-            let key = "coupon_list[" + index + "].status";
-            d[key] = 0;
-            that.setData(d);
+      SERVERS.MEMBER.receiveGoodsCoupon.post({
+        coupon_type_id: coupon_type_id
+      }).then(res => {
+        let { code, data } = res;
+        if (code == 0) {
+          if (data > 0) {
+            app.showBox(that, '领取成功');
+          } else if (data == -2011) {
+            app.showBox(that, '来迟了，已经领完了');
+            status = 0;
+          } else if (data == -2019) {
+            app.showBox(that, '领取已达到上限');
+            status = 0;
+          } else {
+            app.showBox(that, '未获取到优惠券信息');
+            status = 0;
           }
+          let d = {};
+          let key = "coupon_list[" + index + "].status";
+          d[key] = 0;
+          that.setData(d);
         }
-      });
+      }).catch(e => console.log(e));
     }
     if (!flag) {
       let d = {};

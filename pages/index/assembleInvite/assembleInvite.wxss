@@ -1,0 +1,181 @@
+/* pages/index/asembleInvite/assembleInvite.wxss */
+@import "/templates/new-product-template/new-product-template.wxss";
+@import "/pages/goods/goodsdetail/goodsdetail.wxss";
+page::-webkit-scrollbar{
+    color: transparent;
+    display: none;
+}
+.nav-icon{
+    width: 36rpx;
+    height: 36rpx;
+}
+.nav-icon.home{
+    width:46rpx;
+    height:46rpx;
+}
+.assemble-invite{
+    padding: 20rpx;
+}
+.invite-detail{
+    padding: 26rpx 0;
+    min-height: 200rpx;
+    font-size: 26rpx;
+    text-align: center;
+    background-color: #fff;
+}
+.invite-detail .invite-text{
+    line-height: 52rpx;
+}
+.invite-detail .invite-text .red{
+    color: #e40046;
+}
+.invite-detail .invite-user-list{
+    padding: 30rpx 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.invite-detail .user-head-box{
+    position: relative;
+    margin-left: 20rpx;
+}
+.invite-detail .user-head{
+    display: block;
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    will-change: transform;
+    background: url('https://static.vitasantee.com/pt-hd.png') no-repeat center;
+    background-size: 70%;
+    border-radius: 50%;
+}
+.invite-detail .user-head.empty{
+    width: 78rpx;
+    height: 78rpx;
+    border: 2rpx dashed #e5e5e5;
+}
+.invite-detail .user-head-box:first-child{
+    margin-left: 0;
+}
+.invite-detail .user-head-box.start:before{
+    position: absolute;
+    content: '团长';
+    left: 50%;
+    bottom: 0;
+    margin-left: -30rpx;
+    width: 60rpx;
+    height: 30rpx;
+    color: #fff;
+    line-height: 30rpx;
+    font-size: 20rpx;
+    text-align: center;
+    border-radius: 15rpx;
+    background-color: #e40046;
+    z-index: 2;
+}
+.invite-detail .invite-btn{
+    margin: 0 auto;
+    width: 80%;
+    height: 70rpx;
+    font-size: 30rpx;
+    color: #fff;
+    text-align: center;
+    line-height: 70rpx;
+    border-radius: 40rpx;
+    background-color: #e40046;
+}
+/* item样式复写 */
+.goods-detail .goods_item{
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid #e5e5e5;
+    border-radius: 0;
+}
+.goods_item image{
+    height: 180rpx;
+}
+/* 底部其他 */
+.goods-else{
+    margin-bottom: 20rpx;
+    background-color: #fff;
+}
+.list-row{
+    position: relative;
+    padding: 0 20rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80rpx;
+    font-size: 28rpx;
+    line-height: 80rpx;
+}
+.list-row.bottom:after{
+    position: absolute;
+    content: '';
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2rpx;
+    background-color: #e5e5e5;
+}
+.list-row:last-child:after{
+    display: none;
+}
+.list-row text.red{
+    color: #e40046;
+}
+.arrow{
+    margin: 0;
+    display: block;
+    width: 34rpx;
+    height: 34rpx;
+}
+/* 规则流程 */
+.rule-flow{
+    padding: 0 20rpx;
+    height: 160rpx;
+    font-size: 24rpx;
+    line-height: 30rpx;
+}
+.rule-flow .icon{
+    margin: 0 auto 10rpx;
+    display: block;
+    width: 26rpx;
+    height: 26rpx;
+}
+.rule-flow .more{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 136rpx;
+    font-size: 24rpx;
+}
+.rule-flow .more view{
+    color: #005882;
+}
+.rule-flow .more .arrow{
+    width: 24rpx;
+    height: 24rpx;
+}
+.goods-detail-template{
+    position: relative;
+    padding: 20rpx;
+    background-color: #fff;
+}
+.goods-detail-template:before{
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2rpx;
+    background-color: #e5e5e5;
+}
+.goods-detail-template .title{
+    font-size: 28rpx;
+    line-height: 40rpx;
+    font-weight: bold;
+}
+.goods-detail-template .goods_item{
+    border-bottom: 1px solid #e5e5e5;
+}

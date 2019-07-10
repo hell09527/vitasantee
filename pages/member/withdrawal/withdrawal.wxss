@@ -169,13 +169,14 @@ margin-left:50px;
 
 .moneyBox{
   padding:0 30rpx;
+  border-top:1px solid #cfcfcf;
+  border-bottom:1px solid #cfcfcf;
 }
 .xuans{
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 90rpx;
-  border-top: 1px solid #cfcfcf;
 }
 .c_money image{
   margin:0 20rpx;

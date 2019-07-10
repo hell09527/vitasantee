@@ -1,127 +1,131 @@
 .occupy{
-  width:100% ;
-  height:800rpx ;
-}
-.local button{
-
-height:70rpx;
-background:#e40046;
-margin:0auto;
-text-align:center;
-line-height:70rpx;
-border-radius:100rpx;
-color:#FFF ;
-font-size:14px;
-margin-top:30rpx;
-margin-bottom: 30rpx;
-
-
-}
-swiper-container{
-  position: relative;
-
-}
-.swiper-container .swiper{
-  height: 300rpx;
-}
-.swiper-container .swiper .img{
-  width: 100%;
-  height: 100%;
-}
-.swiper-container .dots{
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 20rpx;
-  display: flex;
-  justify-content: center;
-}
-.swiper-container .dots .dot{
-  /* margin: 0 8rpx; */
-  width: 14rpx;
-  height: 14rpx;
-  background: #fff;
-  border-radius: 8rpx;
-  transition: all .6s;
-}
-.swiper-container .dots .dot.active{
-  width: 50rpx;
-  background: #f80;
-}
-image.active {
-  transform: none;
-  transition: all 0.2s ease-in 0s;
-} 
-
-image.quiet {
-  transform: scale(0.8333333);
-  transition: all 0.2s ease-in 0s;
-}
-
-.ft{
-
-  text-align: center;
-  margin: 0auto;
- 
+    width:100% ;
+    height:800rpx ;
+  }
+  .local{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  .local button{
+    height: 90rpx;
+    background:#e40046;
+    margin:0auto;
+    text-align:center;
+    line-height: 90rpx;
+    border-radius:100rpx;
+    color:#FFF ;
+    font-size:14px;
+    margin-top:30rpx;
+    margin-bottom: 30rpx;
+  }
+  swiper-container{
+    position: relative;
   
-}
-.ul{
-  display: flex;
- /* justify-content:; */
- justify-content: space-between;
-  margin:0 auto;
-  margin-top:30rpx;
-
-}
-.ul .li{
-  width: 16%;
-}
-.li image{
-  width: 100%;
-}
-
-
-
-.article{
-  text-align: center;
-  margin: 140rpx auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.article .h3{
-  font-weight: normal;
-  color: #373737;
-  font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial,sans-serif;
-  font-size: 18px;
-}
-
-.article .p{
-  color: #000;
-  margin:40rpx 0;
-  width:400rpx;
-  font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial,sans-serif;
-}
-
-.pay-block image{
-  width:200rpx;
-}
-
-.article button{
-  display: inline-block;
-  border: 0;
-  background: #000;
-  color: #ffffff;
-  border-radius: 3px;
-  padding: 10px;
-  width: 80%;
-  font-size: 16px;
-  outline: none;
-  font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial,sans-serif;
-  margin: 15px 0;
-  line-height: 1.5;
-}
-image{
-  display: block;
-}
+  }
+  .swiper-container .swiper{
+    height: 300rpx;
+  }
+  .swiper-container .swiper .img{
+    width: 100%;
+    height: 100%;
+  }
+  .swiper-container .dots{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 20rpx;
+    display: flex;
+    justify-content: center;
+  }
+  .swiper-container .dots .dot{
+    /* margin: 0 8rpx; */
+    width: 14rpx;
+    height: 14rpx;
+    background: #fff;
+    border-radius: 8rpx;
+    transition: all .6s;
+  }
+  .swiper-container .dots .dot.active{
+    width: 50rpx;
+    background: #f80;
+  }
+  image.active {
+    transform: none;
+    transition: all 0.2s ease-in 0s;
+  } 
+  
+  image.quiet {
+    transform: scale(0.8333333);
+    transition: all 0.2s ease-in 0s;
+  }
+  
+  .ft{
+  
+    text-align: center;
+    margin: 0auto;
+   
+    
+  }
+  .ul{
+    display: flex;
+   /* justify-content:; */
+   justify-content: space-between;
+    margin:0 auto;
+    margin-top:30rpx;
+  
+  }
+  .ul .li{
+    width: 16%;
+  }
+  .li image{
+    width: 100%;
+  }
+  
+  
+  
+  .article{
+    text-align: center;
+    margin: 140rpx auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .article .h3{
+    font-weight: normal;
+    color: #373737;
+    font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial,sans-serif;
+    font-size: 18px;
+  }
+  
+  .article .p{
+    color: #000;
+    margin:40rpx 0;
+    width:400rpx;
+    font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial,sans-serif;
+  }
+  
+  .pay-block image{
+    width:200rpx;
+  }
+  
+  .article button{
+    display: inline-block;
+    border: 0;
+    background: #000;
+    color: #ffffff;
+    border-radius: 3px;
+    padding: 10px;
+    width: 80%;
+    font-size: 16px;
+    outline: none;
+    font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial,sans-serif;
+    margin: 15px 0;
+    line-height: 1.5;
+  }
+  image{
+    display: block;
+  }
+  

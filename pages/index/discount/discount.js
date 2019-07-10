@@ -8,6 +8,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    type: '',
     seckillActive: 0, //已开启活动的id
     activeId: 0, //当前活动的id
     isActive: false, //当前活动是否开启
@@ -23,10 +24,15 @@ Page({
    */
   onLoad: function (options) {
     let type = options.type || 1;
+    this.setData({ type });
     wx.setNavigationBarTitle({
       title: type == 1?'限时折扣':'每日秒杀'
     });
-      
+    
+    if (options.uid) {
+      app.globalData.identifying = options.uid;
+    }
+
     this.initTimeList();
   },
   // 提醒我
@@ -35,11 +41,13 @@ Page({
     if(!app.globalData.token){
       return this.toResgin();
     }
-    SERVERS.SECKILL.creatSeckillTemplate.post({
-        open_id: app.globalData.openid,
-        form_id: e.detail.formId,
-        seckill_goods_id
-    }).then(res => {
+    let data = {
+      open_id: app.globalData.openid,
+      form_id: e.detail.formId,
+      seckill_goods_id
+    }
+    console.log(data);
+    SERVERS.SECKILL.creatSeckillTemplate.post(data).then(res => {
       if(res.code == 0){
         app.showBox(this, '预约提醒成功');
       }
@@ -186,5 +194,17 @@ Page({
     this.initGoodsList(this.data.activeId);
   },
   // 默认不执行时间冒泡拦截
-  t:()=>{}
+  t:()=>{},
+  // 分享
+  onShareAppMessage(){
+    let type = this.data.type;
+    let title = type == 1?'限时折扣':'每日秒杀'
+    let uid = app.globalData.uid;
+    let path = '/pages/index/discount/discount?type=' + type;
+    path += app.globalData.distributor_type == 0 ? '' : ('&uid=' + uid);
+    return {
+      title,
+      path
+    }
+  }
 })

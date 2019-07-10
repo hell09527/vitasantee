@@ -81,7 +81,10 @@
     "pages/index/coverindex/coverindex",
     "pages/index/coupon/coupon",
     "pages/index/couponReceive/couponReceive",
-    "pages/index/couponDetail/couponDetail"
+    "pages/index/couponDetail/couponDetail",
+    "pages/index/assemble/assemble",
+    "pages/common/rule/rule",
+    "pages/index/assembleInvite/assembleInvite"
   ],
   "tabBar": {
     "borderStyle": "white",

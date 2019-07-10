@@ -1,22 +1,27 @@
 <template name="newProductTemplate">
-  <view class='goods_item' catchtap='toGood' data-id='{{goods_id}}'>
-      <image src="{{pic_cover_small}}" mode="widthFix"/>
+  <view class='goods_item' catchtap='toGood' data-id='{{goods_id}}' data-ptid="{{pt_goods_id}}" data-suid="{{pt_startup_id}}">
+      <image src="{{pic_cover_small}}" mode="widthFix" lazy-load="true"/>
       <view class='goods_detail'>
         <view style='font-size:14px;color:#333;'>
-          <block wx:if='{{source_type==2}}' wx:key='' wx:for-item='vo'>
-            <text class="i goods_tab">跨境</text>
-          </block>{{goods_name}}
-          </view>
-        <view style='font-size:12px;color:#999;margin:5rpx 0 10rpx;display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;'>{{introduction}}</view>
+          <text wx:if='{{source_type==2 && !assemble_num_all}}' class="i goods_tab">跨境</text>
+          <text wx:if="{{assemble_num_all}}" class="i goods_tab">{{assemble_num_all}}人团</text>
+          <text decode>{{goods_name}}</text>
+        </view>
+        <view style='font-size:12px;color:#999;margin:5rpx 0 10rpx;display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;'>{{isNotDesc?sku_list[0].sku_name:introduction}}</view>
         <!-- <view style='font-size:12px;color:#999;margin-bottom:5rpx;'></view> -->
         <view class='goods_bottom'>
           <view class='goods_price'>
             <text style='font-size:14px;color:#005882;margin-right:8px;'>￥{{promote_price}}</text>
             <view wx:if="{{market_price>promote_price}}">￥{{market_price}}</view>
           </view>
-          <view style='padding:10rpx;' catchtap="{{unregistered==1 || tel==''?'Crossdetails':'toCollect'}}" data-id='{{goods_id}}' data-name='{{goods_name}}' data-index='{{index}}' wx:if="{{is_member_fav_goods==0||is_member_fav_goods==1}}">
-            <image src="{{is_member_fav_goods==0?'https://static.vitasantee.com/%E6%94%B6%E8%97%8F@2x.png':'https://static.vitasantee.com/%E6%94%B6%E8%97%8F%20copy%202@2x.png'}}" mode="aspectFit"/>
-          </view>
+          <!-- 拼团 -->
+          <view wx:if="{{assembeTypeState}}" class="assembe-btn" data-id="{{goods_id}}" data-ptid="{{pt_goods_id}}" catchtap="assembeTap">{{assembeTypeState}}</view>
+          <!-- 收藏 -->
+          <block wx:else>
+            <view style='padding:10rpx;' catchtap="{{unregistered==1 || tel==''?'Crossdetails':'toCollect'}}" data-id='{{goods_id}}' data-name='{{goods_name}}' data-index='{{index}}' wx:if="{{is_member_fav_goods==0||is_member_fav_goods==1}}">
+              <image src="{{is_member_fav_goods==0?'https://static.vitasantee.com/%E6%94%B6%E8%97%8F@2x.png':'https://static.vitasantee.com/%E6%94%B6%E8%97%8F%20copy%202@2x.png'}}" mode="aspectFit"/>
+            </view>
+          </block>
         </view>
       </view>
     </view>

@@ -1,5 +1,8 @@
 var wxParse = require('../../../wxParse/wxParse.js');
+const SERVERS = require('../../../utils/servers.js');
 var time = require("../../../utils/util.js");
+var timer = null; 
+var assembleTimer = null;
 
 const app = getApp();
 
@@ -8,6 +11,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    autoRefresh: 2, //秒杀自动刷新
     prompt: '',
     Base: '', //库路径
     defaultImg: {},
@@ -41,7 +45,7 @@ Page({
     goods_id: 0,
     is_share: 0,
     buyButtonStatus: 0, //购买、购物车确认按钮
-    goods_info: {}, //商品详情
+    goods_info: null, //商品详情
     comments_list: {}, //评价列表
     comments_type: 0, //评价类型
     next_page: 1, //下一页页码
@@ -94,7 +98,14 @@ Page({
     activeSecKill: 0,
     activeSecKillShow: '',
     saleState: false,
-    now: parseInt(Date.now() / 1000)
+    now: parseInt(Date.now() / 1000),
+    isAssemble: false, //显示拼购部分
+    assembleList: [1,2,3],
+    pintuanGoodsInfo: {},//拼团信息
+    pintuanRecords: [], //拼团人员列表
+    pt_goods_id: '', //拼团商品id
+    pt_startup_id: '',//拼团记录id(用于和已开始拼团合团)
+    ptStatusList: ['', '普通团', '邀新团'],
   },
   //测试数据
   last: function () {
@@ -109,8 +120,24 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    console.log(options);
+    let currentPages =  getCurrentPages();
+    console.log(currentPages.map(page => page.route));
     let that = this;
     let flys = options.fly;
+    let isAssemble = options.isAssemble || false;
+    
+    if(options.pt_goods_id){
+      that.setData({
+        pt_goods_id: options.pt_goods_id
+      });
+    }
+    if(options.pt_startup_id){
+      that.setData({
+        pt_startup_id: options.pt_startup_id
+      });
+    }
+    
     if (options.uid) {
       console.log('options.uid', options.uid)
       app.globalData.identifying = options.uid;
@@ -144,6 +171,7 @@ Page({
         goods_id: goods_id,
       })
 
+      
     }
 
     // 是否授权数据更新
@@ -153,9 +181,17 @@ Page({
     console.log(updata, 'updata')
     that.setData({
       unregistered: app.globalData.unregistered,
-      isIphoneX: app.globalData.isIphoneX
+      isIphoneX: app.globalData.isIphoneX,
+      isAssemble: isAssemble
     });
 
+    // 初始化团购信息
+    if(isAssemble&&options.pt_goods_id){
+      that.initAssembleData();
+    }else{
+      that.setData({ isAssemble: false })
+    }
+    console.log('isAssemble:' + this.data.isAssemble);
     wx.getSystemInfo({
       success(res) {
         let windowWidth = res.windowWidth;//当前手机屏幕的宽度
@@ -478,18 +514,22 @@ Page({
           if (code == 0) {
             let scale
             let vip_price = data.vip_price;
-            var recommended_goods = data.goodsList.similarOne;
+            
             let goodsDetailImg = data.goodsDetailImg;
+            var recommended_goods = that.data.recommended_goods;
+            if(!that.data.isAssemble){
+              recommended_goods = data.goodsList.similarOne;
+              // 品牌推荐商品
+              if (data.goodsList.similarOne.length < 10) {
+                recommended_goods = recommended_goods.concat(data.goodsList.similarTwo);
+                if (recommended_goods.length < 10) {
+                  recommended_goods = recommended_goods.concat(data.goodsList.similarThree);
+                }
 
-            // 品牌推荐商品
-            if (data.goodsList.similarOne.length < 10) {
-              recommended_goods = recommended_goods.concat(data.goodsList.similarTwo);
-              if (recommended_goods.length < 10) {
-                recommended_goods = recommended_goods.concat(data.goodsList.similarThree);
+                recommended_goods.pic_cover_small = app.IMG(recommended_goods.pic_cover_small);
               }
-
-              recommended_goods.pic_cover_small = app.IMG(recommended_goods.pic_cover_small);
             }
+            
             if (goodsDetailImg) {
 
             } else {
@@ -578,7 +618,6 @@ Page({
             resolve(brand_id)
             console.log(brand_id, goods_info.promotion_price, goods_info.inside_price)
 
-
             that.setData({
               goods_info: goods_info,
               detail_id: detail_id,
@@ -593,15 +632,6 @@ Page({
               recommended_goods,
               brand_id
             });
-
-            //限时折扣计时
-            if (data.promotion_type > 1 && data.promotion_detail instanceof Object) {
-              let time_array = {};
-              time_array.end = 0;
-              time_array.end_time = data.promotion_detail.end_time;
-              // time_array.end_time = 1559968200;
-              that.timing(that, time_array);
-            }
 
             let sku_info = that.data.sku_info;//选中规格信息
             let sku_id = that.data.sku_id; //选中规格
@@ -702,17 +732,46 @@ Page({
 
             let activeSecKill = 0;
             let activeSecKillShow = '';
+            let activeSecItem = null;
             // 修改默认秒杀规格index
             if (data.seckill_detail && data.seckill_detail.length > 0) {
               activeSecKill = data.seckill_detail.findIndex(i => i.sku_id == sku_id);
-              let activeSecItem = data.seckill_detail[activeSecKill];
+              activeSecItem = data.seckill_detail[activeSecKill];
               if (activeSecItem.start_time < that.data.now && activeSecItem.end_time > that.data.now) {
-                goods_info.promotion_price = activeSecItem.price * activeSecItem.discount / 10;
-                goods_info.price = activeSecItem.price;
+                goods_info.promotion_price = Number(activeSecItem.price * activeSecItem.discount / 10).toFixed(2);
+              }else{
+                goods_info.promotion_price_preview = Number(activeSecItem.price * activeSecItem.discount / 10).toFixed(2);
+                goods_info.promotion_price = activeSecItem.price;
               }
+              goods_info.price = activeSecItem.price;
               if (parseInt(activeSecItem.discount) != 10 && activeSecItem.start_time > that.data.now) {
-                activeSecKillShow = time.formatTime(activeSecItem.start_time, 'M月D日 h:m') + '秒杀价: ¥' + activeSecItem.discount * activeSecItem.price / 10;
+                activeSecKillShow = time.formatTime(activeSecItem.start_time, 'M月D日 h:m') + ' 开始';
+                //  + '秒杀价: ¥' + activeSecItem.discount * activeSecItem.price / 10;
               }
+            }
+            //限时折扣计时
+            if ((data.promotion_type > 1 && data.promotion_detail instanceof Object) || activeSecKillShow) {
+              let time_array = {};
+              time_array.end = 0;
+              if(data.promotion_detail){
+                if(data.promotion_type == 2 || parseInt(activeSecItem.discount) != 10){
+                  // 结束倒计时
+                  time_array.end_time = data.promotion_detail.end_time;
+                  that.timing(that, time_array, 'end');
+                }
+              }else if(activeSecKillShow){
+                // 开始倒计时
+                time_array.start_time = activeSecItem.start_time;
+                that.timing(that, time_array, 'start');
+              }
+              console.log("time_array",time_array);
+              
+              // time_array.end_time = 1559968200;
+              
+            }
+            // 拼团
+            if(data.pintuan){
+              data.pintuanPrice = Number(data.promotion_price*data.pintuan.discount/10).toFixed(2);
             }
 
             console.log(data.sku_list.length, 'ori_range');
@@ -771,7 +830,8 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    clearInterval(timer);
+    clearInterval(assembleTimer);
   },
 
   /**
@@ -818,7 +878,6 @@ Page({
       })
     }
   },
-
   /**
    * 用户点击右上角分享
    */
@@ -827,8 +886,8 @@ Page({
     let goods_info = that.data.goods_info;
     let uid = app.globalData.uid;
     let XQ_share_url = '/pages/goods/goodsdetail/goodsdetail?goods_id=' + goods_info.goods_id;
-    let infoText = decodeURIComponent(that.data.goods_info.introduction);
-    infoText = infoText.replace(/&quot;/g, '"');
+    let infoText = that.data.goods_info.introduction;
+    console.log("identifying: " + uid);
     if (that.data.distributor_type == 0) {
       return {
         title: infoText,
@@ -1181,7 +1240,10 @@ Page({
       status = 0;
     } else if (type == 'addCart') {
       status = 1;
+    }else if(type == 'pintuan'){
+      status = 2;
     }
+    
     this.setData({
       sBuy: 1,
       maskShow: 1,
@@ -1201,12 +1263,14 @@ Page({
     let popUp = 1
     let type = event.currentTarget.dataset.type;
     let status = 0;
-
+    if(this.data.isAssemble){
+      return;
+    }
     if (type == 'buy') {
       status = 0;
     } else if (type == 'addCart') {
       status = 1;
-    }
+    } 
     const animation = wx.createAnimation({
       duration: 500,
       timingFunction: 'ease',
@@ -1275,6 +1339,15 @@ Page({
    * sku选中
    */
   skuSelect: function (event) {
+    if(timer){
+      // 倒计时清空
+      clearInterval(timer);
+      this.setData({
+        timer_array: {
+          end:1
+        }
+      });
+    }
     let that = this;
     let key = event.currentTarget.dataset.key;
     let k = event.currentTarget.dataset.k;
@@ -1367,17 +1440,40 @@ Page({
     }
     let activeSecKill = 0;
     let activeSecKillShow = '';
+    let activeSecItem = null;
     // 修改默认秒杀规格index
     if (goods_info.seckill_detail && goods_info.seckill_detail.length > 0) {
       activeSecKill = goods_info.seckill_detail.findIndex(i => i.sku_id == sku_id);
-      let activeSecItem = goods_info.seckill_detail[activeSecKill];
+      activeSecItem = goods_info.seckill_detail[activeSecKill];
       if (activeSecItem.start_time < that.data.now && activeSecItem.end_time > that.data.now) {
-        goods_info.promotion_price = activeSecItem.price * activeSecItem.discount / 10;
-        goods_info.price = activeSecItem.price;
+        goods_info.promotion_price = Number(activeSecItem.price * activeSecItem.discount / 10).toFixed(2);
+      }else{
+        goods_info.promotion_price_preview = Number(activeSecItem.price * activeSecItem.discount / 10).toFixed(2);
+        goods_info.promotion_price = activeSecItem.price;
       }
+      goods_info.price = activeSecItem.price;
       if (parseInt(activeSecItem.discount) != 10 && activeSecItem.start_time > that.data.now) {
-        activeSecKillShow = time.formatTime(activeSecItem.start_time, 'M月D日 h:m') + '秒杀价: ¥' + activeSecItem.discount * activeSecItem.price / 10;
+        activeSecKillShow = time.formatTime(activeSecItem.start_time, 'M月D日 h:m') + ' 开始';
+        //  + '秒杀价: ¥' + activeSecItem.discount * activeSecItem.price / 10;
       }
+    }
+    if ((goods_info.promotion_type > 1 && goods_info.promotion_detail instanceof Object) || activeSecKillShow) {
+      let time_array = {};
+      time_array.end = 0;
+      if(goods_info.promotion_detail){
+        if(goods_info.promotion_type == 2 || parseInt(activeSecItem.discount) != 10){
+          // 结束倒计时
+          time_array.end_time = goods_info.promotion_detail.end_time;
+          that.timing(that, time_array, 'end');
+        }
+      }else if(activeSecKillShow){
+        // 开始倒计时
+        time_array.start_time = activeSecItem.start_time;
+        that.timing(that, time_array, 'start');
+      }
+      console.log("time_array",time_array);
+      
+      // time_array.end_time = 1559968200;
     }
 
     let sum = 1;
@@ -1421,7 +1517,10 @@ Page({
     let numCount = parseInt(that.data.stock);
     let max_buy = parseInt(that.data.goods_info.max_buy);
     let min_buy = parseInt(that.data.goods_info.min_buy);
-
+    // if(that.data.isAssemble){
+    //   max_buy = parseInt(that.data.pintuanGoodsInfo.max_buy_num);
+    //   min_buy = parseInt(that.data.pintuanGoodsInfo.min_buy_num);
+    // }
     if (button_type == 'add' && numCount > 0) {
       num++;
       if (max_buy > 0 && num > max_buy) {
@@ -1461,7 +1560,10 @@ Page({
     let max_buy = parseInt(that.data.goods_info.max_buy);
     // let stock = parseInt(that.data.goods_info.stock);
     let min_buy = parseInt(that.data.goods_info.min_buy);
-
+    // if(that.data.isAssemble){
+    //   max_buy = parseInt(that.data.pintuanGoodsInfo.max_buy_num);
+    //   min_buy = parseInt(that.data.pintuanGoodsInfo.min_buy_num);
+    // }
     if (max_buy > 0 && num > max_buy) {
       app.showBox(that, '此商品限购，您最多购买' + max_buy + '件');
       that.setData({
@@ -1826,7 +1928,68 @@ Page({
     }
 
   },
+  /**
+   * 拼团
+   */
+  pintuanNext(){
+    let that = this;
+    let sku_id = that.data.sku_id;
+    let stock = that.data.stock;
+    let goods_num = parseInt(that.data.goodsNum);
+    let goods_info = that.data.goods_info;
+    let pintuanGoodsInfo = that.data.pintuanGoodsInfo;
+    let purchase_num = parseInt(goods_info.purchase_num);
+    // let max_buy = parseInt(pintuanGoodsInfo.max_buy_num);
+    let max_buy = parseInt(goods_info.max_buy);
+    // console.log(max_buy)
+    let min_buy = parseInt(goods_info.min_buy);
+    let buyNextFlag = that.data.buyNextFlag;
 
+    if (buyNextFlag == 1) {
+      return false;
+    }
+    app.clicked(that, 'buyNextFlag');
+
+    if (goods_info.state == 0) {
+      app.showBox(that, '该商品已下架');
+      app.restStatus(that, 'buyNextFlag');
+      return false;
+    }
+
+    if (goods_info.state == 10) {
+      app.showBox(that, '该商品属于违禁商品，现已下架');
+      app.restStatus(that, 'buyNextFlag');
+      return false;
+    }
+
+    if (stock <= 0) {
+      app.showBox(that, '商品已售馨');
+      app.restStatus(that, 'buyNextFlag');
+      return false;
+    }
+
+    if (goods_num <= 0) {
+      app.showBox(that, '最少购买1件商品');
+      app.restStatus(that, 'buyNextFlag');
+      return false;
+    }
+
+    if (max_buy > 0 && (purchase_num + goods_num) > max_buy) {
+      app.showBox(that, '此商品限购，您最多购买' + max_buy + '件');
+      app.restStatus(that, 'buyNextFlag');
+      return false;
+    }
+    let tag = "pintuan";
+    let sku_list = sku_id + ':' + goods_num;
+    let source_type = goods_info.source_type;
+    let is_inside = that.data.is_inside_sell;
+    let goods_type = goods_info.goods_type;
+    let pt_goods_id = that.data.pt_goods_id;
+    let pt_startup_id = that.data.pt_startup_id;
+    wx.navigateTo({
+      url: '/pages/order/paymentorder/paymentorder?tag=' + 6 + '&sku=' + sku_list + '&goods_type=' + goods_type + '&source_type=' + source_type + '&order_type=0' + '&is_inside=' + is_inside +'&pt_goods_id=' + pt_goods_id +'&pt_startup_id=' + pt_startup_id
+    })
+  },
   /**
    * 空库存
    */
@@ -2048,64 +2211,67 @@ Page({
 
   /**
    * 限时折扣计时
+   * type 'end'    结束倒计时
+   *      'start'  开始倒计时
    */
-  timing: function (that, timer_array) {
-    let current_time = that.data.current_time;
-    let count_second = (timer_array.end_time * 1000 - current_time) / 1000;
-    //首次加载
-    if (count_second > 0) {
-      count_second--;
-      //时间计算
-      let day = Math.floor((count_second / 3600) / 24);
-      let hour = Math.floor((count_second / 3600) % 24);
-      let minute = Math.floor((count_second / 60) % 60);
-      let second = Math.floor(count_second % 60);
-      //赋值
-      timer_array.day = day;
-      timer_array.hour = hour;
-      timer_array.minute = minute;
-      timer_array.second = second;
-      timer_array.end = 0;
-
-      that.setData({
-        timer_array: timer_array
-      })
-    } else {
-      timer_array.end = 1;
-
-      that.setData({
-        timer_array: timer_array
-      })
+  timing: function (that, timer_array, type = 'end') {
+    // 清除之前的timer
+    if(timer){
+      clearInterval(timer);
+      this.setData({ timer_array: { end: 0 } });
     }
-    //开始计时
-    let timer = setInterval(function () {
+    
+    let current_time = that.data.current_time,count_second = 0;    
+
+    if(type == 'end' || type == 'start'){
+      if(type == 'end'){
+        count_second = (timer_array.end_time * 1000 - current_time) / 1000;
+      }else{
+        count_second = (timer_array.start_time * 1000 - current_time) / 1000;
+      }
+      //首次加载
+      setRemainTime(count_second,type);
+      //开始计时
+      timer = setInterval(function () {
+        setRemainTime(count_second,type);
+      }, 1000);
+    }else{
+      let tmpDate = new Date(timer_array.start_time * 1000);
+      timer_array = {
+        day: time.formatNumber(tmpDate.getDate()),
+        hour: time.formatNumber(tmpDate.getHours()),
+        minute: time.formatNumber(tmpDate.getMinutes()),
+        second: time.formatNumber(tmpDate.getSeconds()),
+        end: 0,
+        type
+      }
+      that.setData({ timer_array });
+    }
+
+    // 获取时间
+    function setRemainTime(second,type){
       if (count_second > 0) {
         count_second--;
-        //时间计算
-        let day = Math.floor((count_second / 3600) / 24);
-        let hour = Math.floor((count_second / 3600) % 24);
-        let minute = Math.floor((count_second / 60) % 60);
-        let second = Math.floor(count_second % 60);
-        //赋值
-        timer_array.day = day;
-        timer_array.hour = hour;
-        timer_array.minute = minute;
-        timer_array.second = second;
-        timer_array.end = 0;
-
-        that.setData({
-          timer_array: timer_array
-        })
+        timer_array = {
+          day: Math.floor((count_second / 3600) / 24),
+          hour: Math.floor((count_second / 3600) % 24),
+          minute: Math.floor((count_second / 60) % 60),
+          second: Math.floor(count_second % 60),
+          end: 0,
+          type
+        };
       } else {
         timer_array.end = 1;
-
-        that.setData({
-          timer_array: timer_array
-        })
-
+        // 倒计时完成后刷新界面(最多两次)
+        if(that.data.autoRefresh > 0){
+          that.onShow();
+          app.loadTask();
+        }
+        that.setData({ autoRefresh: that.data.autoRefresh - 1 });
         clearInterval(timer);
       }
-    }, 1000)
+      that.setData({ timer_array });
+    }
   },
 
   /**
@@ -2181,17 +2347,15 @@ Page({
 
   // 你可能还想看商品详情跳转
   toGood: function (e) {
-    var that = this;
-    var id = e.currentTarget.dataset.id;
-    var url = e.currentTarget.dataset.url;
+    let { id, ptid, url } = e.currentTarget.dataset;
     if (url) {
       wx.navigateTo({
         url: '/' + url,
       })
     } else {
-      wx.navigateTo({
-        url: '/pages/goods/goodsdetail/goodsdetail?goods_id=' + id,
-      })
+      let url = '/pages/goods/goodsdetail/goodsdetail?goods_id=' + id;
+      if(this.data.isAssemble)url += '&isAssemble=true&pt_goods_id=' + ptid;
+      wx.navigateTo({ url });
     }
   },
   /* 
@@ -2302,10 +2466,10 @@ Page({
         ctx.drawImage(res.path, F01, 30, setfixW, imgUrlH);
 
         let F01w = parseInt((that.data.windowWidth / 2) / 2) - 50;  //文字左右两边的距离
-        // 介绍语
-        let infoText = decodeURIComponent(that.data.goods_info.introduction);
-        infoText = infoText.replace(/&quot;/g, '"');
-        console.log(infoText)
+        // 介绍语(html实体替换)
+        let infoText = that.data.goods_info.introduction;
+        console.log(infoText);
+        // console.log(infoText)
         let infoWidth = parseInt(parseInt(setfixW) + 100);
         that.drawText(ctx, infoText, F01w, imgUrlH + 60, 0, 16, '#000', infoWidth);
 
@@ -2344,13 +2508,27 @@ Page({
                     let All = imgUrlH + orignH + 120;
                     ctx.drawImage(res.path, W, All, HOS, HOS);
                     // 合成BC商品说明文字04---->
+                    // 规格最低价格
+                    let price = that.data.goods_info.sku_list.sort((a,b) => a.promote_price - b.promote_price)[0].promote_price;
+
+
                     let text = that.data.goods_info.goods_name;
-                    let price = '￥' + that.data.goods_info.price;
+                    // 存在秒杀
+                    let activeSecKill = that.data.goods_info.seckill_detail.find(i => i.sku_id == that.data.sku_id);
+                    if(activeSecKill >= 0){
+                      price = Number(price * activeSecKill.discount/10).toFixed(2)
+                      
+                    }
+                    // 存在拼团
+                    if(that.data.pintuanGoodsInfo&&(that.data.pintuanGoodsInfo.goods_id == that.data.goods_id)){
+                      price = Number(price * that.data.pintuanGoodsInfo.discount/10).toFixed(2);
+                    }
+                    
                     let UrlH = All + HOS + 10;
                     let textWidth = parseInt(parseInt(orign) - 10 - parseInt(HOS));
 
                     that.drawText(ctx, text, F01w, All + 20, 0, 14, '#000', textWidth);
-                    that.drawText(ctx, price, F01w, All + 65, 0, 18, '#e40046', textWidth);
+                    that.drawText(ctx, '￥' + price, F01w, All + 65, 0, 18, '#e40046', textWidth);
                     // console.log(UrlH)
 
                     //  设计显示图片的大小
@@ -2501,11 +2679,110 @@ Page({
     let list = [2, 3];
     if(!this.data.goods_info.seckill_detail)return false;
     let cur = this.data.goods_info.seckill_detail[this.data.activeSecKill];
-    if (list.indexOf(detail.promotion_type) != -1 && detail.promotion_detail) {
+    // 一开始秒杀或者存在秒杀
+    if ((list.indexOf(detail.promotion_type) != -1 && detail.promotion_detail) || cur) {
       return parseInt(cur.discount) != 10;
-    } else {
+    } else{
       return false;
     }
+  },
+  // 打开拼购商品详情
+  toAssembleGoodsPgage(){
+    wx.navigateTo({
+      url: '/pages/goods/goodsdetail/goodsdetail?isAssemble=true&goods_id=' + this.data.detail_id + '&pt_goods_id=' + this.data.goods_info.pintuan.pt_goods_id + '&v=' + Date.now()
+    });
+  },
+  // 单独购买
+  singleBuy(){
+    wx.navigateTo({
+      url: '/pages/goods/goodsdetail/goodsdetail?goods_id='+this.data.detail_id
+    });
+  },
+  // 一起拼购
+  assembleTap(e){
+    let { item } = e.currentTarget.dataset;
+    wx.navigateTo({
+      url: '/pages/index/assembleInvite/assembleInvite?show_type=1&goods_id=' + item.goods_id + '&pt_goods_id=' + item.pt_goods_id + '&pt_startup_id=' + item.pt_startup_id + '&v=' + Date.now()
+    })
+  },
+  // 初始化拼团信息
+  initAssembleData(){
+    let that = this;
+    SERVERS.GOODS.pintuanGoodsDetail.post({
+      pt_goods_id: that.data.pt_goods_id
+    }).then(res => {
+      if(res.code == 0){
+        let pintuanGoodsInfo = res.data.pintuanGoodsInfo;
+        let isAssemble = !!pintuanGoodsInfo;
+        // 没有拼团商品id时，后端会一直返回默认商品(需要判断)
+        if(pintuanGoodsInfo && (pintuanGoodsInfo.pt_goods_id == that.data.pt_goods_id)){
+          let recommended_goods = res.data.pintuanGoodsOther.map(item => {
+            item.pic_cover_small = item.picture.pic_cover_small;
+            item.promotion_price = Number(item.price*item.discount/10).toFixed(2);
+            return item;
+          });
+          that.setData({ isAssemble,recommended_goods, pintuanGoodsInfo });
+          // 初始化正在进行的拼团列表
+          that.initAssemblingList();
+        }else{
+          that.setData({ isAssemble: false });
+        }
+        console.log('isAssemble:' + this.data.isAssemble);
+      }
+    }).catch(e => console.log(e));
+  },
+  // 初始化进行拼团列表
+  initAssemblingList(){
+    let that = this;
+    SERVERS.GOODS.pintunStartupList.post({
+      pt_goods_id: that.data.pt_goods_id,
+      page_index: 1,
+      page_size: 10
+    }).then(res => {
+      if(res.code == 0){
+        that.setData({
+          pintuanRecords: res.data.map(i => {
+            i.user_headimg = app.IMG(i.user_headimg);
+            return i;
+          })
+        });
+        if(res.data.length>0){
+          that.updateAssembleTime();
+        }
+      }
+    }).catch(e => console.log(e));
+  },
+  // 拼团列表倒计时
+  updateAssembleTime(){
+    let that = this;
+    clearInterval(assembleTimer);
+    that.updateAssembleTimeShow();
+    assembleTimer = setInterval(function(){
+      that.updateAssembleTimeShow();
+    },1000);
+  },
+  // 拼团列表倒计时显示
+  updateAssembleTimeShow(){
+    let pintuanRecords = this.data.pintuanRecords;
+    pintuanRecords = pintuanRecords.map(i => {
+      let tmp = time.calcDateTime(i.end_time);
+      if(tmp){
+        i.assemble_time_show = time.formatNumber(tmp.hour) + ':' + time.formatNumber(tmp.minute) + ':' + time.formatNumber(tmp.second);
+      }else{
+        i.assemble_time_show = '00:00:00';
+      }
+      return i;
+    })
+    // 所有都结束后关闭定时器
+    let isAllClose = pintuanRecords.every(i => i.assemble_time_show == '00:00:00');
+    this.setData({ pintuanRecords });
+    if(isAllClose)return clearInterval(assembleTimer);
+  },
+  // 拼团规则介绍
+  toRuleDetail(){
+    wx.navigateTo({
+      url: '/pages/common/rule/rule?type=pintuan'
+    })
   },
 
   // 页面滚动事件//滑动开始事件

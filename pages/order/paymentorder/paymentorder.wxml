@@ -7,7 +7,7 @@
                 <image class="sur" src="/images/member/icon_address.jpg"/>
                 <view class='a address-right' catchtap='myAddress'>
                     <view class="li clearfix">
-                        <view class="span name">收货人信息：{{member_address.consigner}} {{member_address.mobile}}</view>
+                        <view class="span name">收货人信息：{{member_address.consigner}} {{member_address.mobile || member_address.phone}}</view>
                     </view>
                     <view class="li address-detail">收货地址：{{member_address.address_info}} {{member_address.address}}
                     </view>
@@ -359,12 +359,12 @@
                     <view class='b' id="invoice_tax_money">{{order_invoice_money}}</view>
                 </view>
             </view>
-            <view class="p {{shop_config.order_balance_pay==1?'':'hide'}}">
+            <!-- <view class="p {{shop_config.order_balance_pay==1?'':'hide'}}">
                 <view class='label'>使用余额：</view>
                 <view class='span'>￥
                     <view class='b' id="use_balance">{{balance}}</view>
                 </view>
-            </view>
+            </view> -->
         </view>
     </view>
 

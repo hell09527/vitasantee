@@ -8,7 +8,7 @@
     <block wx:for='{{address_list}}' wx:key='id' wx:for-item='address' wx:for-index='key'>
       <view class="address-item" catchtap='selectAddress'  data-id='{{address.id}}' data-key="{{key}}">
         <view style='color:#333;font-size:14px;margin:10rpx 0;'>{{address.consigner}}  
-          <text style='color:#999;'> | </text> {{address.mobile}}
+          <text style='color:#999;'> | </text> {{address.mobile || address.phone}}
           <text class='defaultAddress' wx:if="{{address.is_default==1}}">默认</text>
         </view>
         <view style='color:#333;font-size:12px;'>{{address.address_info}} {{address.address}}</view>

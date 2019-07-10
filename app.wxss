@@ -263,6 +263,11 @@ strong, b {
   justify-content: flex-start;
   align-items: center;
 }
+.flex-spb{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 /*客服  */
 .yuan{

@@ -28,8 +28,8 @@ const util = {
     return format;
   },// 计算时间差
   calcDateTime: function (endTime, startTime) {
-    let start = startTime || Date.now()/1000;
-    let count = endTime - start ;
+    let start = startTime || Date.now() / 1000;
+    let count = parseInt(endTime - start);
     if (count < 0) return null; //开始时间早于结束时间
     return {
       day: Math.floor((count / 3600) / 24),

@@ -701,6 +701,9 @@ image{
   text-align: center;
   width: initial;
 }
+.big-btn-2-2{
+  width: 35%;
+}
 
 .orange-btn{
   background: #f85;
@@ -963,7 +966,6 @@ border-radius: 0;
   padding: 10px;
   color: #333;
 }
-
 .single {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -1436,7 +1438,61 @@ button::after{
   height:20px;
   line-height: 20px;
 }
-
+/* 拼购添加 */
+.assemble-price{
+  padding:0 20rpx;
+  height:60rpx;
+}
+.assemble-price-intro{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: #005882;
+}
+.assemble-price-intro text{
+  margin-left: 10rpx;
+  font-size: 12px;
+  height: 20px;
+  line-height: 20px;
+}
+.assemble-price-intro text:nth-child(2){
+  font-size: 18px;
+  font-weight: bold;
+}
+.assemble-price .assemble-label{
+  padding: 2rpx 10rpx;
+  margin-right:2px;
+  margin-left: 0;
+  height: 16px;
+  color:#fff !important;
+  line-height: 16px;
+  font-style:normal;
+  font-size: 12px !important;
+  font-weight:normal !important;
+  border-radius:8px;
+  background:#e40046;
+}
+.assemble-price .assemble-num{
+  font-size: 14px;
+}
+.assemble-row{
+  padding: 0 20rpx;
+  height: 80rpx;
+  font-size: 13px;
+  line-height: 80rpx;
+  border-top: 1px solid #e5e5e5;
+}
+.assemble-row .assemble-price{
+  padding: 0;
+  color: #005882;
+}
+.assemble-row .assemble-more view{
+  margin-right: 10rpx;
+}
+.assemble-row .assemble-more .jiantou{
+  margin: 0;
+  display: block;
+}
 .buy_area .price .span.point{
   font-size: 16px;
 }
@@ -1902,4 +1958,101 @@ canvas{
 .sku_img{
   width:30px ;
   height: 30px;
+}
+/* 拼团规则流程 */
+.list-row{
+  position: relative;
+  padding: 0 20rpx;
+  height: 80rpx;
+  font-size: 28rpx;
+  line-height: 80rpx;
+  text-align: center;
+}
+.list-row:before{
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2rpx;
+  background-color: #e5e5e5;
+}
+.list-row.border-top-none:before{
+  display: none;
+}
+
+.rule-flow{
+  height: 160rpx;
+  font-size: 24rpx;
+  line-height: 30rpx;
+}
+.rule-flow .icon{
+  margin: 0 auto 10rpx;
+  display: block;
+  width: 26rpx;
+  height: 26rpx;
+}
+.rule-flow .arrow{
+  margin: 0;
+  display: block;
+  width: 34rpx;
+  height: 34rpx;
+}
+.rule-flow .more{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 136rpx;
+  font-size: 24rpx;
+}
+.rule-flow .more view{
+  color: #005882;
+}
+.rule-flow .more .arrow{
+  display: block;
+  width: 24rpx;
+  height: 24rpx;
+}
+/* 拼团列表 */
+.assemble-list{
+  height: 120rpx;
+}
+.assemble-list .user-left{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.assemble-list .user-left .user-head{
+  margin-right: 10rpx;
+  display: block;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+}
+.assemble-list .user-left .user-else{
+  height: 80rpx;
+  text-align: left;
+  line-height: 40rpx;
+}
+.assemble-btn{
+  width: 120rpx;
+  height: 40rpx;
+  color: #fff;
+  text-align: center;
+  line-height: 40rpx;
+  border-radius: 20rpx;
+  background-color: #e40046;
+}
+.center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 拼团参与用户列表 */
+.user-join-assemble{
+  position: relative;
+}
+.user-join-assemble .list-row:first-child:before{
+  display: none;
 }

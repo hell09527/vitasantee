@@ -35,12 +35,12 @@
         </view>
         <view class='discount_inventory'>
           <view class='discount_goods_price'>
-            <text style='font-size:18px;color:#005882'>￥{{item.seckill_price}}</text>
-            <view style='color:#999;margin-left:10rpx;text-decoration:line-through;' wx:if="{{item.seckill_price < item.price}}">￥{{item.price}}</view>
+            <text style='font-size:18px;color:#005882'>￥{{common.fixed(item.seckill_price)}}</text>
+            <view wx:if="{{item.price - item.seckill_price > 0}}" style='margin-left:10rpx;color:#e40046'>省￥{{common.fixed(item.price - item.seckill_price)}}</view>
           </view>
           <view class='discount_immediately' wx:if='{{isActive&&item.stock>0}}'>马上抢</view>
           <view class='discount_immediately' style='background:#333;' wx:if="{{isActive&&item.stock == 0}}">已抢完</view>
-          <form bindsubmit='remendMe' report-submit="{{true}}" wx:if="{{!isActive}}" catchtap="t" data-id="{{item.goods_id}}">
+          <form bindsubmit='remendMe' report-submit="{{true}}" wx:if="{{!isActive}}" catchtap="t" data-id="{{item.seckill_goods_id}}">
               <button class="discount_immediately" style='font-size:12px;background:#333;' formType="submit" >提醒我</button>
           </form>
         </view>

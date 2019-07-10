@@ -1,35 +1,35 @@
-<scroll-view wx:if='{{isKol==2}}'>
+<scroll-view wx:if='{{isKol==2 || isKol == 3}}'>
   <view class='article'>
     <view class="pay-block">
-			<image src='https://static.bonnieclyde.cn/W56.png' mode='widthFix'/>
+			<image src='https://static.vitasantee.com/WechatIMG14.png' mode='widthFix'/>
 		</view>
         <view class='p' >{{kolText}}</view>
-       <button catchtap='toIndex'>返回首页</button>
+       <button catchtap='toIndex' style="background: #e40046;">{{isKol == 2?'查看我的分润':'返回首页'}}</button>
   </view>
 </scroll-view>
 
-<scroll-view wx:if='{{isKol==1}}' >
+<scroll-view  wx:if='{{isKol==1}}'>
 <view wx:for="{{img_data_1}}"  wx:for-item='item' wx:for-index='index'>
     <image class="" src="{{item.src}}" mode="widthFix" style='width:100%'>  </image>
 </view >
-<view class="local" >
+<!-- <view class="local" >
     <block wx:if='{{unregistered==1}}' >
              <button style='width:{{windowWidth}}px' catchtap='Crossdetails'>一键成为惠选师</button>
     </block>
      <block wx:if='{{unregistered==0 }}' >
          <button style='width:{{windowWidth}}px' catchtap='toApply' >一键成为惠选师</button>
     </block>
-</view>
-<block wx:for="{{img_data_2}}"   wx:for-item='ite' wx:for-index='index'>
+</view> -->
+<block wx:for="{{img_data_2}}" wx:key="{{index}}"   wx:for-item='ite' wx:for-index='index'>
     <image class="" src="{{ite.src}}" mode="widthFix" style='width:100%'>
     </image>
 </block>
 
 <view class="local" >
-    <block wx:if='{{unregistered==1}}' >
+    <block wx:if='{{unregistered==1 || tel==""}}' >
              <button style='width:{{windowWidth}}px' catchtap='Crossdetails'>一键成为惠选师</button>
     </block>
-     <block wx:if='{{unregistered==0 }}' >
+     <block wx:if='{{unregistered==0 && tel!=""}}' >
          <button style='width:{{windowWidth}}px' catchtap='toApply' >一键成为惠选师</button>
     </block>
 </view>
@@ -38,7 +38,6 @@
     </image>
 </block>
   
-
 
 
 

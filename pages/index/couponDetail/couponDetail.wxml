@@ -1,5 +1,5 @@
 <!--pages/index/couponDetail/couponDetail.wxml-->
 <view class="container">
-    <image src="https://static.vitasantee.com/upload/common/1557213569.jpeg" mode="widthFix"/>
+    <image src="{{url}}" mode="widthFix"/>
     <view style="padding-top: 30rpx;">优惠券码: 4325254143</view>
 </view>

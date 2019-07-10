@@ -8,6 +8,7 @@
   right: 0;
   white-space:nowrap;
   height: 130rpx;
+  z-index: 100;
 }
 .discount_time_detail{
   background: #96989e;
@@ -58,7 +59,7 @@
   padding:0 20rpx;
   color:#7ca8bd;
   border-radius: 18rpx;
-  max-width:130rpx;
+  max-width:150rpx;
   margin:0 auto;
 }
 .discount_icon{
@@ -100,7 +101,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: calc(100% - 95px);
+  width: calc(100% - 180rpx);
   height: 180rpx;
 }
 .discount_inventory{

@@ -1,4 +1,5 @@
 const app = new getApp();
+const SERVERS = require('../../../utils/servers.js');
 var time = require("../../../utils/dataTime.js");
 Page({
   /**
@@ -13,7 +14,7 @@ Page({
     maskShow: 0,
     animation: '',
     edit: 0, //修改状态
-    cart_list: {}, //购物车商品列表
+    cart_list: [], //购物车商品列表
     check_all: 1, //全部选中carts_1_info
     is_checked: 1, //是否存在选中
     total_price: 0.00, //总价
@@ -55,8 +56,8 @@ Page({
       { id: '', name: '未指定' },
     ],
     personnel: '',
-    Carrier: '' ,   // 分销者ID
-    showStatus:0,   // 原价的展示
+    Carrier: '',   // 分销者ID
+    showStatus: 0,   // 原价的展示
     showTitle: 0,//是否提示普通惠选师修改价格
     showEide: 0,
     isFoll: true
@@ -94,44 +95,39 @@ Page({
    */
   onLoad: function (options) {
     let that = this;
-    console.log(that.data.personnel)
     let defaultImg = app.globalData.defaultImg;
     var times = time.formatTime(new Date());
-    console.log(times)
     that.setData({
       defaultImg: defaultImg,
       times
     });
 
 
-    //   let timestamp = Date.parse(new Date);
-    //   if (app.globalData.identifying!=0){
-    //     let overtime = timestamp + 43200000;
-    //     console.log(timestamp)
-    //     let uid = app.globalData.identifying;
-    //     let breakpoint = app.globalData.breakpoint
-    //     wx.setStorageSync('breakpoint', breakpoint);
-    //     wx.setStorageSync('uid', uid)
-    //     wx.setStorageSync('overtime', overtime);
-    //  }
+    // let timestamp = Date.parse(new Date);
+    // if (app.globalData.identifying != 0) {
+    //   let overtime = timestamp + 43200000;
+    //   console.log(timestamp)
+    //   let uid = app.globalData.identifying;
+    //   let breakpoint = app.globalData.breakpoint
+    //   wx.setStorageSync('breakpoint', breakpoint);
+    //   wx.setStorageSync('uid', uid)
+    //   wx.setStorageSync('overtime', overtime);
+    // }
 
-    //   if (app.globalData.distributor_type != 0){
-    //     let breakpoints = wx.getStorageSync('breakpoint');
-    //     console.log(breakpoints, 'breakpoints')
-    //     let uids = wx.getStorageSync('uid')
-    //     console.log(uids, 'uids')
-    //     let overtimes = wx.getStorageSync('overtime');
-    //     if (timestamp < overtimes) {
-    //       console.log(211111)
-    //       app.globalData.identifying = uids;
-
-    //       app.globalData.breakpoint = breakpoints;
-    //     } else {
-    //       console.log(333333)
-    //     }
-    //   }else{
-
+    // if (app.globalData.distributor_type != 0) {
+    //   let breakpoints = wx.getStorageSync('breakpoint');
+    //   console.log(breakpoints, 'breakpoints')
+    //   let uids = wx.getStorageSync('uid')
+    //   console.log(uids, 'uids')
+    //   let overtimes = wx.getStorageSync('overtime');
+    //   if (timestamp < overtimes) {
+    //     app.globalData.identifying = uids;
+    //     app.globalData.breakpoint = breakpoints;
+    //   } else {
     //   }
+    // } else {
+
+    // }
 
   },
 
@@ -224,103 +220,93 @@ Page({
   GWC_reuse: function () {
     let that = this;
     let siteBaseUrl = app.globalData.siteBaseUrl;
-    app.sendRequest({
-      url: 'api.php?s=goods/cart',
-      data: {},
-      success: function (res) {
-        let code = res.code;
-        let total_price = 0.00;
-        let inside_price=0.00;
-        if (code == 0) {
-          let data = res.data;
-          console.log(data)
-          for (let index in data) {
-            for (let key in data[index]) {
-              data[index][key].isTouchMove = false //默认全隐藏删除
 
-              data[index][key].isInput = 1;
-              // 测试代码
-              // data[index][key].Move=0;
-
-              if (that.in_array(data[index][key].cart_id, that.data.unselected_list)) {
-                data[index][key].status = 0;
-                that.setData({
-                  check_all: 0,
-                });
-              } else {
-                data[index][key].status = 1;
-              }
-              // console.log(data)
-              
-              let num = parseInt(data[index][key].num);
-              if (data[index][key].status == 1) {
-                let promotion_price;
-                if (data[index][key].is_inside == 0) {
-                  promotion_price = parseFloat(data[index][key].promotion_price);
-                } else {
-                  promotion_price = parseFloat(data[index][key].interior_price);
-                  inside_price = parseFloat(inside_price) + parseFloat(data[index][key].interior_price * num)
-                }
-                total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
-              }
-
-              //图片处理
-              if (data[index][key].picture_info != undefined && data[index][key].picture_info != null) {
-                let img = data[index][key].picture_info.pic_cover_small;
-                data[index][key].picture_info.pic_cover_small = app.IMG(img);
-              } else {
-                data[index][key].picture_info = {};
-                data[index][key].picture_info.pic_cover_small = '';
-              }
-
-            }
-          }
-
-
-          // console.log(data[0])
-          // console.log(data)
-          that.setData({
-            Base: siteBaseUrl,
-            cart_list: data,
-            total_price: total_price.toFixed(2),
-            inside_price: inside_price.toFixed(2),
-            //check_all: 1,
-            edit: 0,
-            is_checked: 1,
-            loaded: true
-          });
-
-          wx.stopPullDownRefresh()
-        }
-        // console.log(res);
-      }
-    })
-
-
-    app.sendRequest({
-      url: "api.php?s=member/getMemberDetail",
-      success: function (res) {
+    SERVERS.CART.cart.post().then(res => {
+      let code = res.code;
+      let total_price = 0.00;
+      let inside_price = 0.00;
+      if (code == 0) {
         let data = res.data;
-        console.log(res);
-        if (res.code == 0) {
-          let is_vip = data.is_vip;
-          app.globalData.is_vip = data.is_vip;
-          app.globalData.distributor_type = data.distributor_type;
-          let distributor_type = data.distributor_type;
-          app.globalData.uid = data.uid;
-          app.globalData.vip_gift = data.vip_gift;
-          app.globalData.vip_goods = data.vip_goods;
-          app.globalData.vip_overdue_time = data.vip_overdue_time;
-          let tel = data.user_info.user_tel;
-          console.log(tel)
-          that.setData({
-            is_vip: is_vip,
-            tel: tel,
-            distributor_type
-          })
+        console.log(data)
+        for (let index in data) {
+          for (let key in data[index]) {
+            data[index][key].isTouchMove = false //默认全隐藏删除
+
+            data[index][key].isInput = 1;
+            // 测试代码
+            // data[index][key].Move=0;
+
+            if (that.in_array(data[index][key].cart_id, that.data.unselected_list)) {
+              data[index][key].status = 0;
+              that.setData({
+                check_all: 0,
+              });
+            } else {
+              data[index][key].status = 1;
+            }
+            // console.log(data)
+
+            let num = parseInt(data[index][key].num);
+            if (data[index][key].status == 1) {
+              let promotion_price;
+              if (data[index][key].is_inside == 0) {
+                promotion_price = parseFloat(data[index][key].promotion_price);
+              } else {
+                promotion_price = parseFloat(data[index][key].interior_price);
+                inside_price = parseFloat(inside_price) + parseFloat(data[index][key].interior_price * num)
+              }
+              total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
+            }
+
+            //图片处理
+            if (data[index][key].picture_info != undefined && data[index][key].picture_info != null) {
+              let img = data[index][key].picture_info.pic_cover_small;
+              data[index][key].picture_info.pic_cover_small = app.IMG(img);
+            } else {
+              data[index][key].picture_info = {};
+              data[index][key].picture_info.pic_cover_small = '';
+            }
+
+          }
         }
+
+
+        // console.log(data[0])
+        // console.log(data)
+        that.setData({
+          Base: siteBaseUrl,
+          cart_list: data,
+          total_price: total_price.toFixed(2),
+          inside_price: inside_price.toFixed(2),
+          //check_all: 1,
+          edit: 0,
+          is_checked: 1,
+          loaded: true
+        });
+
+        wx.stopPullDownRefresh()
       }
-    })
+    }).catch(e => console.log(e));
+    // 获取用户信息
+    SERVERS.MEMBER.getMemberDetail.post().then(res => {
+      let data = res.data;
+      if (res.code == 0) {
+        let is_vip = data.is_vip;
+        app.globalData.is_vip = data.is_vip;
+        app.globalData.distributor_type = data.distributor_type;
+        let distributor_type = data.distributor_type;
+        app.globalData.uid = data.uid;
+        app.globalData.vip_gift = data.vip_gift;
+        app.globalData.vip_goods = data.vip_goods;
+        app.globalData.vip_overdue_time = data.vip_overdue_time;
+        let tel = data.user_info.user_tel;
+        that.setData({
+          is_vip: is_vip,
+          tel: tel,
+          distributor_type
+        })
+      }
+    }).catch(e => console.log(e));
   },
   /**
    * 生命周期函数--监听页面显示
@@ -333,34 +319,13 @@ Page({
     let distributor_type = app.globalData.distributor_type;
     let uid = app.globalData.uid;
     let updata = app.globalData.unregistered;
-    console.log(updata)
-    console.log(distributor_type, uid)
     that.setData({
       is_vip,
       unregistered: updata,
-      showStatus:0,
+      showStatus: 0,
       distributor_type,
       uid
-    })
-
-    app.sendRequest({
-      url: 'api.php?s=Goods/getHotGoods',
-      data: {},
-      success: function (res) {
-        // console.log(res)
-        let code = res.code;
-        if (code == 0) {
-          let data = res.data;
-
-          console.log(data);
-          let new_pro = data;
-
-          that.setData({
-            goodsList: new_pro, //新品推荐
-          });
-        }
-      }
-    })
+    });
 
 
     that.setData({
@@ -392,77 +357,28 @@ Page({
 
     if (app.globalData.token && app.globalData.token != '') {
       //判断是否是付费会员的接口
-
       that.GWC_reuse()
-
-
-
     } else {
-
+      // 未登录默认显示推荐
+      that.setData({ loaded: true });
       app.employIdCallback = employId => {
         if (employId != '') {
           //判断是否是付费会员的接口
           that.GWC_reuse()
-
         }
-
       }
     }
 
-  },
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 收藏
-   */
-  toCollect: function (e) {
-    let that = this;
-    let goodsList = that.data.goodsList;
-    var id = e.currentTarget.dataset.id;
-    var name = e.currentTarget.dataset.name;
-    var index = e.currentTarget.dataset.index;
-    let is_fav = goodsList[index].is_member_fav_goods;
-    let method = is_fav == 0 ? 'FavoritesGoodsorshop' : 'cancelFavorites';
-    let message = is_fav == 0 ? '收藏' : '取消收藏';
-    is_fav = is_fav == 0 ? 1 : 0;
-    goodsList[index].is_member_fav_goods = is_fav;
-
-    app.sendRequest({
-      url: 'api.php?s=member/' + method,
-      data: {
-        fav_id: id,
-        fav_type: 'goods',
-        log_msg: name
-      },
-      success: function (res) {
-        let code = res.code;
-        let data = res.data;
-        if (code == 0) {
-          if (data > 0) {
-            app.showBox(that, message + '成功');
-
-            that.setData({
-              goodsList: goodsList
-            })
-          } else {
-            app.showBox(that, message + '失败');
-          }
-        }
+    // 新品推荐
+    SERVERS.GOODS.getHotGoods.post().then(res => {
+      let { code, data } = res;
+      if (code == 0) {
+        that.setData({
+          goodsList: data
+        });
       }
-    });
+    }).catch(e => console.log(e));
   },
-
   /**触发*/
   Crossroad: function () {
     let _that = this;
@@ -473,15 +389,12 @@ Page({
       })
     }
   },
-
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
     this.GWC_reuse()//数据请求
-
   },
-
   /**
    * 页面上拉触底事件的处理函数
    */
@@ -489,7 +402,6 @@ Page({
 
   },
   inputChange(e) {
-    "use strict";
     this.setData({
       send_type: e.detail.value
     })
@@ -531,12 +443,12 @@ Page({
     let showStatus;
 
     // 状态
-    if( (that.data.distributor_type==0) || edit==0){
-      showStatus=0;
-    }else if(that.data.distributor_type!=0 && edit==1 ){
-      showStatus=1;
+    if ((that.data.distributor_type == 0) || edit == 0) {
+      showStatus = 0;
+    } else if (that.data.distributor_type != 0 && edit == 1) {
+      showStatus = 1;
     }
-    
+
     // for (let index in cart_list) {
     //     for (let key in cart_list[index]) {
     //         cart_list[index][key].status = status;
@@ -573,7 +485,7 @@ Page({
     let check_all = 1;
     let promotion_price = parseFloat(cart_list[i][k].promotion_price);
     let num = parseInt(cart_list[i][k].num);
-
+    // let inside_price = 0;
     if (status == 0) {
       status = 1;
       total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
@@ -581,6 +493,11 @@ Page({
       status = 0;
       total_price = parseFloat(total_price) - parseFloat(promotion_price * num);
     }
+    // try{
+
+    // }catch(e){
+    //   console.log(e);
+    // }
 
     cart_list[i][k].status = status;
 
@@ -599,6 +516,7 @@ Page({
       cart_list: cart_list,
       is_checked: is_checked,
       check_all: check_all,
+      // inside_price,
       total_price: total_price.toFixed(2),
     })
 
@@ -679,6 +597,7 @@ Page({
     }
 
     app.clicked(that, 'numAdjustFlag');
+
     app.sendRequest({
       url: 'api.php?s=goods/cart',
       data: {},
@@ -725,7 +644,7 @@ Page({
           new_cart_list[i][k].num = num;
           //新数组添加选中状态
           total_price = 0.00;
-          let inside_price=0.00;
+          let inside_price = 0.00;
           for (let index in cart_list) {
             for (let key in cart_list[index]) {
               new_cart_list[index][key].status = cart_list[index][key].status;
@@ -791,7 +710,7 @@ Page({
     let cart_list = that.data.cart_list;
     let num = event.detail.value;
     let total_price = that.data.total_price;
-    console.log('000000',num);
+    console.log('000000', num);
 
     app.sendRequest({
       url: 'api.php?s=goods/cart',
@@ -868,7 +787,7 @@ Page({
                 that.setData({
                   cart_list: new_cart_list,
                   total_price: total_price.toFixed(2),
-                  inside_price:inside_price.toFixed(2),
+                  inside_price: inside_price.toFixed(2),
                 })
               } else {
                 app.showBox(that, '操作失败');
@@ -974,7 +893,7 @@ Page({
   },
 
   // 
-  tonavigate:function(){
+  tonavigate: function () {
     wx.navigateToMiniProgram({
       appId: 'wx56c8f077de74b07c',
       path: '/open/function-introduction/function-introduction',
@@ -1223,7 +1142,7 @@ Page({
     wx.navigateTo({
       url: '/pages/goods/goodsdetail/goodsdetail?goods_id=' + goods_id + '&&goods_name=' + goods_name,
     })
-    
+
   },
 
   // 热卖商品跳转商品详情页
@@ -1292,10 +1211,11 @@ Page({
 
 
     let GWC_share_url = '/pages/goods/shareRepertoire/shareRepertoire?share_li=' + share_li + '&tag=2' + '&store=' + store + '&distributor_type=' + that.data.distributor_type;
+    console.log(GWC_share_url + '&uid=' + that.data.Carrier);
 
     if (that.data.distributor_type == 0) {
       return {
-        imageUrl: 'https://static.bonnieclyde.cn/hui.jpg',
+        imageUrl: 'https://static.vitasantee.com/WechatIMG81.jpeg',
         title: ' 分享给你的购物清单',
         path: GWC_share_url,
         // imageUrl: imgUrl,
@@ -1310,9 +1230,9 @@ Page({
     } else if (that.data.Carrier != '') {
 
       let carrier = that.data.Carrier;
-
+      // https://static.bonnieclyde.cn/hui.jpg
       return {
-        imageUrl: 'https://static.bonnieclyde.cn/hui.jpg',
+        imageUrl: 'https://static.vitasantee.com/WechatIMG81.jpeg',
         title: ' 分享给你的购物清单',
         path: GWC_share_url + '&uid=' + carrier,
         // imageUrl: imgUrl,
@@ -1327,7 +1247,7 @@ Page({
 
     } else {
       return {
-        imageUrl: 'https://static.bonnieclyde.cn/hui.jpg',
+        imageUrl: 'https://static.vitasantee.com/WechatIMG81.jpeg',
         title: ' 分享给你的购物清单',
         path: GWC_share_url + '&uid=' + uid,
         // imageUrl: imgUrl,
@@ -1418,7 +1338,7 @@ Page({
     // })
     //更新数据
     that.setData({
-      cart_list: data, 
+      cart_list: data,
       isFoll
     })
   },
@@ -1441,7 +1361,7 @@ Page({
     let del_id = '';
     for (let i in cart_list) {
       del_id += cart_list[i][index].cart_id;
-      cart_list[i][index].isTouchMove =true;
+      cart_list[i][index].isTouchMove = true;
     }
     console.log(del_id)
     app.sendRequest({
@@ -1466,7 +1386,7 @@ Page({
                 for (let index in cart_list) {
                   for (let key in cart_list[index]) {
                     cart_list[index][key].status = 1;
-                    cart_list[index][key].isInput =1;
+                    cart_list[index][key].isInput = 1;
                     let promotion_price;
                     let num = parseInt(cart_list[index][key].num);
                     if (cart_list[index][key].is_inside == 0) {
@@ -1478,9 +1398,9 @@ Page({
                     total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
                   }
                 }
-           
 
-                    console.log(cart_list)
+
+                console.log(cart_list)
                 that.setData({
                   cart_list: cart_list,
                   check_all: 1,
@@ -1490,16 +1410,16 @@ Page({
                   isFoll: true
                 })
                 app.showBox(that, '操作成功');
-          
-        } else {
-          app.showBox(that, '操作失败');
+
+              } else {
+                app.showBox(that, '操作失败');
+              }
+            }
+          })
         }
       }
     })
-  }
-}
-})
- } ,
+  },
   bindRegionChange: function (res) {
     let that = this;
     console.log(res);
@@ -1515,34 +1435,34 @@ Page({
 
   },
   //输入事件完成
-  EiditPrice:function(){
+  EiditPrice: function () {
     var that = this;
-    var i = this.i ;
+    var i = this.i;
     var id = this.id;
     var cart_list = that.data.cart_list;
     var price = this.price;
-    var total_price = 0;  
-   
+    var total_price = 0;
+
     for (let index in cart_list) {
       for (let key in cart_list[index]) {
         if (cart_list[index][key].cart_id == id) {
-          if(that.data.distributor_type !=1){
-            let  shop_id= cart_list[index][key].goods_id
-              if(price<cart_list[index][key].min_change_price){
-                this.setData({
-                  showTitle:1,
-                  shop_id,
-                })
-                cart_list[index][key].promotion_price = cart_list[index][key].min_change_price;
-              }else{
-                this.setData({
-                  showTitle:0,
-                })
-                cart_list[index][key].promotion_price = price ;
-              }
-        
-          }else{
-            cart_list[index][key].promotion_price = price 
+          if (that.data.distributor_type != 1) {
+            let shop_id = cart_list[index][key].goods_id
+            if (price < cart_list[index][key].min_change_price) {
+              this.setData({
+                showTitle: 1,
+                shop_id,
+              })
+              cart_list[index][key].promotion_price = cart_list[index][key].min_change_price;
+            } else {
+              this.setData({
+                showTitle: 0,
+              })
+              cart_list[index][key].promotion_price = price;
+            }
+
+          } else {
+            cart_list[index][key].promotion_price = price
           }
         }
         if (cart_list[index][key].status == 1) {
@@ -1551,21 +1471,21 @@ Page({
       }
     }
 
-  
-        this.setData({
-          total_price: total_price.toFixed(2),
-          cart_list,
-        })
+
+    this.setData({
+      total_price: total_price.toFixed(2),
+      cart_list,
+    })
   },
   // 价格输入变化
-  inputPrice:function (event) {
+  inputPrice: function (event) {
     this.i = event.currentTarget.dataset.index;
     this.id = event.currentTarget.dataset.id;
     this.price = event.detail.value;
 
   },
   // 超级vip价格输入变化
-  ECTPrice:function(event){
+  ECTPrice: function (event) {
     var that = this;
     var i = event.currentTarget.dataset.index;
     var id = event.currentTarget.dataset.id;
@@ -1598,8 +1518,8 @@ Page({
     var cart = e.currentTarget.dataset.list;
     for (let index in cart_list) {
       for (let key in cart_list[index]) {
-        if(key==k){
-          cart_list[index][k].isInput=0
+        if (key == k) {
+          cart_list[index][k].isInput = 0
         }
       }
     }
@@ -1614,15 +1534,15 @@ Page({
   /**
    * 收藏
    */
-  collect(e){
+  collect(e) {
     console.log(e.detail)
     let { index, is_fav, state, message } = e.detail;
     let goodsList = this.data.goodsList;
     app.showBox(this, message);
-    if(state){
+    if (state) {
       goodsList[index].is_member_fav_goods = is_fav;
       this.setData({ goodsList });
     }
   },
 })
-  
+

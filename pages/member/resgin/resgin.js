@@ -1,5 +1,7 @@
 // pages/member/resgin/resgin.js
 const app = new getApp();
+const SERVERS = require('../../../utils/servers.js');
+const core = require('../../../utils/core.js');
 Page({
 
   /**
@@ -16,27 +18,15 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
-
     //是否授权数据更新
-    let updata = that.data.unregistered
-    updata = app.globalData.unregistered;
-    console.log(updata)
-
     that.setData({
-      unregistered: updata,
+      unregistered: app.globalData.unregistered,
     })
-
     if (options.suffix) {
       that.setData({
         suffix: options.suffix,
       })
-    } else {
-
     }
-
-
-
-
   },
 
   /**登录分支点*/
@@ -81,39 +71,10 @@ Page({
     if (e.detail.iv) {
       let setIv = e.detail.iv;
       let setEncryptedData = e.detail.encryptedData;
-      that.setData({
-        setIv: setIv,
-        setEncryptedData
-      })
-
+      that.setData({ setIv, setEncryptedData });
       //判断是否继续弹出获取个人信息弹窗
       if (app.globalData.unregistered == 0) {
-        wx.login({
-          success: function (res) {
-            let coco = res.code;
-            app.sendRequest({
-              url: 'api.php?s=Login/getWechatMobile',
-              data: {
-                code: coco,
-                mobileEncryptedData: e.detail.encryptedData,
-                mobileIv: e.detail.iv
-              },
-              success: function (res) {
-                if (res.code == 0) {
-                  that.setData({
-                    tel: res.data.user_tel,
-                  })
-
-                  // wx.navigateTo({
-                  //   url: '/pages/member/kolApply/kolApply?uid=' + app.globalData.recommendUser,
-                  // })
-
-                }
-                that.toBack();
-              }
-            });
-          }
-        })
+        that.weChatMobileLoginModify(e.detail);
       } else {
         that.setData({
           showModal: true,
@@ -125,110 +86,24 @@ Page({
   //获取头像
   bindgetuserinfo: function (res) {
     let that = this;
-    if (res.detail.iv) {
-      let iv = res.detail.iv;
-      let encryptedData = res.detail.encryptedData;
-      app.globalData.iv = res.detail.iv;
-      app.globalData.encryptedData = res.detail.encryptedData;
+    let { iv, encryptedData } = res.detail;
+    if (iv) {
+      app.globalData.iv = iv;
+      app.globalData.encryptedData = encryptedData;
       app.globalData.unregistered = 0;
-      console.log(res.detail.iv
-      )
-      console.log(res.detail.userInfo.avatarUrl)
-      console.log(res.detail.userInfo.nickName)
-      let heder_img = res.detail.userInfo.avatarUrl
-      let wx_name = res.detail.userInfo.nickName
       let branch = res.currentTarget.dataset.status;
+
       this.setData({
-        showModal: false,
-      })
-      console.log(branch, 'branch ')
+        showModal: false
+      });
+
       if (branch == "mobile") {
         this.setData({
-          layout: true,
-
+          layout: true
         })
-        wx.login({
-          success: function (res) {
-            let coco = res.code;
-            app.sendRequest({
-              url: 'api.php?s=Login/getWechatEncryptInfo',
-              data: {
-                code: coco,
-                encryptedData: encryptedData,
-                iv: iv,
-                traffic_acquisition_source: app.globalData.traffic_acquisition_source
-              },
-              success: function (res) {
-                if (res.code == 0) {
-                  let lpl = res.data.token;
-                  app.globalData.openid = res.data.openid;
-                  app.globalData.token = res.data.token;
-                  that.setData({
-                    unregistered: 0,
-                    wx_name: wx_name,
-                    heder_img
-                  })
-                }
-              }
-            });
-          }
-        })
+        that.weChatLoginModify(res.detail);
       } else {
-        wx.login({
-          success: function (res) {
-            let coco = res.code;
-            app.sendRequest({
-              url: 'api.php?s=Login/getWechatEncryptInfo',
-              data: {
-                code: coco,
-                encryptedData: encryptedData,
-                iv: iv,
-                traffic_acquisition_source: app.globalData.traffic_acquisition_source
-              },
-              success: function (res) {
-                if (res.code == 0) {
-                  let lpl = res.data.token;
-                  app.globalData.openid = res.data.openid;
-                  app.globalData.token = res.data.token;
-                  that.setData({
-                    unregistered: 0,
-                    wx_name: wx_name,
-                    heder_img
-                  })
-                  wx.login({
-                    success: function (res) {
-                      let coco = res.code;
-                      app.sendRequest({
-                        url: 'api.php?s=Login/getWechatMobile',
-                        data: {
-                          code: coco,
-                          mobileEncryptedData: that.data.setEncryptedData,
-                          mobileIv: that.data.setIv,
-                          token: lpl
-                        },
-                        success: function (res) {
-                          if (res.code == 0) {
-                            that.setData({
-                              unregistered: 0,
-                              wx_name: wx_name,
-                              tel: res.data.user_tel,
-                              heder_img
-                            })
-
-                            // wx.navigateTo({
-                            //   url: '/pages/member/kolApply/kolApply?uid=' + app.globalData.recommendUser,
-                            // })
-                          }
-                          that.toBack();
-                        }
-                      });
-                    }
-                  })
-                }
-              }
-            });
-          }
-        })
+        that.weChatLoginModify(res.detail,that.weChatMobileLoginModify);
       }
     } else {
       this.setData({
@@ -237,7 +112,60 @@ Page({
       })
     }
   },
-
+  /***
+   * (修改)微信登录获取用户信息部分
+   * @param {object} info  用户授权后返回的数据(e.detail)
+   * @param {function} fn  用户登录后回调
+   *  */ 
+  weChatLoginModify(info,fn){
+    let that = this;
+    // 微信登录获取code
+    core.wxApi().then(res => {
+      let code = res.code;
+      // 登录api
+      SERVERS.LOGIN.getWechatEncryptInfo.post({
+        code,
+        iv: info.iv,
+        encryptedData: info.encryptedData,
+        traffic_acquisition_source: app.globalData.traffic_acquisition_source
+      }).then(res => {
+        if (res.code == 0) {
+          app.globalData.openid = res.data.openid;
+          app.globalData.token = res.data.token;
+          that.setData({
+            unregistered: 0, //已登录状态0，未登录1
+            heder_img: info.userInfo.avatarUrl,
+            wx_name: info.userInfo.nickName
+          });
+          fn&&fn();
+        }
+      }).catch(e => console.log(e));
+    }).catch(e => console.log(e));
+  },
+  /***
+   * (修改)微信登录绑定手机号部分
+   *  */ 
+  weChatMobileLoginModify(){
+    let that = this;
+    core.wxApi().then(res => {
+      let code = res.code;
+      SERVERS.MEMBER.getWechatMobile.post({
+        code: code,
+        mobileEncryptedData: that.data.setEncryptedData,
+        mobileIv: that.data.setIv
+      }).then(res => {
+        if(res.code == 0){
+          that.setData({
+            tel: res.data.user_tel
+          });
+          // 返回
+          that.toBack();
+        }
+        if(res.message == '手机号已存在')return that.toBack();
+      }).catch(e => console.log(e));
+    }).catch(e => console.log(e));
+  },
+  // 返回
   toBack: function () {
     let _that = this;
     let suffix = _that.data.suffix;

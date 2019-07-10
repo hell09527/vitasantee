@@ -1,0 +1,88 @@
+<!-- pages/member/kolRule/kolRule.wxml -->
+<!-- 极选师规则 -->
+<view wx:if="{{type == 'huixuan'}}" class="template">
+    <view class="explains">普通会员通过惠选师推广链接购买商品，惠选师将获得商品售出价格指定比例的分润。</view>
+    <!-- 表格解释部分  start -->
+    <view class="tables">
+        <view class="trs bg-w">
+            <view class="th">专有名词</view>
+            <view class="th_pop">解释</view>
+        </view>
+        <block wx:for="{{TistData}}" wx:key="{{code}}">
+            <view class="trs bg-g">
+                <view class="tds">{{item.code}}</view>
+                <view class="be_come">{{item.text}}</view>
+            </view>
+        </block>
+    </view>
+    <!-- 表格解释部分  end -->
+    <!-- 分润时长  start -->
+    <view class="Benefit_times" style="margin-bottom:40rpx;">
+        <view class='headline'>分润结算时长</view>
+        <view class='head_text'>1. 订单已付款后，订单分润状态进入待结算;</view>
+        <view class='head_text'>2. 订单收货后即可完成，订单状态转为已完成;</view>
+        <view class='head_text'>3. 当此订单已完成，订单分润状态转变为可提现，可提现金额增加；</view>
+        <view class='head_text'>4. 惠选师在小程序申请提现，分润金额自动到账微信零钱</view>
+        <view class='headline'>分润计算方式：</view>
+        <view class='head_text'>商品实际售价 x 商品分润比例 = 最终所得分润金额</view>
+    </view>
+    <!-- 分润时长  end -->
+    <!-- 极选师星级制 start -->
+    <view class='Star_system'>
+        <view class='headline'>惠选师星级制</view>
+        <view class='head_text'>
+            惠选师向新会员/普通会员推广商品，新用户/普通用户通过惠选师的小程序分享卡片/小程序码进入小 程序，并产生消费，用户购买商品的金额转化为惠选师的累计商品成交金额。
+        </view>
+        <view class='head_text'>考核期内，惠选师的累计商品成交金额达到当前星级的升星额度，则自动上升一个星级。</view>
+        <view class='head_text'>考核结算时，不同星级的惠选师将会获得星级额外奖励。</view>
+    </view>
+    <!-- 极选师星级制 end -->
+    <!-- 星级奖励计算规则 start -->
+    <view class='regulation'>
+        <view class='headline'>星级奖励计算规则</view>
+        <view class='head_text'>(超出升级标准的部分金额 - 星级升级标准金额) * 星级奖励比例 = 星级额外奖励最终金额</view>
+        <view class='head_text'>
+            假设惠选师升到了一星级需要30000元销售额，一星级的星级奖励比例为5%，而惠选师在考核期内完成了45000元销售业绩，则考核日，惠选师获得星级奖励金额
+        </view>
+        <view class='head_text'>(45000 - 30000)* 5% = 750(元)</view>
+    </view>
+    <!-- 星级奖励计算规则 end -->
+    <!-- 极选师推荐制 start -->
+    <view class="recommend">
+        <view class='headline'>惠选师推荐制</view>
+        <view class='head_text'>惠选师可以推荐普通会员成为签约惠选师。</view>
+    </view>
+    <!-- 极选师推荐制 end -->
+    <!-- 极选师提现 start -->
+    <view class="recommend">
+        <view class='headline'>惠选师提现</view>
+        <view class='head_text'>惠选师可以在小程序内自主发起提现申请，申请提交成功后，自动到账微信零钱。</view>
+        <view class='head_text'>1. 拥有惠选师权限的微信号必须已通过实名认证。</view>
+        <view class='head_text'>2. 同一个惠选师，单笔单日限额2000元;</view>
+        <view class='head_text'>3. 平台每日最多为同一个惠选师提现10次;</view>
+        <view class='head_text'>4. 提现分润自动到账。</view>
+    </view>
+    <!-- 极选师提现 end -->
+</view>
+<!-- 惠选师赚钱指南 -->
+<view wx:if="{{type == 'zhuanqian'}}">
+    <block wx:for="{{4}}" wx:key="{{index}}">
+        <image wx:if="{{index > 1 || distributor_type != 0}}" src="{{'https://static.vitasantee.com/rule_hx_0'+(index+1)+'.jpg'}}" mode="widthFix" style="display:block;width:100%;" />
+    </block>
+</view>
+<!-- 拼团规则 -->
+<view wx:if="{{type == 'pintuan'}}" class="template">
+    <view class='headline' style="font-size: 18px;">拼团活动规则</view>
+    <view class='headline'>更新规则</view>
+    <view class='head_text'>拼团商品不定期更新，限量放送，售完即止。</view>
+    <view class='headline'>参加方式</view>
+    <view class='head_text'>1. 在拼团商品活动页面中选择商品，点击【拼团】进入支付页；支付成功即开团/参团成功</view>
+    <view class='head_text'>
+        2. 开团成功后，可将拼团信息分享给好友，指定时间内邀请到成团人数的好友享拼团价，即为拼团成功；否则，系统将在拼团时间结束后自动退款
+    </view>
+    <view class='headline'>活动说明:</view>
+    <view class='head_text'>1. 拼团商品不与网站其它优惠福利同享；</view>
+    <view class='head_text'>2. 拼团商品不可使用优惠券，不支持礼品卡支付；</view>
+    <view class='head_text'>3. 邀新团仅限新用户参团；</view>
+    <view class='head_text'>4. 通过不正当手段参与拼团活动，维美善特有权撤销相关订单。</view>
+</view>

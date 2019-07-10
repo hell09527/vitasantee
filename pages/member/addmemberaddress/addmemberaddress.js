@@ -299,19 +299,37 @@ Page({
       app.restStatus(that, 'saveAddressFlag');
       return;
     }
-    if (mobile==''){
+    // if (mobile==''){
+    //   app.showBox(that, '请输入手机号');
+    //   app.restStatus(that, 'saveAddressFlag');
+    //   return;
+    // }
+    if (mobile=='' && phone == ''){
       app.showBox(that, '请输入手机号');
       app.restStatus(that, 'saveAddressFlag');
       return;
     }
 
-    let myreg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
-    // let myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
-    if (mobile.length != 11 || !myreg.test(mobile)){
-      app.showBox(that, '请输入正确的手机号');
-      app.restStatus(that, 'saveAddressFlag');
-      return;
+    if(mobile != ''){
+      let myreg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
+      // let myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/;
+      if (mobile.length != 11 || !myreg.test(mobile)){
+        app.showBox(that, '请输入正确的手机号');
+        app.restStatus(that, 'saveAddressFlag');
+        return;
+      }
+    }else if(phone != ''){
+      let Land = /^(\d{3,4}|\d{3,4}-)?\d{7,8}$/; //大陆
+      let HongKong = /^852[21|22|23|24|25|26|27|28|29|31|34|35|36|37|39](\d{6})$/;//香港
+      let Macao = /^853(28[0-9]{2}|((6|8)[0-9]{3}))([0-9]{4})$/;//澳门
+      let Taiwan = /^886[02|03|04|05|06|07|08|037|049|089|0823|0826|0827|0836](\d{6,8})$/;//台湾
+      if([Land,HongKong,Macao,Taiwan].every(i => !i.test(phone))){//都不符合
+        app.showBox(that, '请输入正确的固定电话');
+        app.restStatus(that, 'saveAddressFlag');
+        return;
+      }
     }
+    
     if (province == 0){
       app.showBox(that, '请选择省份');
       app.restStatus(that, 'saveAddressFlag');
@@ -332,6 +350,7 @@ Page({
       app.restStatus(that, 'saveAddressFlag');
       return;
     } 
+
     app.sendRequest({
       url: 'api.php?s=member/addmemberaddress',
       data: {

@@ -1,6 +1,8 @@
- const app = new getApp();
+const app = new getApp();
 var time = require("../../../utils/util.js");
 var md5 = require("../../../utils/encrypt.js")
+
+const SERVERS = require('../../../utils/servers.js');
 
 Page({
     /**
@@ -71,16 +73,16 @@ Page({
         price: '',
         token: '',
         origin_money: 0,
-         ask:0,
-         animationData: {},
+        ask: 0,
+        animationData: {},
 
         // 身份证类
-        edit_card:false,
+        edit_card: false,
         card_name: '',
         card_no: '',
         encry_no: '',
-        buffer_card_name:'',  // 编辑未保存 暂存身份证信息
-        buffer_card_no:'',    // 编辑未保存 暂存身份证信息
+        buffer_card_name: '',  // 编辑未保存 暂存身份证信息
+        buffer_card_no: '',    // 编辑未保存 暂存身份证信息
         card_fouce: false,     // 失败聚焦
         uid: 0,    //获取会员的uid
     },
@@ -89,24 +91,24 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-      let that = this;
-      let isIphoneX = app.globalData.isIphoneX;
-      this.setData({
-        isIphoneX: isIphoneX
-      })
+        let that = this;
+        let isIphoneX = app.globalData.isIphoneX;
+        this.setData({
+            isIphoneX: isIphoneX
+        })
         // 关闭这个接口
         // that.get_cards();
         // let type = options.type
-      // let timestamp = Date.parse(new Date);
-      // console.log(timestamp )
+        // let timestamp = Date.parse(new Date);
+        // console.log(timestamp )
         //console.log(that.data.balance)
-        
+
         let tag = options.tag;
         let cart_list = options.cart_list;
         let share_last = options.share_last;
-        let is_inside = options.is_inside
+        let is_inside = options.is_inside || 0;
         console.log(is_inside);
-      
+
         let base = app.globalData.siteBaseUrl;
         let defaultImg = app.globalData.defaultImg;
         let balance = parseFloat(that.data.balance).toFixed(2);
@@ -117,21 +119,21 @@ Page({
         let source_type = options.source_type;
 
         if (app.globalData.identifying != 0) {
-          console.log('转发')
-          //判断转发的唯一标识
-          let uid = app.globalData.identifying;
-          that.setData({
-            uid 
-          })
-        } 
-        else if (app.globalData.kol_id !=0){
-          // 扫码进入
-          console.log('扫码进入')
-          console.log(app.globalData.kol_id,'kol')
-          let uid = app.globalData.kol_id;
-          that.setData({
-            uid
-          })
+            console.log('转发')
+            //判断转发的唯一标识
+            let uid = app.globalData.identifying;
+            that.setData({
+                uid
+            })
+        }
+        else if (app.globalData.kol_id != 0) {
+            // 扫码进入
+            console.log('扫码进入')
+            console.log(app.globalData.kol_id, 'kol')
+            let uid = app.globalData.kol_id;
+            that.setData({
+                uid
+            })
         }
 
         that.setData({
@@ -153,13 +155,13 @@ Page({
         } else if (tag == 2) {
             tag = 'cart';    //购物车
             let cart_list = options.cart_list
-          console.log(cart_list)
+            console.log(cart_list)
             let source_type = options.type;
             that.setData({
-              order_source_type: source_type,
-              cart_list: cart_list,
-              type: options.type,
-              order_type: options.order_type
+                order_source_type: source_type,
+                cart_list: cart_list,
+                type: options.type,
+                order_type: options.order_type
             })
         } else if (tag == 3) {
             tag = 'combination_packages';    //
@@ -183,22 +185,32 @@ Page({
                 order_sku_list: sku,
                 order_type: options.order_type
             })
-        } else if(tag==5){
-          tag = 'share_buy';       //分享购买
-          let share_last = options.share_last;
-          console.log('share_last', share_last)
-          let source_type = options.type;
-          // let uid = options.uid;
-          that.setData({
-            order_goods_type: 1 ,
-            share_last: share_last,
-            order_source_type: source_type,
-            order_type: options.order_type,
-           
-          })
+        } else if (tag == 5) {
+            tag = 'share_buy';       //分享购买
+            let share_last = options.share_last;
+            console.log('share_last', share_last)
+            let source_type = options.type;
+            // let uid = options.uid;
+            that.setData({
+                order_goods_type: 1,
+                share_last: share_last,
+                order_source_type: source_type,
+                order_type: options.order_type,
+            })
 
+        } else if (tag = 6) {
+            tag = 'pintuan';       //拼团购买
+            that.setData({
+                order_source_type: source_type,
+                order_goods_type: goods_type,
+                order_sku_list: sku,
+                order_type: options.order_type,
+                pt_goods_id: options.pt_goods_id,
+                pt_startup_id: options.pt_startup_id
+            })
+            console.log(options)
         }
-          else {
+        else {
             console.log('@@@')
             app.showBox(that, '无法获取订单信息');
             wx.navigateBack({
@@ -213,54 +225,54 @@ Page({
             copyRight: copyRight,
             balance: balance,
             order_invoice_money: order_invoice_money,
-          is_inside,
+            is_inside,
         })
     },
-  /**
-* 用户点击右上角分享
-*/
-  // onShareAppMessage: function () {
-  //   let that = this;
-  //   let tag = that.data.tag
-  //   let cart_list = that.data.cart_list
-  //   let type = that.data.type
-  //   let sku = that.data.order_sku_list
-  //   let source_type = that.data.order_source_type
-  //   let goods_type = that.data.order_goods_type
-  //   console.log(tag)
-  //   console.log(cart_list)
-  //   console.log(type)
-  //   console.log(sku)
-  //   console.log(source_type )
-  //   console.log(goods_type)
-  //   if (tag==1){
-  //     return {
-  //       title: ' 订单结算',
-  //       path: '/pages/order/paymentorder/paymentorder?sku=' + sku + '&source_type=' + source_type + '&goods_type=' + goods_type + '&tag=' + tag,
-  //       // imageUrl: imgUrl,
-  //       success: function (res) {
-  //         app.showBox(that, '分享成功');
+    /**
+  * 用户点击右上角分享
+  */
+    // onShareAppMessage: function () {
+    //   let that = this;
+    //   let tag = that.data.tag
+    //   let cart_list = that.data.cart_list
+    //   let type = that.data.type
+    //   let sku = that.data.order_sku_list
+    //   let source_type = that.data.order_source_type
+    //   let goods_type = that.data.order_goods_type
+    //   console.log(tag)
+    //   console.log(cart_list)
+    //   console.log(type)
+    //   console.log(sku)
+    //   console.log(source_type )
+    //   console.log(goods_type)
+    //   if (tag==1){
+    //     return {
+    //       title: ' 订单结算',
+    //       path: '/pages/order/paymentorder/paymentorder?sku=' + sku + '&source_type=' + source_type + '&goods_type=' + goods_type + '&tag=' + tag,
+    //       // imageUrl: imgUrl,
+    //       success: function (res) {
+    //         app.showBox(that, '分享成功');
 
-  //       },
-  //       fail: function (res) {
-  //         app.showBox(that, '分享失败');
-  //       }
-  //     }
-  //   } else if (tag == 2){
-  //     return {
-  //       title: ' 订单结算',
-  //       path: '/pages/order/paymentorder/paymentorder?cart_list=' + cart_list + '&tag=' + tag + '&type=' + type,
-  //       // imageUrl: imgUrl,
-  //       success: function (res) {
-  //         app.showBox(that, '分享成功');
+    //       },
+    //       fail: function (res) {
+    //         app.showBox(that, '分享失败');
+    //       }
+    //     }
+    //   } else if (tag == 2){
+    //     return {
+    //       title: ' 订单结算',
+    //       path: '/pages/order/paymentorder/paymentorder?cart_list=' + cart_list + '&tag=' + tag + '&type=' + type,
+    //       // imageUrl: imgUrl,
+    //       success: function (res) {
+    //         app.showBox(that, '分享成功');
 
-  //       },
-  //       fail: function (res) {
-  //         app.showBox(that, '分享失败');
-  //       }
-  //     }
-  //  }
-  // },
+    //       },
+    //       fail: function (res) {
+    //         app.showBox(that, '分享失败');
+    //       }
+    //     }
+    //  }
+    // },
     /**
      * 生命周期函数--监听页面初次渲染完成
      */
@@ -277,7 +289,7 @@ Page({
         //console.log(sign)
     },
 
-    get_cards(){
+    get_cards() {
         let that = this;
         // that.setData({
         //   max: 0
@@ -374,7 +386,7 @@ Page({
 
                 }
             },
-            fail(){
+            fail() {
                 let discount = that.data.datas
                 let maxs = 0
                 let hashMax = discount.reduce((a, p) => {
@@ -413,7 +425,7 @@ Page({
         if (cancle_pay == 1) {
             app.setTabParm('cancle_pay');
             let tab_parm = app.globalData.tab_parm;
-           app.globalData.tab =1
+            app.globalData.tab = 1
             wx.switchTab({
                 url: '/pages/member/member/member',
             })
@@ -447,6 +459,7 @@ Page({
         let order_sku_list = that.data.order_sku_list;
         let cart_list = that.data.cart_list;
         let share_last = that.data.share_last;
+        let pt_goods_id = that.data.pt_goods_id;
 
         let parm = {
             order_tag: order_tag
@@ -474,12 +487,15 @@ Page({
 
             parm.order_sku_list = order_sku_list;
 
-        } else if (order_tag == 'share_buy' ){
-          parm.share_list = share_last;
-          parm.order_goods_type=1;
+        } else if (order_tag == 'share_buy') {
+            parm.share_list = share_last;
+            parm.order_goods_type = 1;
+        } else if (order_tag == 'pintuan') {
+            parm.order_sku_list = order_sku_list;
+            parm.pt_goods_id = pt_goods_id;
         }
         else {
-          console.log('&&&&&&&')
+            console.log('&&&&&&&')
             app.showBox(that, '无法获取订单信息');
             wx.navigateBack({
                 delta: 1
@@ -487,30 +503,27 @@ Page({
             return false;
         }
 
-      console.log(parm)
+        console.log(parm)
         app.sendRequest({
             url: 'api.php?s=order/getOrderData',
             data: parm,
             success: function (res) {
                 let code = res.code;
                 let data = res.data;
-
-console.log(data);
+                console.log(data);
                 if (code == 0) {
-             if(that.data.ask==0){
-            if (typeof data.card_no !== 'undefined') {
-                    let user_info = {
-                        card_no: data.card_no,
-                        card_name: data.card_name,
-                        encry_no: that.plusXing(data.card_no, 1, 4),
-                                    };
+                    data.discount_money = 0;
 
-    that.setData(user_info);
-
-
-
-  }
-}
+                    if (that.data.ask == 0) {
+                        if (typeof data.card_no !== 'undefined') {
+                            let user_info = {
+                                card_no: data.card_no,
+                                card_name: data.card_name,
+                                encry_no: that.plusXing(data.card_no, 1, 4),
+                            };
+                            that.setData(user_info);
+                        }
+                    }
 
                     //选中默认优惠券
                     let coupon_list = data.coupon_list;
@@ -538,7 +551,7 @@ console.log(data);
                     let constant = parseFloat(data.count_money) + parseFloat(data.express) - discount_money - balance;
 
                     //未开启商家配送 开启买家自提
-                    if (shop_config.seller_dispatching == 0 && shop_config.buyer_self_lifting == 1) {
+                    if (shop_config && shop_config.seller_dispatching == 0 && shop_config.buyer_self_lifting == 1) {
                         new_pay_money = parseFloat(data.count_money) + parseFloat(data.pick_up_money) - discount_money - balance;
 
                         let point_list = data.pickup_point_list.data;
@@ -556,7 +569,7 @@ console.log(data);
                     pay_money = parseFloat(pay_money) > 0 ? pay_money : new_pay_money;
                     pay_money = pay_money < 0 ? 0.00 : pay_money;
 
-//is_use_card判断
+                    //is_use_card判断
                     let money = constant
                     //console.log(3333, money)
                     that.data.max
@@ -574,7 +587,7 @@ console.log(data);
                     data.promotion_full_mail = data.promotion_full_mail == undefined ? [] : data.promotion_full_mail;
 
                     //选中默认物流
-                    if (parseInt(data.express_company_count) > 0 && shipping_company_id == 0 && data.express_company_list[0] != undefined && shop_config.seller_dispatching == 1) {
+                    if (parseInt(data.express_company_count) > 0 && shipping_company_id == 0 && data.express_company_list[0] != undefined && shop_config && shop_config.seller_dispatching == 1) {
                         for (let index in express_company_list) {
                             if (express_company_list[index].is_default == 1) {
                                 shipping_company_id = express_company_list[index].co_id;
@@ -582,7 +595,7 @@ console.log(data);
                             }
                         }
 
-                        if (shipping_company_id == 0 && parseInt(data.express_company_count) > 0 && data.express_company_list[0] != undefined && shop_config.seller_dispatching == 1) {
+                        if (shipping_company_id == 0 && parseInt(data.express_company_count) > 0 && data.express_company_list[0] != undefined && shop_config && shop_config.seller_dispatching == 1) {
                             shipping_company_id = express_company_list[0].co_id;
                             express_company = express_company_list[0].company_name;
                         }
@@ -607,8 +620,8 @@ console.log(data);
 
 
                     if (that.data.is_use_card == 1) {
-                      discount_money = Number(discount_money) - Number(that.data.max)
-                    
+                        discount_money = Number(discount_money) - Number(that.data.max)
+
                     }
 
 
@@ -621,13 +634,13 @@ console.log(data);
                         coupon_money: parseFloat(coupon_money).toFixed(2),
                         pay_money: parseFloat(pay_money).toFixed(2),
                         origin_money: constant,
-                        coupon_list: data.coupon_list,
+                        coupon_list: data.coupon_list || [],
                         discount_money: parseFloat(discount_money).toFixed(2),
                         express_company_list: express_company_list,
                         shipping_company_id: shipping_company_id,
                         express_company: express_company,
                         itemlist: data.itemlist,
-                        member_account: data.member_account,
+                        member_account: data.member_account || {},
                         member_address: data.address_default,
                         count_money: parseFloat(data.count_money).toFixed(2),
                         express_money: parseFloat(data.express).toFixed(2),
@@ -641,7 +654,7 @@ console.log(data);
                 }
             }
         })
-       //数据循环拿到最大优惠指
+        //数据循环拿到最大优惠指
         let wantch = that.data.suuuu
         //console.log(wantch)
         let prices = []
@@ -792,39 +805,39 @@ console.log(data);
         })
     },
 
-     /**
-     * 动画效果
-     */
-   Animation:function(){
-     const animation = wx.createAnimation({
-       duration: 200,
-       timingFunction: 'ease',
-     })
-     this.animation = animation
-     animation.translateY(170).step()
-     this.setData({
-       animationData: animation.export()
-     })
+    /**
+    * 动画效果
+    */
+    Animation: function () {
+        const animation = wx.createAnimation({
+            duration: 200,
+            timingFunction: 'ease',
+        })
+        this.animation = animation
+        animation.translateY(170).step()
+        this.setData({
+            animationData: animation.export()
+        })
 
 
-     setTimeout(function () {
-       animation.translateY(0).step()
-       this.setData({
-         animationData: animation.export()
-       })
-     }.bind(this), 20)
+        setTimeout(function () {
+            animation.translateY(0).step()
+            this.setData({
+                animationData: animation.export()
+            })
+        }.bind(this), 20)
 
-     this.setData({
-       animationData: animation.export(),
-     })
-  },
+        this.setData({
+            animationData: animation.export(),
+        })
+    },
     /**
      * 支付方式
      */
     payType: function (event) {
         // let that = this;
-    let status = event.currentTarget.dataset.status;
-      this.Animation();
+        let status = event.currentTarget.dataset.status;
+        this.Animation();
         this.setData({
             pay_box_status: status,
             mask_status: status
@@ -893,7 +906,7 @@ console.log(data);
     deliveryType: function (event) {
         let that = this;
         let status = event.currentTarget.dataset.status;
-           this.Animation();
+        this.Animation();
         that.setData({
             delivery_status: status,
             mask_status: status
@@ -955,7 +968,7 @@ console.log(data);
      * 身份验证弹框(动画效果未实现)
      */
     sidShow: function (event) {
-     
+
         let type = event.currentTarget.dataset.type;
         let status = 0;
         let animation = wx.createAnimation({
@@ -1019,7 +1032,6 @@ console.log(data);
         let discount_money = parseFloat(order_info.discount_money); //优惠金额
         let count_money = parseFloat(order_info.count_money); //商品总价
         let balance = parseFloat(that.data.balance);
-
         discount_money = discount_money + coupon_money;
         let pay_money = count_money + express_money - discount_money - balance;
         let order_invoice_tax = parseFloat(that.data.shop_config.order_invoice_tax); //发票税率
@@ -1052,7 +1064,7 @@ console.log(data);
      */
     couponStatus: function (e) {
         let that = this;
-      this.Animation();
+        this.Animation();
         that.setData({
             coupon_status: 1,
             mask_status: 1
@@ -1382,9 +1394,9 @@ console.log(data);
         app.aldstat.sendEvent('提交订单');
         let that = this;
         let status = that.data.status
-       
 
-        if (that.data.order_source_type == 2 && (that.data.card_no == '' || that.data.card_name == '' || that.data.card_no == 'undefined' )) {
+
+        if (that.data.order_source_type == 2 && (that.data.card_no == '' || that.data.card_name == '' || that.data.card_no == 'undefined')) {
             wx.showToast({
                 title: '需填写身份信息',
                 icon: 'loading',
@@ -1392,7 +1404,7 @@ console.log(data);
                 duration: 1200,
             });
             this.setData({
-                card_fouce:true,
+                card_fouce: true,
             })
             return;
         }
@@ -1402,9 +1414,9 @@ console.log(data);
         let order_goods_type = that.data.order_goods_type;
         var goods_sku_list = "";
         if (that.data.tag == 5) {
-          goods_sku_list = that.data.share_last; //商品列表
+            goods_sku_list = that.data.share_last; //商品列表
         } else {
-          goods_sku_list = that.data.goods_sku_list; //商品列表
+            goods_sku_list = that.data.goods_sku_list; //商品列表
         }
         console.log(goods_sku_list)
         let user_telephone = that.data.user_telephone; //手机号
@@ -1435,7 +1447,7 @@ console.log(data);
         let order_designated_delivery_time = that.data.shop_config.order_designated_delivery_time;
         let shop_config = that.data.shop_config;
 
-// 判断是否存在心意券
+        // 判断是否存在心意券
 
         // is_use_card==1
 
@@ -1448,7 +1460,7 @@ console.log(data);
         }
         app.clicked(that, 'commitOrderFlag');
 
-        if (shop_config.seller_dispatching == 0 && shop_config.buyer_self_lifting == 0) {
+        if (shop_config && shop_config.seller_dispatching == 0 && shop_config.buyer_self_lifting == 0) {
             app.showBox(that, '商家未配置配送方式');
             app.restStatus(that, 'commitOrderFlag');
             return false;
@@ -1509,7 +1521,7 @@ console.log(data);
         integral = count_point_exchange;
 
         pay_type = pay_money == 0 ? 5 : pay_type;
-
+        
         if (pay_type == 5) {
             let express = delivery_type == 1 ? parseFloat(that.data.express_money) : parseFloat(that.data.pick_up_money); //运费
             let coupon_money = parseFloat(that.data.coupon_money) // 优惠券金额
@@ -1537,6 +1549,7 @@ console.log(data);
         let url = combo_id == 0 ? 'api.php?s=order/orderCreate' : 'api.php?s=order/comboPackageOrderCreate';
         url = order_tag == 'buy_now' && order_goods_type == 0 ? 'api.php?s=order/virtualOrderCreate' : url;
         url = order_tag == 'groupbuy' ? 'api.php?s=order/groupBuyOrderCreate' : url;
+        url = order_tag == 'pintuan' ? 'api.php?s=promotion/pintuanStartupOrJoin':url;
         let ts_type = ""
         //console.log(that.data.card_name)
         if (that.data.type == 1) {
@@ -1548,42 +1561,49 @@ console.log(data);
         let card_id = that.data.card_id
         let card_token = that.data.token
         let card_money = that.data.max
+        let pt_startup_id = that.data.pt_startup_id
         //console.log(is_use_card)
         //console.log(card_id)
         //console.log(card_token)
+        let data = {
+            pt_goods_id: that.data.pt_goods_id,
+            pintuan_type: 1,
+            is_use_card: is_use_card,
+            card_id: card_id,
+            card_token: card_token,
+            card_money, card_money,
+            user_telephone: user_telephone,
+            use_coupon: use_coupon,
+            integral: integral,
+            goods_sku_list: goods_sku_list,
+            leavemessage: leavemessage,
+            account_balance: account_balance,
+            pay_type: pay_type,
+            buyer_invoice: buyer_invoice,
+            pick_up_id: pick_up_id,
+            shipping_company_id: shipping_company_id,
+            combo_package_id: combo_id,
+            buy_num: combo_buy_num,
+            shipping_time: shipping_time_val,
+            tx_type: ts_type,
+            card_name: that.data.card_name,
+            card_no: that.data.card_no,
+            store_id: app.globalData.store_id,
+            from_type: that.data.order_type,
+            count_money: that.data.count_money,
+            uid: that.data.uid,
+            is_inside: that.data.is_inside ? that.data.is_inside : 0,
+        }
+        if(pt_startup_id){
+            data.pt_startup_id = pt_startup_id;
+            data.pintuan_type = 2;
+        }
         console.log(that.data.uid)
-      
         app.sendRequest({
             url: url,
-            data: {
-                is_use_card: is_use_card,
-                card_id: card_id,
-                card_token: card_token,
-                card_money, card_money,
-                user_telephone: user_telephone,
-                use_coupon: use_coupon,
-                integral: integral,
-                goods_sku_list:goods_sku_list,
-                leavemessage: leavemessage,
-                account_balance: account_balance,
-                pay_type: pay_type,
-                buyer_invoice: buyer_invoice,
-                pick_up_id: pick_up_id,
-                shipping_company_id: shipping_company_id,
-                combo_package_id: combo_id,
-                buy_num: combo_buy_num,
-                shipping_time: shipping_time_val,
-                tx_type: ts_type,
-                card_name: that.data.card_name,
-                card_no: that.data.card_no,
-                store_id: app.globalData.store_id,
-                from_type: that.data.order_type,
-                count_money: that.data.count_money,
-                uid:that.data.uid,
-                is_inside: that.data.is_inside ? that.data.is_inside:0,
-            },
+            data: data,
             success: function (res) {
-              console.log(res);
+                console.log(res);
                 let code = res.code;
                 let data = res.data;
 
@@ -1610,7 +1630,7 @@ console.log(data);
                         let out_trade_no = data.out_trade_no;
 
                         wx.reLaunch({
-                            url: '/pages/pay/paycallback/paycallback?status=1&out_trade_no=' + out_trade_no,
+                            url: '/pages/pay/paycallback/paycallback?status=1&out_trade_no=' + out_trade_no + '&pt_startup_id=' + data.pt_startup_id,
                         })
                     } else {
                         let out_trade_no = data.out_trade_no;
@@ -1621,17 +1641,17 @@ console.log(data);
                         }
 
                         app.sendRequest({
-                            url:'api.php?s=order/orderWarnTemplateCreat',
-                            data:{
-                                out_trade_no:out_trade_no,
-                                openid:app.globalData.openid,
-                                formid:event.detail.formId,
+                            url: 'api.php?s=order/orderPayTemplateCreate',
+                            data: {
+                                out_trade_no: out_trade_no,
+                                open_id: app.globalData.openid,
+                                form_id: event.detail.formId,
                                 warn_type: 2,
                             },
-                            success(c){
+                            success(c) {
                                 "use strict";
                                 wx.navigateTo({
-                                  url: '/pages/pay/getpayvalue/getpayvalue?present=0&&out_trade_no=' + out_trade_no
+                                    url: '/pages/pay/getpayvalue/getpayvalue?present=0&out_trade_no=' + out_trade_no + '&pt_startup_id=' + data.pt_startup_id
                                 })
                             }
                         })
@@ -1667,7 +1687,7 @@ console.log(data);
     //    }
     //},
 
-    plusXing (str, frontLen, endLen) {
+    plusXing(str, frontLen, endLen) {
         //console.log(str);
         var len = str.length - frontLen - endLen;
         var xing = '';
@@ -1677,69 +1697,69 @@ console.log(data);
         return str.substring(0, frontLen) + xing + str.substring(str.length - endLen);
     },
     // 暂存 编辑身份证号
-    change_card_no(e){
+    change_card_no(e) {
         "use strict";
         var temp = e.detail.value;
 
         this.setData({
-            buffer_card_no:temp
+            buffer_card_no: temp
         });
     },
 
-    change_card_name(e){
+    change_card_name(e) {
         "use strict";
         var temp = e.detail.value;
         this.setData({
             buffer_card_name: temp
         });
     },
-    edit_card(){
+    edit_card() {
         "use strict";
         this.setData({
-            edit_card:true
+            edit_card: true
         });
     },
-    save_card(){
+    save_card() {
         "use strict";
-        var temp_card_no = this.data.buffer_card_no != ''?  this.data.buffer_card_no:this.data.card_no;
-        var temp_card_name = this.data.buffer_card_name != ''?this.data.buffer_card_name:this.data.card_name;
+        var temp_card_no = this.data.buffer_card_no != '' ? this.data.buffer_card_no : this.data.card_no;
+        var temp_card_name = this.data.buffer_card_name != '' ? this.data.buffer_card_name : this.data.card_name;
 
-        if(temp_card_name == '' || temp_card_name.length < 1 ){
+        if (temp_card_name == '' || temp_card_name.length < 1) {
             wx.showToast({
                 title: '身份证姓名必填',
                 icon: 'none',
                 image: '/images/pintuan/mask_layer_spelling_close.png',
                 duration: 1200
             })
-            return ;
+            return;
         }
 
-       else if(temp_card_no.length < 15){
+        else if (temp_card_no.length < 15) {
             wx.showToast({
                 title: '身份证格式错误',
                 icon: 'none',
                 image: '/images/pintuan/mask_layer_spelling_close.png',
                 duration: 1200
             })
-            return ;
-        }else{
+            return;
+        } else {
 
             this.setData({
-            edit_card: false,
-            card_no: temp_card_no,
-            card_name: temp_card_name,
-            encry_no: this.plusXing(temp_card_no, 1, 4),
-            ask:1
-          });
-          
+                edit_card: false,
+                card_no: temp_card_no,
+                card_name: temp_card_name,
+                encry_no: this.plusXing(temp_card_no, 1, 4),
+                ask: 1
+            });
+
         }
-    
-   
+
+
     },
-    cancel_save(){
+    cancel_save() {
         "use strict";
         this.setData({
-            edit_card:false
+            edit_card: false
         });
-    },
+    }
 })

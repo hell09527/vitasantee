@@ -1,0 +1,151 @@
+/* pages/index/assemble/assemble.wxss */
+@import "/templates/new-product-template/new-product-template.wxss";
+.assemble-content{
+    padding-bottom: 90rpx;
+}
+/* 拼团列表 */
+.assemble-shop-box{
+
+}
+.assemble-shop-box .assemble-shop-bar{
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20rpx 120rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f5f5f5;
+}
+.assemble-shop-bar .assemble-shop-bar-item{
+    min-width: 220rpx;
+    height:60rpx;
+    font-size:28rpx;
+    color:#e40046;
+    text-align:center;
+    line-height:60rpx;
+    border-radius:30rpx;
+    border: 1rpx solid #e40046;
+}
+.assemble-shop-bar .assemble-shop-bar-item.active{
+    color: #fff;
+    background-color: #e40046;
+}
+.assemble-shop-box .assemble-shop-list{
+    padding: 0 20rpx;
+}
+/* 我的拼团 */
+
+.assemble-mine-list{
+    padding: 20rpx;
+}
+.assemble-mine-list .assemble-mine-item{
+    margin-bottom: 20rpx;
+}
+.assemble-mine-list .goods_item{
+    margin: 0;
+    padding: 20rpx;
+    border-radius: 0;
+}
+.assemble-mine-status{
+    position: relative;
+    padding: 0 20rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 28rpx;
+    height: 90rpx;
+    line-height: 90rpx;
+    background-color: #fff;
+}
+.assemble-mine-status:before{
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 20rpx;
+    right: 20rpx;
+    height: 2rpx;
+    background-color: #e5e5e5;
+}
+.assemble-mine-status.gray .status-desc .status-show{
+    color: #666;
+}
+.assemble-mine-status.blue .status-desc .status-show{
+    color: #005882;
+}
+.assemble-mine-status.gray .status-btn{
+    background-color: #999;
+}
+.assemble-mine-status .status-desc .status-show{
+    height: 40rpx;
+    line-height: 40rpx;
+    font-size: 28rpx;
+    color: #e40046;
+}
+.assemble-mine-status .status-desc .status-show text{
+    font-size: 24rpx;
+    color: #000;
+}
+.assemble-mine-status .status-btn{
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    background-color: #80a9c0;
+    width: 200rpx;
+    height: 60rpx;
+    font-size: 26rpx;
+    line-height: 60rpx;
+    text-align: center;
+    border-radius: 0;
+}
+.assemble-mine-status .status-desc .timer{
+    height: 40rpx;
+    line-height: 40rpx;
+}
+/* 底部tabbar */
+.assemble-bottom-bar{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-top: 2rpx solid #e5e5e5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    z-index: 100;
+}
+.assemble-bottom-bar.pb40{
+    padding-bottom: 40rpx;
+}
+.assemble-bottom-bar>view{
+    position: relative;
+    width: 50%;
+    height: 80rpx;
+    text-align: center;
+    line-height: 80rpx;
+    font-size: 32rpx;
+    color: rgba(0,0,0,0.3);
+}
+.assemble-bottom-bar>view.active{
+    color: #e40046;
+}
+.assemble-bottom-bar>view:before{
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 2rpx;
+    background-color: #e5e5e5;
+}
+.assemble-bottom-bar>view:first-child:before{
+    display: none;
+}
+/* 数据为空 */
+.empty{
+    padding: 20rpx 0;
+    text-align: center;
+}

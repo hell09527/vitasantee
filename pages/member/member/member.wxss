@@ -6,7 +6,7 @@ scroll-view{
   display: flex;
   justify-content: space-between;
   padding:0 40rpx;
-  height: 90px;
+  height: 160rpx;
   align-items: center;
 }
 .userInfo-detail>image{
@@ -35,7 +35,7 @@ scroll-view{
 
 .order-box{
   background: #fff;
-  padding:40rpx 20rpx;
+  padding: 20rpx;
 }
 .coupon-box{
   width:100%;
@@ -50,12 +50,16 @@ scroll-view{
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  height:120rpx;
+  height: 90rpx;
 }
 .box-text{
   flex: 1;
   text-align: center;
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 40rpx;
 }
 .box-float{
   position: absolute;
@@ -107,7 +111,7 @@ scroll-view{
 
 .order-list{
   box-shadow: 0px 0px 6px 1px #f3f3f3;
-  margin-top:40rpx;
+  margin-top: 20rpx;
 }
 .order-title{
   display: flex;
@@ -119,7 +123,7 @@ scroll-view{
 .order-container{
   display: flex;
   justify-content: space-between;
-  padding:40rpx 20rpx;
+  padding: 20rpx;
 }
 .order-item{
   display: flex;
@@ -143,7 +147,7 @@ scroll-view{
 .list-item{
   display: flex;
   justify-content: flex-start;
-  height: 100rpx;
+  height: 90rpx;
   align-items: center;
   padding-left: 30rpx;
 }

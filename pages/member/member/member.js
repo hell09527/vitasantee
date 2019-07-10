@@ -21,7 +21,6 @@ Page({
     let that = this;
     let base = app.globalData.siteBaseUrl;
     let defaultImg = app.globalData.defaultImg;
-
     that.setData({
       Base: base,
       defaultImg: defaultImg
@@ -34,6 +33,11 @@ Page({
     
     wx.navigateTo({
       url: '/pages/' + data_url ,
+    })
+  },
+  assembleClick(){
+    wx.navigateTo({
+      url: '/pages/index/assemble/assemble?show_status=2'
     })
   },
 
@@ -80,18 +84,15 @@ Page({
         if (res.code == 0) {
           let member_info = data;
           let distributor_type = data.distributor_type;
-          console.log(distributor_type)
           let img = member_info.user_info.user_headimg;
           member_info.user_info.user_headimg = app.IMG(img); //图片路径处理
           let tel = data.user_info.user_tel;
-          console.log(tel);
           that.setData({
             member_info: res.data,
             tel: tel,
             distributor_type,
           })
         }
-
         wx.stopPullDownRefresh()
       }
     })
@@ -115,7 +116,6 @@ Page({
     let that = this;
     //是否授权数据更新
     let updata = app.globalData.unregistered;
-    console.log(updata)
     let vip_overdue_time = app.globalData.vip_overdue_time
     // console.log(vip_overdue_time)
     //会员有效期
@@ -185,7 +185,7 @@ Page({
             adv_list: data.adv_list
           })
         }
-        console.log(res)
+        // console.log(res)
       }
     })
 
@@ -232,6 +232,7 @@ Page({
 
   },
 
-
-
+  handletouchtart(){},
+  handletouchmove(){},
+  handletouchend(){}
 })

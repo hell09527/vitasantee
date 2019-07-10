@@ -28,12 +28,9 @@ Page({
       Base: base,
       defaultImg: defaultImg
     })
-
-
     SERVERS.GOODS.goodsClassificationList.post().then(res => {
       let code = res.code;
         let data = res.data;
-        console.log(res);
         if (code == 0) {
           let goods_category_list = data.goods_category_list;
           let show_type = data.show_type;
@@ -99,16 +96,6 @@ Page({
           wx.stopPullDownRefresh();
         }
     }).catch(e => console.log(e));
-    return;
-    app.sendRequest({
-      url: 'api.php?s=goods/goodsClassificationList',
-      data: {},
-      success: function (res) {
-        
-      }
-    });
-
-   
   },
 
   // 跳转搜索页

@@ -16,6 +16,7 @@ Page({
     goodsDetailFlag: 0,
     verificationFlag: 0,
     logisticsFlag: 0,
+    pintuanStatusShow: ['待付款', '正在拼团', '拼团成功', '拼团失败']
   },
 
   /**

@@ -1,0 +1,172 @@
+<!-- pages/index/asembleInvite/assembleInvite.wxml -->
+<import src="/wxParse/wxParse.wxml" />
+<import src="/templates/new-product-template/new-product-template.wxml" />
+<!-- 等待标识 -->
+<view class="motify {{prompt==''?'hide':''}}">
+    <icon class="i show_type warning" type='warn' size='25' color='#fff'></icon>
+    <view class="motify-inner">{{prompt}}</view>
+</view>
+<block wx:if="{{detail}}">
+    <!-- 自定义头部 -->
+    <tabTitle title="{{title}}">
+        <!-- 自定义返回按钮与home按钮 -->
+        <image slot="left" class="nav-icon {{stackOne?' home':''}}" bindtap="navigateTap" src="{{stackOne?'/images/bottom/home_uncheck.png':'/images/index/left.png'}}" mode="aspectFit"/>
+    </tabTitle>
+    <!-- 主体内容 -->
+    <view class="assemble-invite">
+        <view class="goods-detail">
+            <template is="newProductTemplate" data="{{...detail,index,is_member_fav_goods:3,isNotDesc:false}}" />
+        </view>
+        <view class="invite-detail">
+            <!--  -->
+            <block wx:if="{{pintTuanData.status <= 1}}">
+                <view class='timer invite-text'>
+                    <text class="red">正在拼团</text>
+                    <text>剩余</text>
+                    <text class="red">{{assemble_time_show}}</text>
+                    <text>结束</text>
+                </view>
+                <view class='tips invite-text'>
+                    再邀请 {{pintTuanData.people_num - pintTuanData.joinedNum}}名 好友，超值好物马上到手
+                </view>
+            </block>
+            <block wx:if="{{pintTuanData.status > 1}}">
+                <view class='tips invite-text' style="font-size:16px;padding-top:26rpx;color:{{assembleStatusColor[pintTuanData.status]}}">
+                    {{assembleStatusShow[pintTuanData.status]}}
+                </view>
+            </block>
+            <view class="invite-user-list">
+                <view class="user-head-box {{item.pintuan_type == 1?' start':''}} " wx:for="{{userList}}" wx:key="{{index}}">
+                    <image class="user-head {{item.user_headimg?'':' empty'}}" src="{{item.user_headimg}}" />
+                </view>
+            </view>
+            <block wx:if="{{pintTuanData.status <= 1}}">
+                <block wx:if="{{show_type == 0 || hasMine}}">
+                    <button wx:if="{{(unregistered == 0 && tel != '')}}" class="invite-btn" open-type='share'>邀请好友参团</button>
+                    <button wx:if="{{(unregistered == 1 || tel == '')}}" class="invite-btn" bindtap="login">邀请好友参团</button>
+                </block>
+                <button wx:else class="invite-btn" bindtap="{{(unregistered == 0 && tel!= '')?'toJoinAssemble':'login'}}">参与好友参团</button>
+            </block>
+            <block wx:if="{{pintTuanData.status > 1}}">
+                <button class="invite-btn" bindtap="toAssemblePage">查看更多拼团商品</button>
+            </block>
+        </view>
+    </view>
+    <view class="goods-else">
+        <view wx:if="{{pintTuanData.type == 2}}" class="list-row flex-spb">
+            <view>邀新团：新老用户均可开团，仅限新用户参团</view>
+            <view></view>
+        </view>
+        <view class="list-row rule-flow">
+            <view>
+                <!-- <image class="icon" src="https://static.vitasantee.com/WechatIMG20.png" mode="aspectFit"/> -->
+                <view>开团/参团</view>
+            </view>
+            <image class="arrow" src="https://static.bonnieclyde.cn/WechatIMG240.png" mode="aspectFit" />
+            <view>
+                <!-- <image class="icon" src="https://static.vitasantee.com/WechatIMG20.png" mode="aspectFit"/> -->
+                <view>
+                    <text>邀请好友\n共享低价</text>
+                </view>
+            </view>
+            <image class="arrow" src="https://static.bonnieclyde.cn/WechatIMG240.png" mode="aspectFit" />
+            <view>
+                <!-- <image class="icon" src="https://static.vitasantee.com/WechatIMG20.png" mode="aspectFit"/> -->
+                <view>
+                    <text>人满发货\n不满自动退款</text>
+                </view>
+            </view>
+            <view class="more" bindtap="toRuleDetail">
+                <view>详细规则</view>
+                <image class="arrow" src="https://static.bonnieclyde.cn/WechatIMG240.png" mode="aspectFit" />
+            </view>
+        </view>
+        <view wx:if="{{hasMine}}" class="list-row" bindtap="toOrderDetail">
+            <view class="list-item-left">查看订单</view>
+            <view class="list-item-right">
+                <image class="arrow" src="https://static.bonnieclyde.cn/WechatIMG240.png" mode="aspectFit" />
+            </view>
+        </view>
+        <!-- 未参与显示商品详情 -->
+        <view wx:if="{{!hasMine}}" class="goods-detail-template">
+            <template is="wxParse" data="{{wxParseData:description.nodes}}" />
+        </view>
+    </view>
+    <!-- 已参与显示推荐团购商品  -->
+    <view wx:if="{{hasMine}}" class="goods-detail-template">
+        <view class="title">拼购推荐</view>
+        <view wx:for="{{recommend}}" wx:key="{{index}}" class="assemble-shop-item">
+            <template is="newProductTemplate" data="{{...item,index,is_member_fav_goods:3,assembeTypeState:'一起团'}}" />
+        </view>
+    </view>
+</block>
+<!-- 规格选择弹窗 -->
+<view class="mask {{maskShow==1?'':'hide'}}" id="mask" catchtap='popupClose'></view>
+<view class='span hide' id="addcart_way">
+    <view class='i'></view>
+</view>
+<view class="s-buy {{maskShow?'':'hide'}}" wx:if="{{unregistered==0 && tel!=''}}" animation='{{animation}}'>
+    <view class="popup hide" id="popup"></view>
+    <view class="ul s-buy-ul">
+        <view class="li s-buy-pro">
+            <view class="span pro-img">
+                <!-- 商品SKU图片 -->
+                <image src='{{mo_imgs.spec_value_data_big_src}}' class="js-thumbnail" catchtap='skuPreivewImg' data-urls='{{mo_imgs}}'></image>
+            </view>
+            <view class="pro-info">
+                <text decode="{{true}}" class="p name">{{detail.goods_name}}</text>
+                <view class="p pro-price" id="price">￥{{detail.promote_price}}</view>
+                <view style='color:#CC9933' wx:if="{{detail.vip_price>0}}">
+                    会员价:￥{{detail.vip_price}}
+                </view>
+            </view>
+            <view class="i icon-close" id="icon_close" catchtap='popupClose'></view>
+        </view>
+    </view>
+    <view class="hr with-margin-l"></view>
+    <view class="ul s-buy-ul specification" id="specification">
+        <block wx:for='{{spec_list}}' wx:key='' wx:for-index='key' wx:for-item='spec'>
+            <view class="li s-buy-li">
+                <!-- 商品规格选择 -->
+                <view class="left">{{spec.spec_name}}：</view>
+                <view class="right" name="specvals">
+                    <block wx:for='{{spec.value}}' wx:for-item='sku' wx:for-index='k' wx:key=''>
+                        <view class='flex' catchtap='skuSelect' data-key="{{key}}" data-k='{{k}}' data-picture-id="0">
+                            <view wx:if="{{sku.spec_show_type==2}}" class="sku_color" style=' background: {{sku.spec_value_data}};'></view>
+                            <image src='{{sku.spec_value_data}}' wx:if='{{sku.spec_show_type==3}}' class="sku_img"></image>
+                            <view class="span select {{sku.status==1?'current':''}} ">
+                                {{sku.spec_value_name}}
+                            </view>
+                        </view>
+                    </block>
+                </view>
+            </view>
+            <view class="hr with-margin-l {{key==spec_list.length-1?'hide':''}}"></view>
+        </block>
+    </view>
+    <view class="hr with-margin-l"></view>
+    <view class="li s-buy-li">
+        <view class="left" style="float:left;">购买数量：</view>
+        <view class="right">
+            <!--  quantity-minus-disabled -->
+            <view class="span reduce" catchtap='goodsNumAdjust' data-type='minus'>
+                -
+            </view>
+            <view class="number" wx:if='{{isInput==1}}' catchtap='toInput'>{{goodsNum}}</view>
+            <input class="number" type='number' name="quantity" autocomplete="off" bindblur='goodsNumAdjustCheck' value="{{goodsNum}}" min="1" max="277" id="num" focus='{{true}}' wx:else />
+            <view class="span add" catchtap='goodsNumAdjust' data-type='add'>+</view>
+        </view>
+        <!-- <view class='span last-goods' id="Stock">剩余{{stock}}件</view> -->
+        <view class='span last-goods {{detail.max_buy!=0?"":"hide"}}' id="Stock">
+            限购{{detail.max_buy}}件
+        </view>
+    </view>
+    <view class="ul s-buy-ul">
+        <view class="s-buy-btn">
+            <view class="a btn {{stock==0?'disabled':''}} {{detail.state==0?'disabled':''}}" id="submit_ok" catchtap="{{stock==0?'nullStock':'pintuanNext'}}" tag="buyBtn1">
+                {{detail.state==0?'已下架':'下一步'}}
+            </view>
+        </view>
+    </view>
+    <view class="{{isIphoneX?'Lise':''}}"></view>
+</view>

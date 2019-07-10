@@ -34,13 +34,14 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 6,
+			"current": 9,
 			"list": [
 				{
 					"id": 0,
 					"name": "惠选师申请",
 					"pathName": "pages/member/kolApply/kolApply",
-					"query": ""
+					"query": "uid=2",
+					"scene": null
 				},
 				{
 					"id": 1,
@@ -87,10 +88,31 @@
 					"query": ""
 				},
 				{
-					"id": -1,
+					"id": 8,
 					"name": "优惠券详情",
 					"pathName": "pages/index/couponDetail/couponDetail",
-					"query": "id=1234",
+					"query": "id=1245",
+					"scene": null
+				},
+				{
+					"id": 9,
+					"name": "拼团",
+					"pathName": "pages/index/assemble/assemble",
+					"query": "isAssemble=true&goods_id=15&pt_goods_id=3&pt_startup_id=17",
+					"scene": null
+				},
+				{
+					"id": 10,
+					"name": "个人",
+					"pathName": "pages/member/member/member",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 11,
+					"name": "购物清单",
+					"pathName": "pages/common/rule/rule",
+					"query": "type=zhuanqian",
 					"scene": null
 				}
 			]

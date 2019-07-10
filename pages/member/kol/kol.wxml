@@ -23,35 +23,48 @@
           <view class='headimg'>
             <image src='{{user_headimg}}' mode='widthFix' />
           </view>
-          <view class='stat-num'>
-            <block wx:for='{{star_grade}}' wx:key>
-              <image src='/images/member/star.png' mode='widthFix' />
-            </block>
-            <block wx:for='{{3-star_grade}}' wx:key>
-              <image src='/images/member/no-star.png' mode='widthFix' />
-            </block>
-          </view>
-          <view class="yu_title">
-            <view class="yu_s">可提现金额</view>
-            <view class="show_yuan">￥{{balance}}</view>
-          </view>
-          <view class="x_fen">
-            <view class="li" style='border-right:1px solid rgba(0,0,0,0.3);'
->待入账金额
-              <view class="price">￥{{unsettled_separation_sum}}</view>
+          <view class="user-detail">
+            <view class='kol_name' wx:if='{{user_headimg}}'>
+              {{member_name}}
             </view>
-            <view class="li" style='border-right:1px solid rgba(0,0,0,0.3)'>本季度销售额
-              <view class="price"> ￥{{quarter_goods_money_sum}}</view>
-            </view>
-            <view class="li">本季度订单数
-              <view class="price">{{quarter_order_number_count}}</view>
+            <view class='stat-num'>
+              <block wx:for='{{star_grade}}' wx:key>
+                <image src='/images/member/star.png' mode='widthFix' />
+              </block>
+              <block wx:for='{{3-star_grade}}' wx:key>
+                <image src='/images/member/no-star.png' mode='widthFix' />
+              </block>
             </view>
           </view>
         </view> 
-        <image src='{{user_headimg}}' mode='widthFix' class='headimg-background' wx:if='{{user_headimg}}'/>
-        <view class='kol_name' wx:if='{{user_headimg}}'>
-          {{member_name}}
+        <view class="count-box">
+          <view class="yu_title">
+            <view class="yu_s">可提现金额：</view>
+            <view class="show_yuan"><text class="unit">￥</text>{{balance}}</view>
+          </view>
+          <view class="x_fen">
+            <view class="li">
+              <view>
+                <view class="li-title">待入账金额</view>
+                <view class="price">￥{{unsettled_separation_sum}}</view>
+              </view>
+            </view>
+            <view class="li">
+              <view>
+                <view class="li-title">本季度销售额</view>
+                <view class="price"> ￥{{quarter_goods_money_sum}}</view>
+              </view>
+            </view>
+            <view class="li">
+              <view>
+                <view class="li-title">本季度订单数</view>
+                <view class="price">{{quarter_order_number_count}}</view>
+              </view>
+            </view>
+          </view>
         </view>
+        <!-- <image src='{{user_headimg}}' mode='widthFix' class='headimg-background' wx:if='{{user_headimg}}'/> -->
+        
       </view> 
           <view class='deposit' catchtap='toTiXian'>我要提现</view>
       <view class='big_coin'>
@@ -84,11 +97,24 @@
         <view class='xuans'>
           <view class='c_money'>
             <image src='/images/member/additionalMonay.png' mode='widthFix'/>  
+            <view>惠选师赚钱指南</view>
+          </view>
+          <view class='edu' data-type="zhuanqian" catchtap='toRulePage'>
+            <text>查看详情</text>
+            <image class="direction" src='https://static.bonnieclyde.cn/WechatIMG240.png'></image> 
+            <!-- <image class="direction {{temp?'rotate':''}}" src='https://static.bonnieclyde.cn/WechatIMG240.png'></image>  -->
+          </view>
+        </view>
+        <view class='xuans'>
+          <view class='c_money'>
+            <image src='/images/member/additionalMonay.png' mode='widthFix'/>  
             <view>惠选师规则说明</view>
           </view>
-          <view class='edu' catchtap='open'>
-          <text>查看详情</text>
-          <image class="direction {{temp?'rotate':''}}" src='https://static.bonnieclyde.cn/WechatIMG240.png'></image> </view>
+          <view class='edu' data-type="huixuan" catchtap='toRulePage'>
+          <!-- <view class='edu' catchtap='open'> -->
+            <text>查看详情</text>
+            <image class="direction" src='https://static.bonnieclyde.cn/WechatIMG240.png'></image> 
+          </view>
         </view>
       </view>
 
@@ -297,10 +323,10 @@
                   </view>
               </view>
             </block>
-            <view class="use-info" >
+            <!-- <view class="use-info" >
               <image class="use-heading" src="{{order.headimg}}"  />
                <view class="use-name" style='margin-left:20rpx;'>{{order.buyer_name}}</view> 
-            </view>
+            </view> -->
           </view>
         </view>
       </block>

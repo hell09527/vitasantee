@@ -12,7 +12,7 @@ Page({
     require_array: [
       {
         id: 1,
-        value: '我要退款，但不退货'
+        value: '仅退款'
       }
     ],
     //退款原因

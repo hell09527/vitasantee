@@ -1,41 +1,62 @@
 //页面可调用函数部分(类似于vue的页面调用函数，小程序不支持直接调用)
+//注意好像不支持es6
+var common = {
+    //测试
+    test:function(str){
+        return '测试:' + str;
+    },
+    /**
+     * 时间戳转化为年 月 日 时 分 秒 
+     * number: 传入时间戳 
+     * format：返回格式，支持自定义，但参数必须与fora里保持一致 
+     */
+    formatTime:function(number, format){
+        if(number == 0)return '\n';
+        var format = format?format:'Y-M-D h:m:s';
+        var fora = ['Y', 'M', 'D', 'h', 'm', 's'];
+        var ret = [];
+        var date = getDate(number * 1000);
+        ret.push(date.getFullYear());
+        ret.push(common.N(date.getMonth() + 1));
+        ret.push(common.N(date.getDate()));
 
-var common = {};
-
-// 测试
-common.test = function(str){
-    return '测试:' + str;
-}
-
-/**
- * 时间戳转化为年 月 日 时 分 秒 
- * number: 传入时间戳 
- * format：返回格式，支持自定义，但参数必须与fora里保持一致 
- */
-common.formatTime = function(number, format) {
-    if(number == 0)return '\n';
-    var format = format?format:'Y-M-D h:m:s';
-    var fora = ['Y', 'M', 'D', 'h', 'm', 's'];
-    var ret = [];
-
-    var date = getDate(number * 1000);
-    ret.push(date.getFullYear());
-    ret.push(N(date.getMonth() + 1));
-    ret.push(N(date.getDate()));
-
-    ret.push(N(date.getHours()));
-    ret.push(N(date.getMinutes()));
-    ret.push(N(date.getSeconds()));
-    ret.forEach(function(item,i){
-        format = format.replace(fora[i], ret[i]);
-    });
-    return format;
-}
-
-//数据转化
-function N(n) {
-    return n < 10 ? '0' + n : n;
-}
-common.N = N;
+        ret.push(common.N(date.getHours()));
+        ret.push(common.N(date.getMinutes()));
+        ret.push(common.N(date.getSeconds()));
+        ret.forEach(function(item,i){
+            format = format.replace(fora[i], ret[i]);
+        });
+        return format;
+    },
+    // 数字显示
+    N:function(n){
+        return n < 10 ? '0' + n : n;
+    },
+    // 保留两位小数
+    fixed: function(num){
+        // dec = dec || 2;
+        // var power = Math.pow(10, dec);  
+        // var fixed = (Math.round(num * power) / power).toString();  
+        // if(dec == 0) return fixed;  
+        // if(fixed.indexOf('.') < 0) fixed += '.';  
+        // var padding = dec + 1 - (fixed.length - fixed.indexOf('.'));  
+        // for(var i = 0; i < padding; i++) fixed += '0';  
+        // return fixed;
+        return num.toFixed(2);
+    },
+    // 昵称匿名
+    blurName: function(str){
+        str = str || '';
+        return str.slice(0,1) + '***' + str.slice(-1);
+    },
+    // 数组个数分组
+    arrSplit: function(arr,n = 1){
+        var nArr = [],len = Math.ceil(arr.length/n);
+        for(var i = 0;i < len; i++){
+            nArr.push(arr.slice(i*n, i*n + n));
+        }
+        return nArr;
+    }
+};
 
 module.exports = common;

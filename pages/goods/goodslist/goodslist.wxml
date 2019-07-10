@@ -3,11 +3,16 @@
 <import src="/templates/goodsScreening-template/goodsScreening-template.wxml" />
 <view class="com-content">
   <!-- 公共头部 -->
-  <template is="topTemplate" data="{{scrollLeft,select,isInput}}" />
+  <view class="sticky">
+    <template is="topTemplate" data="{{scrollLeft,select,isInput}}" />
+  </view>
+    
   <view class="item-ans">
     <!-- 内容主体 -->
     <view class='skin-container'>
-      <template is="goodsScreeningTemplate" data="{{search_text,brandSelect,recommendSelect,goodsSelect,brand,sort,brandName,category_list,categoryName}}" />
+      <view class="sticky" style="top:53px;">
+        <template is="goodsScreeningTemplate" data="{{search_text,brandSelect,recommendSelect,goodsSelect,brand,sort,brandName,category_list,categoryName}}" />
+      </view>
       <!-- 商品列表 -->
       <goods-list brandGoods="{{category_goods}}" msg="此分类暂时没有更多商品" isNoGoods="{{isNoGoods}}"></goods-list>
       <!-- <view class='brand_goods'>

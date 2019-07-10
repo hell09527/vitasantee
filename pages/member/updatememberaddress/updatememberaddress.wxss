@@ -17,6 +17,9 @@ page{
   justify-content: flex-start;
   align-items: center;
 }
+.div-item picker{
+  width: calc(100% - 40px);
+}
 .address-info{
   display: flex;
   justify-content: flex-start;

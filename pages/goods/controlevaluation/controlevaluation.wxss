@@ -109,6 +109,7 @@
 .evaluation-container .evaluation-comments .evaluation-pics .li .comment-pic {
   max-width: 55px;
   max-height: 55px;
+  height: 240px;
   vertical-align: top;
 }
 

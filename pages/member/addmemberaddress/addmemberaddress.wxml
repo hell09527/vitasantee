@@ -14,7 +14,7 @@
     </view>
 
     <view class="div-item {{phoneActive?'div-item-active':''}}">
-      <view class='span'>固定电话</view> <input type="number" bindblur='inputEvent' bindfocus='inputFocus' data-type='phone' id="phone" placeholder="固定电话（选填）" value=""/>
+      <view class='span'>固定电话</view> <input type="number" bindblur='inputEvent' bindfocus='inputFocus' data-type='phone' id="phone" placeholder="固定电话" value=""/>
     </view>
 
     <view class="div-item">

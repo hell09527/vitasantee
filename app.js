@@ -1,13 +1,14 @@
 var aldstat = require("./utils/ald-stat.js");
 var SERVERS = require('./utils/servers');
+var core = require('./utils/core.js');
 
 App({
   /**
  /a/dsa sadaswqwqewqkhhjhjhqqweqwewqewe  * 全局变量
    */
   globalData: {
-    siteBaseUrl: "https://www.vitasantee.com/", //服务器url
     // siteBaseUrl: "https://dev02.vitasantee.com/",
+    siteBaseUrl: "", //服务器url
     wx_info: null,
     encryptedData: '',
     iv: '',
@@ -44,7 +45,7 @@ App({
       technical_support: '',
     },
     projectData: {},    //二级页参数
-    unregistered: 0,
+    unregistered: 0, //登录状态(已登录0,未登录1)
     recommendUser: '',   //惠选师推荐人
     traffic_acquisition_source: '',     //引流来源
   },
@@ -52,40 +53,210 @@ App({
   onLaunch: function () {
     let that = this;
 
-    // 请求初始化(设置开发模式)
+    // 请求初始化(默认开发模式)
+
     SERVERS.init(false);
+
+    that.globalData.siteBaseUrl = SERVERS.getBase();
 
     //请求拦截函数
     SERVERS.interceptors.request = function (data) {
       wx.showLoading({
         title: '加载中...'
       });
+      // token添加
       data.token = that.globalData.token;
       return data;
     };
+    
     SERVERS.interceptors.response = function (res) {
-      wx.hideLoading();
+      // 请求部分报错统一处理
       let { code, message } = res.data;
       if (code == -50) {
-        that.showModal({
-          content: message,
-        })
+        if(message != '手机号已存在'){
+          that.showModal({
+            content: message,
+          });
+        }
       } else if (code == -10) {
         that.showModal({
           content: message,
           code: -10,
-        })
+        });
       }
       return res.data;
     };
+    // 请求完成(无论请求成功还是失败都将执行)
+    SERVERS.interceptors.finally = function(){
+      wx.hideLoading();
+    }
 
+    // 用户设备检测(统计)
+    that.userDeviceDetect();
 
+    // 更新检查
+    that.updateCheck();
 
+    // 自动登录(如果已授权)
+    that.getwechatUserInfo();
+
+    // 默认数据
+    that.defaultImg();
+    // that.webSiteInfo();//被注释原因未知
+    that.copyRightIsLoad();
+    that.loadTask();
+  },
+  onShow: function (options) {
+    let that = this;
+    // 全局iphone X判断
+    core.wxApi('getSystemInfo').then(res => {
+      if (res.model.match("iPhone X")) {
+        that.globalData.isIphoneX = true;
+      }
+    }).catch(e => console.log(e));
+  },
+  // 用户设备检测(统计用户调研)、、备用
+  userDeviceDetect(){
+    core.wxApi('getSystemInfo').then(res => {
+      for(let key in core.systemInfo){
+        console.log(`${core.systemInfo[key]}: ${res[key]}`);
+      }
+    }).catch(e => console.log(e));
+  },
+  //登录检测(用户是否已授权(或者授权未过期) -> wx.login获取code -> wx.getUserInfo获取用户信息)
+  getwechatUserInfo: function () {
+    let that = this;
+    core.checkAuthorize('scope.userInfo').then(core.wxApi).then(res => {
+      that.globalData.code = res.code;
+      return core.wxApi('getUserInfo');
+    }).then(res => {
+      that.setWxInfo(res.rawData);
+      that.setEncryptedData(res.encryptedData);
+      that.setIv(res.iv);
+      that.wechatLogin(); //自动登录或注册
+    }).catch(e => {
+      console.log(e);
+      that.globalData.unregistered = 1;
+    });
+  },
+  //微信登录(按钮)
+  wechatLogin: function () {
+    let that = this;
+    let { code, store_id, encryptedData, iv } = that.globalData;
+    if (encryptedData == undefined || iv == undefined) {
+      return false;
+    }
+    // 登录接口
+    SERVERS.LOGIN.getWechatEncryptInfo.post({
+      code: code,
+      encryptedData: encryptedData,
+      iv: iv,
+      store_id
+    }).then(res => {
+      let code = res.code;
+      if (code == 0 || code == 10) {
+        that.globalData.unregistered = 0;
+        that.setOpenid(res.data.openid);
+        that.setToken(res.data.token);
+        if (that.employIdCallback) {
+          that.employIdCallback(res.data.token)
+        } 
+      }else{
+        that.globalData.unregistered = 1;
+      }
+    }).catch(e => console.log(e));
+  },
+  /**
+   * 界面弹框
+   */
+  showBox: function (that, content, time = 1500) {
+    setTimeout(function callBack() {
+      that.setData({
+        prompt: content
+      });
+    }, 200)
+    setTimeout(function callBack() {
+      that.setData({
+        prompt: ''
+      });
+    }, time + 200)
+  },
+  /**
+   * 商品、用户头像默认图
+   */
+  defaultImg: function () {
+    let that = this;
+    SERVERS.COMMON.getDefaultImages.post().then(res => {
+      let { code, data } = res;
+      if (code == 0) {
+        that.globalData.defaultImg = data;
+        that.globalData.defaultImg.value.default_goods_img = that.IMG(that.globalData.defaultImg.value.default_goods_img); //默认商品图处理
+        that.globalData.defaultImg.value.default_headimg = that.IMG(that.globalData.defaultImg.value.default_headimg); //默认用户头像处理
+      }
+    }).catch(e => console.log(e));
+  },
+
+  /**
+   * 基础配置
+   */
+  webSiteInfo: function () {
+    let that = this;
+    SERVERS.COMMON.getWebSiteInfo.post().then(res => {
+      let { code, data } = res;
+      if (code == 0) {
+        that.globalData.webSiteInfo = data;
+        if (data.title != '' && data.title != undefined) {
+          wx.setNavigationBarTitle({
+            title: data.title,
+          })
+        }
+      }
+    }).catch(e => console.log(e));
+  },
+
+  /**
+   * 图片路径处理
+   */
+  IMG: function (img) {
+    let base = this.globalData.siteBaseUrl;
+    img = img == undefined ? '' : img;
+    img = img == 0 ? '' : img;
+    if (img.indexOf('http://') == -1 && img.indexOf('https://') == -1 && img != '') {
+      img = base + img;
+    }
+    return img;
+  },
+
+  /**
+   * 底部加载
+   */
+  copyRightIsLoad: function (e) {
+    let that = this;
+    SERVERS.COMMON.copyRightIsLoad.post().then(res => {
+      let { code, data } = res.code;
+      if (code == 0) {
+        let copyRight = data;
+        copyRight.technical_support = 'shopal技术团队;';
+        copyRight.default_logo = '';
+        if (copyRight.is_load == 0) {
+          let img = copyRight.bottom_info.copyright_logo;
+          copyRight.default_logo = that.IMG(img);
+          copyRight.technical_support = copyRight.bottom_info.copyright_companyname;
+        }
+        that.setCopyRight(copyRight);
+      }
+    }).catch(e => console.log(e));
+  },
+  /**
+   * 后台计划任务
+   */
+  loadTask() {
+    SERVERS.COMMON.load_task.post().then(res => {}).catch(e => console.log(e));
+  },
+  // 更新检查
+  updateCheck() {
     const updateManager = wx.getUpdateManager()
-    updateManager.onCheckForUpdate(function (res) {
-
-    })
-
+    updateManager.onCheckForUpdate(res => {});
     updateManager.onUpdateReady(function () {
       wx.showModal({
         title: '更新提示',
@@ -99,103 +270,13 @@ App({
     })
     updateManager.onUpdateFailed(function () {
       // 新的版本下载失败
-    })
-
-
-    that.unregisteredCallback().then((result) => {
-      console.log(result)
-      that.globalData.unregistered = result
-    })
-
-    that.defaultImg();
-    // that.webSiteInfo();
-    that.copyRightIsLoad();
-    that.loadTask();
-  },
-
-  // 判断是否登录
-  isLogin: function (unregistered) {
-    console.log(unregistered)
-  },
-
-  onShow: function (options) {
-    let that = this;
-    wx.getSystemInfo({
-      success: res => {
-        let modelmes = res.model;
-        if (res.model.indexOf("iPhone X") != -1) {
-          that.globalData.isIphoneX = true;
-        }
-      }
-    })
-  },
-
-
-
-  //app登录
-  app_login: function () {
-    let that = this;
-    wx.login({
-      success: function (res) {
-        // console.log(res.code)
-        that.globalData.code = res.code;
-        that.getwechatUserInfo();
-      }
     });
   },
-  //微信登录(静默授权)
-  getwechatUserInfo: function () {
-    let that = this;
-    // 查看是否授权
-    wx.getSetting({
-      success: (res) => {
-        wx.getUserInfo({
-          success: res => {
-            // console.log(res)
-            // 可以将 res 发送给后台解码出 unionId
-            that.setWxInfo(res.rawData);
-            that.setEncryptedData(res.encryptedData);
-            that.setIv(res.iv);
-            //wx.setStorageSync("userInfo", res.rawData);
-            // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-            // 所以此处加入 callback 以防止这种情况
-            if (this.userInfoReadyCallback) {
-              this.userInfoReadyCallback(res)
-            }
-            that.wechatLogin(); //自动登录或注册
-          }
-        })
-      }
-    })
-  },
-  //微信登录(按钮)
-  wechatLogin: function () {
-    let that = this;
-    let code = that.globalData.code;
-    let store_id = that.globalData.store_id;
-    let wx_info = that.globalData.wx_info;
-    let encryptedData = that.globalData.encryptedData;
-    let iv = that.globalData.iv;
-    if (encryptedData == undefined || iv == undefined) {
-      return false;
-    }
-    // 登录接口
-    SERVERS.LOGIN.getWechatEncryptInfo.post({
-      code: code,
-      encryptedData: encryptedData,   //微信信息
-      iv: iv,
-      store_id
-    }).then(res => {
-      let code = res.code;
-      if (code == 0 || code == 10) {
-        that.setOpenid(res.data.openid);
-        that.setToken(res.data.token);
-        if (that.employIdCallback) {
-          that.employIdCallback(res.data.token)
-        } 
-      }
-    }).catch(e => console.log(e));
-  },
+
+
+  /**
+   * 待修改 
+   */
 
   /**
    * 封装请求函数
@@ -335,7 +416,6 @@ App({
               delta: 1
             })
           }
-
         } else {
           typeof param.cancel == 'function' && param.cancel(res);
         }
@@ -379,39 +459,11 @@ App({
 
     return query.length ? query.substr(0, query.length - 1) : query;
   },
-
-  getSiteBaseUrl: function () {
-    return this.globalData.siteBaseUrl;
-  },
   employIdCallback: function (employId) {
     if (employId != '') {
 
     }
   },
-  unregisteredCallback: function () {
-    var that = this;
-    return new Promise(function (resolve, reject) {
-      wx.getUserInfo({
-        success: res => {
-          console.log('获取用户信息成功', res);
-          let unregistered = 0;
-          resolve(unregistered)
-          that.app_login();
-        },
-        fail(res) {
-          console.log('获取用户信息失败', res);
-          let unregistered = 1;
-          resolve(unregistered)
-        }
-      })
-    })
-  },
-  // setSessionKey:function(session_key){
-  //   this.globalData.session_key = session_key;
-  // },
-  // setUnionid: function (unionid) {
-  //   this.globalData.unionid = unionid;
-  // },
   setOpenid: function (openid) {
     this.globalData.openid = openid;
   },
@@ -439,90 +491,6 @@ App({
   setRegister: function (unregistered) {
     this.globalData.unregistered = unregistered;
   },
-
-  /**
-   * 界面弹框
-   */
-  showBox: function (that, content, time = 1500) {
-    setTimeout(function callBack() {
-      that.setData({
-        prompt: content
-      });
-    }, 200)
-    setTimeout(function callBack() {
-      that.setData({
-        prompt: ''
-      });
-    }, time + 200)
-  },
-
-  /**
-   * 商品、用户头像默认图
-   */
-  defaultImg: function () {
-    let that = this;
-    SERVERS.COMMON.getDefaultImages.post().then(res => {
-      let { code, data } = res;
-      if (code == 0) {
-        that.globalData.defaultImg = data;
-        that.globalData.defaultImg.value.default_goods_img = that.IMG(that.globalData.defaultImg.value.default_goods_img); //默认商品图处理
-        that.globalData.defaultImg.value.default_headimg = that.IMG(that.globalData.defaultImg.value.default_headimg); //默认用户头像处理
-      }
-    }).catch(e => console.log(e));
-  },
-
-  /**
-   * 基础配置
-   */
-  webSiteInfo: function () {
-    let that = this;
-    SERVERS.COMMON.getWebSiteInfo.post().then(res => {
-      let { code, data } = res;
-      if (code == 0) {
-        that.globalData.webSiteInfo = data;
-        if (data.title != '' && data.title != undefined) {
-          wx.setNavigationBarTitle({
-            title: data.title,
-          })
-        }
-      }
-    }).catch(e => console.log(e));
-  },
-
-  /**
-   * 图片路径处理
-   */
-  IMG: function (img) {
-    let base = this.globalData.siteBaseUrl;
-    img = img == undefined ? '' : img;
-    img = img == 0 ? '' : img;
-    if (img.indexOf('http://') == -1 && img.indexOf('https://') == -1 && img != '') {
-      img = base + img;
-    }
-    return img;
-  },
-
-  /**
-   * 底部加载
-   */
-  copyRightIsLoad: function (e) {
-    let that = this;
-    SERVERS.COMMON.copyRightIsLoad.post().then(res => {
-      let { code, data } = res.code;
-      if (code == 0) {
-        let copyRight = data;
-        copyRight.technical_support = 'shopal技术团队;';
-        copyRight.default_logo = '';
-        if (copyRight.is_load == 0) {
-          let img = copyRight.bottom_info.copyright_logo;
-          copyRight.default_logo = that.IMG(img);
-          copyRight.technical_support = copyRight.bottom_info.copyright_companyname;
-        }
-        that.setCopyRight(copyRight);
-      }
-    }).catch(e => console.log(e));
-  },
-
   /**
    * 已点击
    */
@@ -539,12 +507,6 @@ App({
     let d = {};
     d[parm] = 0;
     that.setData(d);
-  },
-  /**
-   * 后台计划任务
-   */
-  loadTask() {
-    SERVERS.COMMON.load_task.post().then(res => console.log(res)).catch(e => console.log(e));
   },
   /**
    * 随机生成验证码
@@ -601,8 +563,6 @@ App({
       }
     });
   },
-
-
   // 解决异步请求封装函数
   asynRequest: function (params) {
     let that = this;
@@ -614,5 +574,7 @@ App({
       params.fail = res => reject(res);
       that.sendRequest(params);
     })
-  }
-})
+  },
+
+
+  })

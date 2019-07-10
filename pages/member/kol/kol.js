@@ -81,7 +81,7 @@ Page({
         for (let index in listData){
           // console.log(listData[index].fraction)
           listData[index].fraction
-          listData[index].fraction = listData[index].fraction * 100 + "%"
+          listData[index].fraction = parseInt(listData[index].fraction * 100) + "%"
         }
         that.setData({
           listData
@@ -184,7 +184,7 @@ Page({
             for (let key in order_list[index].order_item_list) {
               let img = order_list[index].order_item_list[key].picture.pic_cover_small;
               order_list[index].order_item_list[key].picture.pic_cover_small = app.IMG(img);
-              order_list[index].order_item_list[key].fraction = order_list[index].order_item_list[key].fraction * 100 ;
+              order_list[index].order_item_list[key].fraction = parseInt(order_list[index].order_item_list[key].fraction * 100) + "%" ;
               let shareBenefit = (order_list[index].order_item_list[key].goods_money) * parseInt(order_list[index].order_item_list[key].fraction)
               // console.log(order_list[index].order_item_list[key].goods_money);
               // console.log(order_list[index].order_item_list[key].fraction);
@@ -514,5 +514,12 @@ Page({
     console.log(monthStartDate, monthEndDate);
     this.orders(monthStartDate, monthEndDate)
   },
+
+  toRulePage(e){
+    let type = e.currentTarget.dataset.type;
+    wx.navigateTo({
+      url: '/pages/common/rule/rule?type='+type
+    })
+  }
 })
 

@@ -18,6 +18,9 @@
             <block wx:if='{{order_detail.shipping_time != 0}}'>
               <view class='li'><view class="span label">配送时间：</view><view class="span value">{{order_detail.shipping_time}}</view></view>
             </block>
+            <view wx:if='{{order_detail.market_type == 1}}' class='li'>
+              <view class="span status">{{pintuanStatusShow[order_detail.pintuan_status]}}</view>
+            </view>
           </view>
         </view>
       </view>

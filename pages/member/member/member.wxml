@@ -28,16 +28,16 @@
       <view class='item-box'>
         <view class='box-border' catchtap="{{unregistered==1 || tel==''?'Crossroad':'listClick'}}" data-url=''></view>
         <view class='box-text'>
-          <view style='color:#005882;font-size:22px;'>{{member_info.point}}</view>
-          <view style='color:#999;font-size:14px;'>积分</view>
+          <view style='color:#005882;font-size:22px;line-height:22px;'>{{member_info.point}}</view>
+          <view style='color:#999;font-size:12px;'>积分</view>
         </view>
       </view>
       <!-- 优惠券 -->
       <view class='item-box' catchtap="{{unregistered==1 || tel==''?'Crossroad':'listClick'}}" data-url='member/membercoupon/membercoupon'>
         <view class='box-border'></view>
         <view class='box-text'>
-          <view style='color:#005882;font-size:22px;'>{{memberCouponCount}}</view>
-          <view style='color:#999;font-size:14px;'>优惠券</view>
+          <view style='color:#005882;font-size:22px;line-height:22px;'>{{memberCouponCount}}</view>
+          <view style='color:#999;font-size:12px;'>优惠券</view>
           <!-- <view class='box-float'>今日+10</view> -->
         </view>
       </view>
@@ -45,8 +45,8 @@
       <view class='item-box' catchtap="{{unregistered==1 || tel==''?'Crossroad':'listClick'}}" data-url='member/mycollection/mycollection'>
         <view class='box-border'></view>
         <view class='box-text'>
-          <view style='color:#005882;font-size:22px;'>{{goodsFavoritesCount}}</view>
-          <view style='color:#999;font-size:14px;'>收藏</view>
+          <view style='color:#005882;font-size:22px;line-height:23px;'>{{goodsFavoritesCount}}</view>
+          <view style='color:#999;font-size:12px;'>收藏</view>
         </view>
       </view>
     </view>
@@ -132,7 +132,15 @@
         <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" mode="widthFix" style='width:16rpx;'/>
       </view>
     </view>
-
+    <!-- <view class='list-item' catchtap="{{unregistered==1 || tel==''?'Crossroad':'assembleClick'}}">
+      <view>
+        <image src="https://static.vitasantee.com/icon-pt.png" mode="widthFix" style='width:45rpx;'/>
+      </view>
+      <view class='list-item-detail'>
+        <text>我的拼团</text>
+        <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" mode="widthFix" style='width:16rpx;'/>
+      </view>
+    </view> -->
     <!-- 惠选师 -->
     <view class='list-item' catchtap="listClick" data-url='member/kol/kol' wx:if='{{tel!="" && distributor_type!=0 &&distributor_type!=1}}'>
       <view>
@@ -143,6 +151,7 @@
         <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" mode="widthFix" style='width:16rpx;'/>
       </view>
     </view>
+    
     <!-- <view class='list-item' catchtap='listClick' data-url=''>
       <view>
         <image src="https://static.vitasantee.com/valuate@2x.png" mode="widthFix"/>

@@ -44,6 +44,7 @@ SERVERS.GOODS = {
     //商品列表
     getNewGoods: 'api.php?s=Goods/getNewGoods', //新品商品(含封面)
     getHotSaleGoods: 'api.php?s=Goods/getHotSaleGoods', //热卖商品(含封面)
+    getHotGoods: 'api.php?s=Goods/getHotGoods',//热门商品
     getIndexGoodsList: 'api.php?s=goods/getIndexGoodsList', //推荐商品(猜你喜欢)
     searchGoodsList: 'api.php?s=goods/searchGoodsList', //搜索
     // 商品详情
@@ -56,6 +57,12 @@ SERVERS.GOODS = {
     getGoodsEvaluateCount: 'api.php?s=goods/getGoodsEvaluateCount', //商品评论统计
     getUpProTemplate: 'api.php?s=order/getUpProTemplate', //商品到货通知预约
     addBox: '/api.php?s=goods/addBox', //商品加入礼物盒
+    // 拼团
+    pintuanGoodsList: 'api.php?s=promotion/pintuanGoodsList',//拼团列表
+    pintuanGoodsDetail: 'api.php?s=promotion/pintuanGoodsDetail', //拼团商品详情
+    pintunStartupList: 'api.php?s=promotion/pintunStartupList',//正在拼团的列表
+    pintuanStartupOrJoin: 'api.php?s=promotion/pintuanStartupOrJoin',//发起拼团
+    pintuanStartupDetail: 'api.php?s=promotion/pintuanStartupDetail', //拼团详情
 }
 // 购物车
 SERVERS.CART = {
@@ -71,6 +78,7 @@ SERVERS.CART = {
     virtualOrderCreate: 'api.php?s=order/virtualOrderCreate', //虚拟商品下单
     groupBuyOrderCreate: 'api.php?s=order/groupBuyOrderCreate', //下单(疑似拼购)
     orderWarnTemplateCreat: 'api.php?s=order/orderWarnTemplateCreat', //未知
+    creatPintuanTemplate: 'api.php?s=promotion/creatPintuanTemplate', //拼团订单模板设置
     //支付
     appletWechatPay: 'api.php?s=pay/appletWechatPay', //微信钱包支付
     getOrderNoByOutTradeNo: 'api.php?s=pay/getOrderNoByOutTradeNo', //通过订单号查询订单
@@ -81,6 +89,8 @@ SERVERS.MEMBER = {
     memberIndex: 'api.php?s=member/memberIndex', //获取会员信息
     getMemberVipAdv: 'api.php?s=member/getMemberVipAdv', //会员广告(目前为加群)
     updateMemberDetail: 'api.php?s=member/updateMemberDetail', //更新用户信息(拉取微信用户信息)
+    getWechatMobile: 'api.php?s=Login/getWechatMobile',//获取微信手机号绑定
+    isNewMember: 'api.php?s=member/isNewMember',//是否是新用户
     //收藏
     myCollection: 'api.php?s=member/myCollection', //收藏商品列表
     FavoritesGoodsorshop: 'api.php?s=member/FavoritesGoodsorshop', //收藏
@@ -88,11 +98,14 @@ SERVERS.MEMBER = {
     //优惠券
     memberCoupon: 'api.php?s=member/memberCoupon', //用户优惠券列表
     receiveGoodsCoupon: 'api.php?s=goods/receiveGoodsCoupon', //领取优惠券
+    couponShow: 'api.php?s=promotion/couponShow',//优惠券详情
     //我的订单
     getOrderList: 'api.php?s=order/getOrderList', //订单列表
     orderClose: 'api.php?s=order/orderClose', //订单关闭
     deleteOrder: 'api.php?s=order/deleteOrder', //删除订单
     orderTakeDelivery: 'api.php?s=order/orderTakeDelivery', //确认收货
+    // 我的拼团
+    myPintuanList: 'api.php?s=promotion/myPintuanList',//我的拼团列表
     //其他
     checkNeiGou: "api.php?s=/goods/checkNeiGou", //有无内购活动
     getNoticeConfig: "api.php?s=member/getNoticeConfig", //通知开启检测
@@ -117,6 +130,10 @@ SERVERS.MEMBER = {
     //用户浏览历史
     newMyPath: "api.php?s=member/newMyPath", //用户浏览历史列表
     delMyPath: "api.php?s=member/delMyPath", //用户浏览历史删除
+    // 惠选师
+    applyDistributor: 'api.php?s=Distributor/applyDistributor', //申请惠选师
+    checkApply: 'api.php?s=distributor/checkApply',//检查是否为惠选师
+    kolImg: 'api.php?s=distributor/kolImg',//惠选师图片
 }
 
 /**
@@ -126,7 +143,7 @@ SERVERS.init = function(state = true){
     // 开发模式
     this.IS_DEV = state;
     // 循环初始化
-    let list = ['BASEURL','init','interceptors'];
+    let list = ['BASEURL','init','interceptors','filterData','getBase'];
     for(let k1 in this){
         if(this[k1] instanceof Object && list.indexOf(k1) == -1){
             for(let k2 in this[k1]){
@@ -135,11 +152,16 @@ SERVERS.init = function(state = true){
         }
     }
 }
+// 获取基础域名
+SERVERS.getBase = function(){
+    return SERVERS.IS_DEV?SERVERS.DEVURL:SERVERS.BASEURL;
+}
 
 // 默认请求拦截器(请求配置通用，只暴露请求与返回数据配置)
 SERVERS.interceptors = {
     request: data => data,
     response: res => res.data,
+    finally: () => {}
 };
 
 /**
@@ -197,7 +219,8 @@ function fetchData(url,data = {},method) {
             method: method,
             dataType: 'json',
             success: res => resolve(SERVERS.interceptors.response(res)),
-            fail: e => reject(e)
+            fail: e => reject(e),
+            complete: SERVERS.interceptors.finally
         });
     })
 }

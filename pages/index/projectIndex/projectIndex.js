@@ -95,6 +95,7 @@ Page({
         wx.setStorageSync('act_List', actList);
         wx.setStorageSync('expiration', expiration);
         wx.setStorageSync('ids', id)
+        
         that.setData({
           actList: actList,
           new_actList: new_actList,
@@ -109,11 +110,10 @@ Page({
       data: { limit: 4 },
       method: 'POST',
       success: function (res) {
-        console.log(res.data.data);
-
-        that.setData({
-          activities: res.data.data
-        })
+        let activities = res.data.data;
+        let cur = activities.filter(item => item.id = id);
+        if(cur.length>0)wx.setNavigationBarTitle({ title: cur[0].title });
+        that.setData({ activities });
       }
     });
 

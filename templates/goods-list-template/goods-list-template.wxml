@@ -1,7 +1,7 @@
 <!-- CB商品列表 -->
 <template name="goodsListTemplate">
   <view class='brand_goods_detail' catchtap='toGood' data-id='{{goods_id}}'>
-    <image src="{{pic_cover_small}}" mode="widthFix" />
+    <image src="{{pic_cover_small}}" mode="widthFix" lazy-load="true"/>
     <view style='padding:10rpx;'>
       <text decode="true" style='margin:10rpx 0;font-size: 12px;color:#333;'>{{introduction}}</text>
       <text decode="true" class='activity_text' style='margin:10rpx 0;'>

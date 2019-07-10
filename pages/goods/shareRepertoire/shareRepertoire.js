@@ -39,10 +39,10 @@ Page({
     unselected_list: [],
     isHide: 0,    //客服按钮是否影藏
     // unregistered: 0,
-    tel:'',
+    tel: '',
     Choice: false,
     layout: false,
-    distributorType:'',    //会员类型
+    distributorType: '',    //会员类型
 
   },
 
@@ -55,72 +55,72 @@ Page({
     // let uid = options.uid;
     let store_id = options.store;
     let distributorType = options.distributor_type;
-      if (options.uid) {
-          app.globalData.identifying = options.uid;
-        // console.log(app.globalData.identifying,'app.globalData.identifying')
-        app.globalData.breakpoint = options.breakpoint;
-      }
-      // else{
-      //     if (app.globalData.token && app.globalData.token != '') {
-      //         //判断是否是付费会员的接口
-      //         app.sendRequest({
-      //             url: "api.php?s=member/getMemberDetail",
-      //             success: function (res) {
-      //                 let data = res.data
-      //                 if (res.code == 0) {
-      //                     let is_vip = data.is_vip
-      //                     app.globalData.is_vip = data.is_vip
-      //                     app.globalData.member_level = data.member_level
-      //                     let member_level = data.member_level
-      //                     app.globalData.uid = data.uid
-      //                     app.globalData.vip_gift = data.vip_gift
-      //                     app.globalData.vip_goods = data.vip_goods
-      //                     app.globalData.vip_overdue_time = data.vip_overdue_time
-      //                     // console.log(app.globalData.is_vip)
-      //                     that.setData({
-      //                         is_vip: is_vip,
-      //                         member_level
-      //                     })
-      //                 }
-      //             }
-      //         })
-      //
-      //
-      //
-      //     } else {
-      //
-      //         app.employIdCallback = employId => {
-      //             if (employId != '') {
-      //                 //判断是否是付费会员的接口
-      //
-      //                 app.sendRequest({
-      //                     url: "api.php?s=member/getMemberDetail",
-      //                     success: function (res) {
-      //                         let data = res.data
-      //                         if (res.code == 0) {
-      //                             let is_vip = data.is_vip
-      //                             app.globalData.is_vip = data.is_vip
-      //                             app.globalData.member_level = data.member_level
-      //                             let member_level = data.member_level
-      //                             app.globalData.uid = data.uid
-      //                             app.globalData.vip_gift = data.vip_gift
-      //                             app.globalData.vip_goods = data.vip_goods
-      //                             app.globalData.vip_overdue_time = data.vip_overdue_time
-      //                             //  console.log(app.globalData.is_vip)
-      //                             that.setData({
-      //                                 is_vip: is_vip,
-      //                                 member_level
-      //                             })
-      //                         }
-      //                     }
-      //                 })
-      //             }
-      //
-      //
-      //
-      //         }
-      //     }
-      // }
+    if (options.uid) {
+      app.globalData.identifying = options.uid;
+      // console.log(app.globalData.identifying,'app.globalData.identifying')
+      app.globalData.breakpoint = options.breakpoint;
+    }
+    // else{
+    //     if (app.globalData.token && app.globalData.token != '') {
+    //         //判断是否是付费会员的接口
+    //         app.sendRequest({
+    //             url: "api.php?s=member/getMemberDetail",
+    //             success: function (res) {
+    //                 let data = res.data
+    //                 if (res.code == 0) {
+    //                     let is_vip = data.is_vip
+    //                     app.globalData.is_vip = data.is_vip
+    //                     app.globalData.member_level = data.member_level
+    //                     let member_level = data.member_level
+    //                     app.globalData.uid = data.uid
+    //                     app.globalData.vip_gift = data.vip_gift
+    //                     app.globalData.vip_goods = data.vip_goods
+    //                     app.globalData.vip_overdue_time = data.vip_overdue_time
+    //                     // console.log(app.globalData.is_vip)
+    //                     that.setData({
+    //                         is_vip: is_vip,
+    //                         member_level
+    //                     })
+    //                 }
+    //             }
+    //         })
+    //
+    //
+    //
+    //     } else {
+    //
+    //         app.employIdCallback = employId => {
+    //             if (employId != '') {
+    //                 //判断是否是付费会员的接口
+    //
+    //                 app.sendRequest({
+    //                     url: "api.php?s=member/getMemberDetail",
+    //                     success: function (res) {
+    //                         let data = res.data
+    //                         if (res.code == 0) {
+    //                             let is_vip = data.is_vip
+    //                             app.globalData.is_vip = data.is_vip
+    //                             app.globalData.member_level = data.member_level
+    //                             let member_level = data.member_level
+    //                             app.globalData.uid = data.uid
+    //                             app.globalData.vip_gift = data.vip_gift
+    //                             app.globalData.vip_goods = data.vip_goods
+    //                             app.globalData.vip_overdue_time = data.vip_overdue_time
+    //                             //  console.log(app.globalData.is_vip)
+    //                             that.setData({
+    //                                 is_vip: is_vip,
+    //                                 member_level
+    //                             })
+    //                         }
+    //                     }
+    //                 })
+    //             }
+    //
+    //
+    //
+    //         }
+    //     }
+    // }
 
 
 
@@ -138,6 +138,7 @@ Page({
       defaultImg: defaultImg,
       share_sku_list,
       distributorType,
+      isIphoneX: app.globalData.isIphoneX
     })
   },
 
@@ -208,8 +209,8 @@ Page({
     //let siteBaseUrl = app.globalData.siteBaseUrl;
 
   },
-  QD_reuse:function(){
-   let that = this;
+  QD_reuse: function () {
+    let that = this;
     let siteBaseUrl = app.globalData.siteBaseUrl;
     let share_sku_list = that.data.share_sku_list;
     app.sendRequest({
@@ -225,13 +226,18 @@ Page({
           app.globalData.vip_gift = data.vip_gift
           app.globalData.vip_goods = data.vip_goods
           app.globalData.vip_overdue_time = data.vip_overdue_time;
+          app.globalData.unregistered = 0;
           let tel = data.user_info.user_tel;
+          app.globalData.tel = tel;
+          console.log(app.globalData);
+
           // console.log(tel)
           // console.log(app.globalData.is_vip)
           that.setData({
             is_vip: is_vip,
             tel: tel,
-            distributor_type
+            distributor_type,
+            unregistered: 0
           })
         }
       }
@@ -309,15 +315,17 @@ Page({
     console.log(share_sku_list)
     //判断是否是付费会员
     let is_vip = app.globalData.is_vip;
-  
+
     //是否授权数据更新
     let updata = that.data.unregistered
     updata = app.globalData.unregistered;
+    let tel = app.globalData.tel || '';
     // console.log(updata)
-    
+
     that.setData({
       unregistered: updata,
-      is_vip
+      is_vip,
+      tel
     })
 
     that.setData({
@@ -336,7 +344,7 @@ Page({
 
     app.restStatus(that, 'settlementFlag');
     app.restStatus(that, 'goodsDetailFlag');
-  
+
 
     app.sendRequest({
       url: 'api.php?s=order/share',
@@ -422,7 +430,7 @@ Page({
     }
 
 
- 
+
 
 
 
@@ -461,16 +469,17 @@ Page({
       showModal: false,
       Choice: false,
       layout: false,
-    })},
+    })
+  },
   /**登录分支点*/
   Branch: function (e) {
     let _that = this;
     let branch = e.currentTarget.dataset.status;
- if (branch == "mobile") {
-   _that.setData({
-     Choice: false,
-     layout: false,
-   })
+    if (branch == "mobile") {
+      _that.setData({
+        Choice: false,
+        layout: false,
+      })
       wx.navigateTo({
         url: '/pages/member/updatemobile/updatemobile?cho=1',
       })
@@ -486,6 +495,9 @@ Page({
     let _that = this;
     _that.setData({
       Choice: true
+    });
+    wx.navigateTo({
+      url: '/pages/member/resgin/resgin'
     })
   },
   inputChange(e) {
@@ -661,9 +673,9 @@ Page({
     let total_price = 0.00;
 
     if (adjust_type == 'minus') {
-      if (cart_list[i].num==1){
+      if (cart_list[i].num == 1) {
         app.showBox(that, '宝贝不能再减了');
-      }else{
+      } else {
         cart_list[i].num--;
       }
     } else if (adjust_type == 'add') {
@@ -676,7 +688,7 @@ Page({
       }
     }
 
-    for(let i=0;i<cart_list.length;i++){
+    for (let i = 0; i < cart_list.length; i++) {
       if (cart_list[i].status) {
         total_price = parseFloat(total_price) + parseFloat(cart_list[i].num * cart_list[i].price);
       }
@@ -766,110 +778,110 @@ Page({
   settlemenT: function (event) {
     let that = this;
 
-      let cart_list = that.data.cart_list;
-      let type = 1;
-      let settlementFlag = that.data.settlementFlag;
-      let share_last = '';
+    let cart_list = that.data.cart_list;
+    let type = 1;
+    let settlementFlag = that.data.settlementFlag;
+    let share_last = '';
 
-      let cart_1 = [];
-      let cart_2 = [];
-      let carts_1 = ''; // 大贸
-      let carts_2 = ''; // 跨境
+    let cart_1 = [];
+    let cart_2 = [];
+    let carts_1 = ''; // 大贸
+    let carts_2 = ''; // 跨境
 
-      if (settlementFlag == 1) {
-        return false;
-      }
-      var total_price_1 = 0;
-      var total_price_2 = 0;
-      var total_num_1 = 0;
-      var total_num_2 = 0;
+    if (settlementFlag == 1) {
+      return false;
+    }
+    var total_price_1 = 0;
+    var total_price_2 = 0;
+    var total_num_1 = 0;
+    var total_num_2 = 0;
 
-      for (let index in cart_list) {
-        if (cart_list[index].status == 1) {
-          let sku_id = cart_list[index].sku_id;
-          let num = cart_list[index].num;
-          let price = cart_list[index].price;
-          let share_list = sku_id + ':' + num + ':' + price;
-          // 大贸
-          if (cart_list[index].source_type == 1) {
+    for (let index in cart_list) {
+      if (cart_list[index].status == 1) {
+        let sku_id = cart_list[index].sku_id;
+        let num = cart_list[index].num;
+        let price = cart_list[index].price;
+        let share_list = sku_id + ':' + num + ':' + price;
+        // 大贸
+        if (cart_list[index].source_type == 1) {
 
-            if (carts_1 == '') {
-              carts_1 = share_list;
-            } else {
-              carts_1 += ',' + share_list;
-            }
-            total_price_1 += parseFloat(cart_list[index].num) * parseFloat(cart_list[index].price)
-
-            total_num_1 += parseInt(cart_list[index].num);
-            console.log(total_num_1)
-            cart_1.push(cart_list[index]);
-            // 跨境
-          } else if (cart_list[index].source_type == 2) {
-            // let sku_id = cart_list[index].sku_id;
-            // let num = cart_list[index].num;
-            // let share_list = sku_id + ':' + num;
-            if (carts_2 == '') {
-              carts_2 = share_list;
-            } else {
-              carts_2 += ',' + share_list;
-            }
-            total_price_2 += parseFloat(cart_list[index].num) * parseFloat(cart_list[index].price)
-            total_num_2 += parseInt(cart_list[index].num);
-            console.log(total_num_2)
-            cart_2.push(cart_list[index]);
-          }
-
-          if (share_last == '') {
-            share_last = share_list;
+          if (carts_1 == '') {
+            carts_1 = share_list;
           } else {
-            share_last += ',' + share_list;
+            carts_1 += ',' + share_list;
           }
+          total_price_1 += parseFloat(cart_list[index].num) * parseFloat(cart_list[index].price)
+
+          total_num_1 += parseInt(cart_list[index].num);
+          console.log(total_num_1)
+          cart_1.push(cart_list[index]);
+          // 跨境
+        } else if (cart_list[index].source_type == 2) {
+          // let sku_id = cart_list[index].sku_id;
+          // let num = cart_list[index].num;
+          // let share_list = sku_id + ':' + num;
+          if (carts_2 == '') {
+            carts_2 = share_list;
+          } else {
+            carts_2 += ',' + share_list;
+          }
+          total_price_2 += parseFloat(cart_list[index].num) * parseFloat(cart_list[index].price)
+          total_num_2 += parseInt(cart_list[index].num);
+          console.log(total_num_2)
+          cart_2.push(cart_list[index]);
+        }
+
+        if (share_last == '') {
+          share_last = share_list;
+        } else {
+          share_last += ',' + share_list;
         }
       }
-      console.log(share_last)
-      console.log(carts_1)
-      console.log(carts_2)
+    }
+    console.log(share_last)
+    console.log(carts_1)
+    console.log(carts_2)
 
-      if (carts_1 != '' && carts_2 != '') {
-        this.setData({
-          check_1_carts: cart_1,
-          check_2_carts: cart_2,
-          carts_1_info: {
-            total_price: total_price_1,
-            total_num: total_num_1,
-          },
-          carts_2_info: {
-            total_price: total_price_2,
-            total_num: total_num_2,
-          },
-        });
-        this.showDialogBtn();
-        return;
-      }
+    if (carts_1 != '' && carts_2 != '') {
+      this.setData({
+        check_1_carts: cart_1,
+        check_2_carts: cart_2,
+        carts_1_info: {
+          total_price: total_price_1,
+          total_num: total_num_1,
+        },
+        carts_2_info: {
+          total_price: total_price_2,
+          total_num: total_num_2,
+        },
+      });
+      this.showDialogBtn();
+      return;
+    }
 
-      app.clicked(that, 'settlementFlag');
-      var goods_type = 1;
-      if (cart_2 != '') goods_type = 2;
-      let checkout = that.data.check_all
-      // console.log(checkout)
-      if (cart_2 == '' && cart_1 == '') {
-        wx.showToast({
-          title: '未选择商品',
-          icon: 'loading',
-          duration: 500
-        })
-        that.setData({
-          settlementFlag: 0
-        })
-      } else {
+    app.clicked(that, 'settlementFlag');
+    var goods_type = 1;
+    if (cart_2 != '') goods_type = 2;
+    let checkout = that.data.check_all
+    // console.log(checkout)
+    if (cart_2 == '' && cart_1 == '') {
+      wx.showToast({
+        title: '未选择商品',
+        icon: 'loading',
+        duration: 500
+      })
+      that.setData({
+        settlementFlag: 0
+      })
+    } else {
 
-        console.log(share_last, this.data.uid)
-        wx.navigateTo({
-          url: '/pages/order/paymentorder/paymentorder?share_last=' + share_last + '&tag=5' + '&type=' + goods_type + '&order_type=1',
-        })
+      console.log(share_last, this.data.uid)
+      wx.navigateTo({
+        url: '/pages/order/paymentorder/paymentorder?share_last=' + share_last + '&tag=5' + '&type=' + goods_type + '&order_type=1',
+      })
 
-      }
-   
+    }
+
   },
   /**
    * 商品 分类结算
@@ -994,7 +1006,7 @@ Page({
     }
     return false;
   },
- 
+
   //获取微信手机号
   getPhoneNumber: function (e) {
     let that = this;
@@ -1008,7 +1020,7 @@ Page({
       })
       console.log(that.data.unregistered)
       //判断是否继续弹出获取个人信息弹窗
-      if (app.globalData.unregistered== 0) {
+      if (app.globalData.unregistered == 0) {
         wx.login({
           success: function (res) {
             let coco = res.code;
@@ -1086,7 +1098,7 @@ Page({
                     heder_img
                   })
 
-                 
+
 
                 }
 
@@ -1133,7 +1145,7 @@ Page({
                         },
                         success: function (res) {
 
-                         
+
                           if (res.code == 0) {
                             that.setData({
                               unregistered: 0,
@@ -1174,6 +1186,6 @@ Page({
 
 
   },
-  
+
 })
 

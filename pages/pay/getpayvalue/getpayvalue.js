@@ -1,5 +1,7 @@
 const app = new getApp();
 
+const SERVERS = require('../../../utils/servers.js');
+
 Page({
 
     /**
@@ -11,48 +13,49 @@ Page({
         pay_money: 0.00,
         nick_name: '',
         payOrderFlag: 0,
-        present:0,  //判断支付来源  0：正常商品 1：礼物商品 
+        present: 0,  //判断支付来源  0：正常商品 1：礼物商品 
+        pt_startup_id: ''
     },
-    
+
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
         let that = this;
-      let ty = options.Ty
-      let isIphoneX = app.globalData.isIphoneX;
-      this.setData({
-        isIphoneX: isIphoneX
-      })
+        let ty = options.Ty
+        let isIphoneX = app.globalData.isIphoneX;
+        this.setData({
+            isIphoneX: isIphoneX
+        })
         console.log(ty)
-        if (ty==8){
-          that.setData({
-            ty
-          })
+        if (ty == 8) {
+            that.setData({
+                ty
+            })
         }
         let out_trade_no = options.out_trade_no;
         console.log(out_trade_no)
-        let  present = options.present;
+        let present = options.present;
         console.log(present)
         that.setData({
-          present
+            present
         })
-       
+
         if (out_trade_no == undefined || out_trade_no == '') {
             wx.switchTab({
                 url: '/pages/index/index'
             });
-            return ;
+            return;
         }
 
         wx.request({
             url: app.globalData.siteBaseUrl + 'api.php?s=pay/getPayValue',
-            method:"POST",
+            method: "POST",
             data: {
-                token:app.globalData.token,
+                token: app.globalData.token,
                 out_trade_no: out_trade_no
             },
-            header:{
+            header: {
                 'content-type': 'application/json'
             },
             success: function (res) {
@@ -64,9 +67,10 @@ Page({
                     that.setData({
                         out_trade_no: out_trade_no,
                         pay_money: pay_money,
-                        nick_name: nick_name
+                        nick_name: nick_name,
+                        pt_startup_id: options.pt_startup_id
                     })
-                }else{
+                } else {
                     wx.switchTab({
                         url: '/pages/index/index'
                     });
@@ -84,7 +88,7 @@ Page({
         prevPage.setData({
             cancle_pay: 1
         })
-        
+
     },
 
     /**
@@ -98,7 +102,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function () {
-      console.log(app.globalData.openid, '97')
+        console.log(app.globalData.openid, '97')
     },
 
     /**
@@ -121,7 +125,6 @@ Page({
     onPullDownRefresh: function () {
 
     },
-
     /**
      * 页面上拉触底事件的处理函数
      */
@@ -137,7 +140,7 @@ Page({
         let pay_money = that.data.pay_money
         let out_trade_no = that.data.out_trade_no;
         let openid = app.globalData.openid;
-            console.log(openid,'135')
+        console.log(openid, '135')
         let payOrderFlag = that.data.payOrderFlag;
         console.log(that.data.ty)
 
@@ -145,6 +148,11 @@ Page({
             return false;
         }
         app.clicked(that, 'payOrderFlag');
+
+        // SERVERS.CART.appletWechatPay.post({
+        //     out_trade_no: out_trade_no,
+        //     openid: openid
+        // }).then(res => console.log(res)).catch(e => console.log(e));
 
         app.sendRequest({
             url: 'api.php?s=pay/appletWechatPay',
@@ -160,7 +168,7 @@ Page({
                     return false;
                 }
                 let out_trade_no = that.data.out_trade_no;
-                console.log(res, "iuhygtfrewdewc",that.data.ty)
+                console.log(res, "iuhygtfrewdewc", that.data.ty)
                 wx.requestPayment({
                     timeStamp: data.timestamp.toString(),
                     nonceStr: data.nonce_str,
@@ -168,53 +176,53 @@ Page({
                     signType: 'MD5',
                     paySign: data.PaySign,
                     success: function (res) {
-                   console.log(res,'UId');
-                       //  优惠卷
-                      app.sendRequest({
-                        url: 'api.php?s=Order/giveFullOfGifts',
-                        data: {
-                          out_trade_no: out_trade_no,
-                        },
-                        success(res) {
+                        console.log(res, 'UId');
+                        //  优惠卷
+                        app.sendRequest({
+                            url: 'api.php?s=Order/giveFullOfGifts',
+                            data: {
+                                out_trade_no: out_trade_no,
+                            },
+                            success(res) {
 
-                        } 
+                            }
                         })
 
-                         app.sendRequest({
-                            url:'api.php?s=order/orderWarnTemplateCreat',
-                            data:{
-                                out_trade_no:out_trade_no,
-                                openid:app.globalData.openid,
-                                formid:event.detail.formId,
+                        app.sendRequest({
+                            url: 'api.php?s=order/orderPayTemplateCreate',
+                            data: {
+                                out_trade_no: out_trade_no,
+                                open_id: app.globalData.openid,
+                                form_id: event.detail.formId,
                                 warn_type: 1,
                                 send_type: that.data.ty,
-                                price: pay_money 
+                                price: pay_money
                             },
-                            success(c){
+                            success(c) {
                                 "use strict";
                                 console.log(that.data.present)
                                 that.data.present
-                                if (that.data.present==1){
-                                  // console.log(1111)
-                                  app.aldstat.sendEvent('礼物商品支付成功');
-                                  wx.navigateTo({
-                                    url: '/pages/pay/paycallback/paycallback?type=1&&status=1&&out_trade_no=' + out_trade_no,
-                                  })
-                                }else if(that.data.present==2){
-                                  // app.aldstat.sendEvent('支付成功');
-                                  // console.log(222)
-                                  wx.reLaunch({
-                                    url: '/package/payMembers/paySuccess/paySuccess',
-                                  })
-                                }else{
-                                  // console.log(333)
-                                  app.aldstat.sendEvent('普通商品支付成功');
-                                  
-                                  wx.navigateTo({
-                                    url: '/pages/pay/paycallback/paycallback?status=1&out_trade_no=' + out_trade_no,
-                                  })
+                                if (that.data.present == 1) {
+                                    // console.log(1111)
+                                    app.aldstat.sendEvent('礼物商品支付成功');
+                                    wx.navigateTo({
+                                        url: '/pages/pay/paycallback/paycallback?type=1&&status=1&&out_trade_no=' + out_trade_no + '&pt_startup_id=' + that.data.pt_startup_id,
+                                    })
+                                } else if (that.data.present == 2) {
+                                    // app.aldstat.sendEvent('支付成功');
+                                    // console.log(222)
+                                    wx.reLaunch({
+                                        url: '/package/payMembers/paySuccess/paySuccess',
+                                    })
+                                } else {
+                                    // console.log(333)
+                                    app.aldstat.sendEvent('普通商品支付成功');
+
+                                    wx.navigateTo({
+                                        url: '/pages/pay/paycallback/paycallback?status=1&out_trade_no=' + out_trade_no + '&pt_startup_id=' + that.data.pt_startup_id,
+                                    })
                                 }
-                               
+
                             }
                         });
 
@@ -226,10 +234,16 @@ Page({
                         console.log(res);
                         //取消支付
                         if (res.errMsg == 'requestPayment:fail cancel') {
-                            wx.navigateTo({
-                                url: '/pages/pay/paycallback/paycallback?status=-1&out_trade_no=' + out_trade_no,
-                            })
                             app.showBox(that, '取消支付');
+                            if(!that.data.pt_startup_id){
+                                wx.navigateTo({
+                                    url: '/pages/pay/paycallback/paycallback?status=-1&out_trade_no=' + out_trade_no + '&pt_startup_id=' + that.data.pt_startup_id,
+                                });
+                            }else{
+                                wx.navigateBack({
+                                    delta: 2
+                                });
+                            }
                         }
                     },
                     complete: function (res) {
