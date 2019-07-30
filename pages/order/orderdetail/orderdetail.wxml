@@ -8,15 +8,38 @@
       <view class="order-detail-sum clear">
         <view class="sum-r order-detail-r">
           <view class="ul sum-r-ul">
-            <view class='li'><view class="span status">{{order_detail.status_name}}</view></view>
-            <view class='li'><view class="span label">订单号：</view><view class="span value">{{order_detail.order_no}}</view></view>
-            <view class='li'><view class="span label">订单状态：</view><view class="span value">{{order_detail.status_name}}</view></view>
-            <view class='li'><view class="span label">下单时间：</view><view class="span value">{{order_detail.create_time}}</view></view>
-            <view class='li'><view class="span label">支付方式：</view><view class="span value">{{order_detail.payment_type_name}}</view></view>
-            <view class='li'><view class="span label">付款状态：</view><view class="span value">{{order_detail.pay_status_name}}</view></view>
-            <view class='li'><view class="span label">配送方式：</view><view class="span value">{{order_detail.shipping_type_name}}</view></view>
+            <view class='li'>
+              <view class="span status">{{order_detail.status_name}}</view>
+            </view>
+            <view class='li'>
+              <view class="span label">订单号：</view>
+              <view class="span value">{{order_detail.order_no}}</view>
+            </view>
+            <view class='li'>
+              <view class="span label">订单状态：</view>
+              <view class="span value">{{order_detail.status_name}}</view>
+            </view>
+            <view class='li'>
+              <view class="span label">下单时间：</view>
+              <view class="span value">{{order_detail.create_time}}</view>
+            </view>
+            <view class='li'>
+              <view class="span label">支付方式：</view>
+              <view class="span value">{{order_detail.payment_type_name}}</view>
+            </view>
+            <view class='li'>
+              <view class="span label">付款状态：</view>
+              <view class="span value">{{order_detail.pay_status_name}}</view>
+            </view>
+            <view class='li'>
+              <view class="span label">配送方式：</view>
+              <view class="span value">{{order_detail.shipping_type_name}}</view>
+            </view>
             <block wx:if='{{order_detail.shipping_time != 0}}'>
-              <view class='li'><view class="span label">配送时间：</view><view class="span value">{{order_detail.shipping_time}}</view></view>
+              <view class='li'>
+                <view class="span label">配送时间：</view>
+                <view class="span value">{{order_detail.shipping_time}}</view>
+              </view>
             </block>
             <view wx:if='{{order_detail.market_type == 1}}' class='li'>
               <view class="span status">{{pintuanStatusShow[order_detail.pintuan_status]}}</view>
@@ -25,7 +48,6 @@
         </view>
       </view>
     </view>
-    
     <view class="section order-detail-address">
       <view class="address-out clear">
         <view class="address-l order-detail-l">
@@ -36,16 +58,22 @@
             <view class="li name last-child">
               <block wx:if='{{order_detail.order_type == 2  || order_detail.order_type == 5}}'>
                 <view class="span label">联系方式：</view>
-                <view class="span value" style="line-height: 150%;">{{order_detail.receiver_mobile}}</view>
+                <view class="span value" style="line-height: 150%;">
+                  {{order_detail.receiver_mobile}}
+                </view>
               </block>
               <block wx:else>
                 <block wx:if='{{order_detail.shipping_type == 2}}'>
                   <view class="span label">自提地址：</view>
-                  <view class="span value" style="line-height: 150%;">{{order_detail.order_pickup.province_name}} {{order_detail.order_pickup.city_name}} {{order_detail.order_pickup.dictrict_name}} {{order_detail.order_pickup.contact}}</view>
+                  <view class="span value" style="line-height: 150%;">
+                    {{order_detail.order_pickup.province_name}} {{order_detail.order_pickup.city_name}} {{order_detail.order_pickup.dictrict_name}} {{order_detail.order_pickup.contact}}
+                  </view>
                 </block>
                 <block wx:else>
                   <view class="span label">收货地址：</view>
-                  <view class="span value" style="line-height: 150%;">{{order_detail.receiver_name}}，{{order_detail.receiver_mobile}}， {{order_detail.address}}　</view>
+                  <view class="span value" style="line-height: 150%;">
+                    {{order_detail.receiver_name}}，{{order_detail.receiver_mobile}}， {{order_detail.address}}
+                  </view>
                 </block>
               </block>
             </view>
@@ -61,9 +89,15 @@
             <view class="ul remark-r-ul">
               <view class="li name">
                 <view class='a' catchtap='logistics' data-id='{{order_detail.order_id}}'>
-                  <view class="span label" style="color: rgb(245, 183, 8);">共{{order_detail.goods_packet_list.length}}个包裹</view>
-                  <view class="span label" style="color: rgb(245, 183, 8);">{{order_detail.goods_packet_list[0].express_name}}</view>
-                  <view class="span label" style="color: rgb(245, 183, 8);">{{order_detail.goods_packet_list[0].express_code==''?'':'运单号:' + order_detail.goods_packet_list[0].express_code}}</view>
+                  <view class="span label" style="color: rgb(245, 183, 8);">
+                    共{{order_detail.goods_packet_list.length}}个包裹
+                  </view>
+                  <view class="span label" style="color: rgb(245, 183, 8);">
+                    {{order_detail.goods_packet_list[0].express_name}}
+                  </view>
+                  <view class="span label" style="color: rgb(245, 183, 8);">
+                    {{order_detail.goods_packet_list[0].express_code==''?'':'运单号:' + order_detail.goods_packet_list[0].express_code}}
+                  </view>
                 </view>
               </view>
             </view>
@@ -71,11 +105,10 @@
         </view>
       </view>
     </block>
-    
     <view class="section order-detail-remark">
       <view class="remark-out clear">
         <view class="remark-l order-detail-l">
-          <image class="i icon-talks-small" src='/images/order/message.png' mode='widthFix'/>
+          <image class="i icon-talks-small" src='/images/order/message.png' mode='widthFix' />
         </view>
         <view class="remark-r order-detail-r">
           <view class="ul remark-r-ul">
@@ -87,28 +120,25 @@
                 <block wx:if='{{order_detail.buyer_message==undefined || order_detail.buyer_message==""}}'>
                   此订单没有留言
                 </block>
-                <block wx:else>
-                  {{order_detail.buyer_message}}
-                </block>
+                <block wx:else>{{order_detail.buyer_message}}</block>
               </view>
             </view>
           </view>
         </view>
       </view>
     </view>
-    
     <view class="list-myorder">
       <view class="ul ul-product">
         <block wx:for='{{order_detail.order_goods}}' wx:key='' wx:for-item='goods' wx:for-index='index'>
           <view class='li' catchtap='goodsDetail' data-id='{{goods.goods_id}}' data-name='{{goods.goods_name}}'>
             <view class="span pic">
-              <image src="{{goods.picture_info.pic_cover_small==''?0:goods.picture_info.pic_cover_small}}" binderror='errorImg' data-index='{{index}}'/>
+              <image src="{{goods.picture_info.pic_cover_small==''?0:goods.picture_info.pic_cover_small}}" binderror='errorImg' data-index='{{index}}' />
             </view>
             <view class="text">
               <view class="span pro-name">
-                <text  decode="true" class='span' style="color:#333333;">{{goods.goods_name}}</text>
+                <text decode="true" class='span' style="color:#333333;">{{goods.goods_name}}</text>
               </view>
-              <br/>
+              <br />
               <view class="pro-pric">
                 <view class='span'>价格:</view>
                 <view class='span' style="color:#333333;">￥{{goods.price}}</view>
@@ -132,35 +162,30 @@
             <view class='span'>商品总金额：</view>
             <view class="span price">￥{{order_detail.goods_money}}</view>
           </view>
-
           <block wx:if='{{order_detail.order_goods[0].goods_type != "0"}}'>
             <view>
               <view class='span'>运费</view>
               <view class="span price">￥{{order_detail.shipping_money}}</view>
             </view>
           </block>
-
           <block wx:if='{{order_detail.user_platform_money != 0.00}}'>
             <view>
               <view class='span'>余额支付：</view>
               <view class="span price">￥{{order_detail.user_platform_money}}</view>
             </view>
           </block>
-          
           <block wx:if='{{order_detail.coupon_money != 0.00}}'>
             <view>
               <view class='span'>优惠券：</view>
               <view class="span price">￥{{order_detail.coupon_money}}</view>
             </view>
           </block>
-
           <block wx:if='{{order_detail.order_goods[0].goods_type != "0" && order_detail.promotion_money != 0.00}}'>
             <view>
               <view class='span'>{{order_detail.promotion_type=='ZUHETAOCAN'?'套餐优惠':'满减优惠'}}：</view>
               <view class="span price">￥{{order_detail.promotion_money}}</view>
             </view>
           </block>
-                  
           <view>
             <view class='span'>实际需支付：</view>
             <view class="span price">
@@ -174,7 +199,9 @@
     <block wx:if='{{order_detail.virtual_goods_list[0] != undefined}}'>
       <view class="virtual_code">
         <view class='ul'>
-          <view class='li'><view class='h5'>虚拟码</view></view>
+          <view class='li'>
+            <view class='h5'>虚拟码</view>
+          </view>
           <block wx:for='{{order_detail.virtual_goods_list}}' wx:key='' wx:for-item='virtual'>
             <view class='a' catchtap='verificationOrderDetail' data-id='{{virtual.virtual_goods_id}}'>
               <view class='li'>
@@ -189,21 +216,47 @@
       </view>
     </block>
   </view>
-
   <view class="order-tablink">
-		<view class="tablink-box">
-			<view class="tablink">
-				<view class='a' catchtap='customerService'>
+    <view class="tablink-box">
+      <block wx:if="{{!isOrderList&&order_detail.market_type == 1&&order_detail.pintuan_status == 2&&order_detail.order_goods_no_delive[0]&&order_detail.order_goods[0]}}">
+        <block wx:if='{{order_detail.order_status != 5 && order_detail.order_status !=0 && order_detail.order_status !=3 && order_detail.order_status !=4 && order_detail.gift_flag != 1}}'>
+          <block wx:if='{{order_detail.shipping_status==0 }}'>
+            <block wx:if='{{(order_detail.order_goods_no_delive[0].refund_status==0 )}}'>
+              <view class="tablink">
+                <view class='a'>
+                  <view class="span kefu">
+                    <button catchtap="refund" data-id='{{order_detail.order_goods[0].order_goods_id}}' data-name="{{goods.goods_name}}" data-ship="{{order_detail.shipping_status}}"  data-status="{{order_detail.order_goods_no_delive[0].refund_status}}">申请售后</button>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </block>
+          <block wx:if="{{order_detail.shipping_status==1}}">
+            <block wx:if='{{order_detail.refund_total_num!=order_detail.num && (order_detail.order_goods_no_delive[0].refund_status==0 || order_detail.order_goods_no_delive[0].refund_status==5)}}'>
+              <view class="tablink">
+                <view class='a'>
+                  <view class="span kefu">
+                    <button catchtap="refund" data-id='{{order_detail.order_goods[0].order_goods_id}}' data-name="{{order_detail.goods_name}}" data-ship="{{order_detail.shipping_status}}"  data-status="{{order_detail.order_goods_no_delive[0].refund_status}}">申请售后</button>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </block>
+        </block>
+      </block>
+    </view>
+    <view class="tablink-box">
+      <view class="tablink">
+        <view class='a' catchtap='customerService'>
           <view class="span kefu">
             <button open-type="contact" session-from="weapp">
-              <image src='/images/order/order_kefu.png'/>
+              <image src='/images/order/order_kefu.png' />
               联系客服
             </button>
           </view>
         </view>
-			</view>
-
-			<!-- <view class="tablink">
+      </view>
+      <!-- <view class="tablink">
 				<view class='a' catchtap='tell'>
           <view class="span call">
             <image src='/images/order/call.png'/>
@@ -211,6 +264,6 @@
           </view>
         </view>
 			</view> -->
-		</view>
-	</view>
+    </view>
+  </view>
 </scroll-view>

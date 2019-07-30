@@ -103,7 +103,7 @@ scroll-view{
   box-sizing: border-box;
 }
 .goods-list-item>image{
-  width:140rpx;
+  width: 140rpx;
   height: 140rpx;
 }
 .brand-recommended{

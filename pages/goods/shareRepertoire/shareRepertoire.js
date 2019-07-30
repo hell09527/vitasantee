@@ -50,6 +50,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    console.log(options)
     let that = this;
     let share_sku_list = options.share_li;
     // let uid = options.uid;
@@ -251,6 +252,7 @@ Page({
         share_sku_list
       },
       success: function (res) {
+        console.log(res)
         let code = res.code;
         let total_price = 0.00;
         if (code == 0) {

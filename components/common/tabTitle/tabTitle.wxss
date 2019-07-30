@@ -32,6 +32,10 @@
     width: 36rpx;
     height: 36rpx;
 }
+.nav .nav-icon.home{
+    width:46rpx;
+    height:46rpx;
+}
 .flex{
     display: flex;
     justify-content: space-between;

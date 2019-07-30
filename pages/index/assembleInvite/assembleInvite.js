@@ -34,16 +34,19 @@ Page({
     goodsNum: 1,
     sku_id: '',
     is_inside_sell: '',
-    assembleStatusShow: ['', '邀请好友拼团', '恭喜你拼团成功', '拼团失败'],
+    assembleStatusShow: ['', '邀请好友拼团', '拼团成功！', '拼团失败'],
     assembleStatusColor: ['#000', '#000', '#e40046', '#666'],
-    stackOne: false
+    isIphoneX: false,
+    distributor_type: 0
   },
   onLoad: function (options) {
+    console.log('options')
     console.log(options)
     let that = this;
     that.setData({
       pt_startup_id: options.pt_startup_id,
-      show_type: options.show_type || 0
+      show_type: options.show_type || 0,
+      isIphoneX: app.globalData.isIphoneX
     });
     this.setData({
       title: that.getTitle(that.data.show_type)
@@ -51,40 +54,44 @@ Page({
     // wx.setNavigationBarTitle({
     //   title: that.getTitle(that.data.show_type)
     // });
-    
-    // 检测页数是否显示home
-    this.detectPages();
+    if (options.uid) {
+      console.log('options.uid', options.uid)
+      app.globalData.identifying = options.uid;
+      app.globalData.breakpoint = options.breakpoint;
+    }
   },
   onShow() {
     let that = this;
     // 初始化
-    that.checkUserLoginState(function () {
+    core.checkAuthorize('scope.userInfo').then(res => {
+      wx.showLoading({
+        title: '加载中...',
+        mask: true
+      });
+      that.setData({ isInit: true });
+      //首次不会执行token拿不到
+      that.checkUserLoginState();
+    }).catch(e => {
       that.initPinTuanData();
     });
   },
   onUnload: function () {
     clearInterval(timer);
   },
-  // 检测是否为栈顶
-  detectPages(){
-    let that = this;
-    let state = getCurrentPages().length == 1;
-    that.setData({ stackOne: state });
-  },
-  navigateTap(){
+  navigateTap(e) {
     let all = getCurrentPages();
-    if(this.data.stackOne){
+    if (e.detail) {
       wx.switchTab({
         url: '/pages/index/index'
       });
-    }else if(all[all.length - 2].route == 'pages/pay/paycallback/paycallback'){
+    } else if (all[all.length - 2].route == 'pages/pay/paycallback/paycallback') {
       wx.switchTab({
         url: '/pages/index/index'
       });
       // wx.navigateBack({
       //   delta: 4
       // });
-    }else{
+    } else {
       wx.navigateBack();
     }
   },
@@ -96,13 +103,12 @@ Page({
     }).then(res => {
       let { code, data } = res;
       if (code == 0) {
-        that.initGoodsDetail(data.goods_id);
         // 拼团用户列表
         let orderId = '', userList = data.userInfo, mineIndex = -1;
         data.joinedNum = data.userInfo.length; //已参团人数记录
         userList.length = Number(data.people_num); //拓展至拼团总人数
         // 在用户列表中查找当前用户
-        userList = userList.map((i,index) => {
+        userList = userList.map((i, index) => {
           i.user_headimg = app.IMG(i.user_headimg); //替换手动头像上传
           // 获取当前登录用户订单id
           if (that.data.userInfo && (i.uid == that.data.userInfo.uid)) {
@@ -113,6 +119,8 @@ Page({
         });
         // 是否包含自己
         let hasMine = mineIndex >= 0;
+        // console.log('uid:' + that.data.userInfo.uid)
+        console.log("hasMine:" + hasMine);
         if (hasMine && that.data.show_type == 1) {
           // 重新设置标题
           that.setData({
@@ -129,12 +137,14 @@ Page({
           orderId
         });
         that.updateListTimer();
+        that.initGoodsDetail(data);
       }
     }).catch(e => console.log(e));
   },
   // 获取商品详情
-  initGoodsDetail(id) {
+  initGoodsDetail(pintuan) {
     let that = this;
+    let id = pintuan.goods_id;
     SERVERS.GOODS.goodsDetail.post({
       goods_id: id
     }).then(res => {
@@ -142,7 +152,7 @@ Page({
       if (code == 0) {
         data.pic_cover_small = data.picture_detail.pic_cover_small;
         data.promote_price = Number(data.sku_list[0].promote_price * that.data.pintTuanData.discount / 10).toFixed(2);
-        if (that.data.hasMine) {
+        if (that.data.hasMine || pintuan.status > 1) {
           that.initRecomendList();
         } else {
           wxParse.wxParse('description', 'html', data.description, that, 5);
@@ -165,7 +175,9 @@ Page({
       spec_value_data: goods_info.img_list[0].pic_cover_big,
       spec_value_data_big_src: goods_info.img_list[0].pic_cover_big,
     };
-    goods_info.spec_list[0].value[0].status = 1;
+    if (goods_info.spec_list.length > 0) {
+      goods_info.spec_list[0].value[0].status = 1;
+    }
     let spec_list = goods_info.spec_list;
     let sku_id = goods_info.sku_list[0].sku_id;
     let is_inside_sell = goods_info.sku_list[0].is_inside_sell;
@@ -198,6 +210,7 @@ Page({
   // 获取推荐商品
   initRecomendList() {
     let that = this;
+    console.log('initRecomendList');
     SERVERS.GOODS.pintuanGoodsList.post().then(res => {
       if (res.code == 0) {
         that.setData({
@@ -228,7 +241,7 @@ Page({
   // 开始团购
   assembeTap(e) {
     let { id, ptid } = e.currentTarget.dataset;
-    if(!ptid)return;
+    if (!ptid) return;
     wx.navigateTo({
       url: '/pages/goods/goodsdetail/goodsdetail?goods_id=' + id + '&isAssemble=true&pt_goods_id=' + ptid
     }); //从拼购进入
@@ -240,17 +253,23 @@ Page({
 
   },
   onShareAppMessage: function (e) {
+    let that = this;
     let show_type = this.data.show_type;
     let title = this.getTitle(show_type);
+    let uid = app.globalData.uid;
     if (e.from == 'button') {
       show_type = 1;
       title = '邀请好友拼团';
     }
-    return {
-      title: title,
-      path: '/pages/index/assembleInvite/assembleInvite?pt_startup_id=' + this.data.pt_startup_id + '&show_type=' + show_type,
+    let url = `/pages/index/assembleInvite/assembleInvite?pt_startup_id=${this.data.pt_startup_id}&show_type=${show_type}`;
+    let share = {
+      title: '发现超值好物，邀请你一起拼团',
+      path: that.data.distributor_type == 0 ? url : (url + '&uid=' + uid),
       imageUrl: this.data.detail.pic_cover_small
     }
+    console.log(e);
+    console.log(share);
+    return share;
   },
   //获取标题
   getTitle(type) {
@@ -271,24 +290,24 @@ Page({
     that.userIsNewCheck().then(() => {
       animate();
     }).catch(e => console.log(e));
-    
+
 
     // 开始动画
-    function animate(){
+    function animate() {
       const animation = wx.createAnimation({
         duration: 500,
         timingFunction: 'ease',
       })
-  
+
       that.animation = animation
-  
+
       animation.translateY(282).step()
-  
+
       that.setData({
         maskShow: 1,
         animation: animation.export()
       })
-  
+
       setTimeout(function () {
         animation.translateY(0).step()
         that.setData({
@@ -298,16 +317,16 @@ Page({
     }
   },
   // 新用户检查
-  userIsNewCheck(){
+  userIsNewCheck() {
     let that = this;
-    return new Promise((resolve,reject) => {
-      if(that.data.pintTuanData.type == 1) return resolve();
+    return new Promise((resolve, reject) => {
+      if (that.data.pintTuanData.type == 1) return resolve();
       SERVERS.MEMBER.isNewMember.post().then(res => {
-        if(res.code == 0){
-          if(res.data == 1){
+        if (res.code == 0) {
+          if (res.data == 1) {
             resolve();
-          }else{
-            app.showBox(that,'您不是新用户无法参与！');
+          } else {
+            app.showBox(that, '您不是新用户无法参与！');
           }
         }
       }).catch(e => console.log(e));
@@ -491,16 +510,16 @@ Page({
     })
   },
   // 登录
-  login(){
-      wx.navigateTo({
-        url: '/pages/member/resgin/resgin'
-      })
+  login() {
+    wx.navigateTo({
+      url: '/pages/member/resgin/resgin'
+    })
   },
   // 用户登录验证
-  checkUserLoginState(fn) {
+  checkUserLoginState() {
     let that = this;
     if (app.globalData.token && app.globalData.token != '') {
-      this.getUserInfo(fn);
+      this.getUserInfo();
     } else {
       app.employIdCallback = employId => {
         if (employId != '') {
@@ -512,7 +531,7 @@ Page({
 
   },
   // 获取用户信息
-  getUserInfo(fn) {
+  getUserInfo() {
     let that = this;
     SERVERS.MEMBER.getMemberDetail.post().then(res => {
       let { code, data } = res;
@@ -536,7 +555,10 @@ Page({
           })
         }
       }
-      fn && fn();
+      if(that.data.isInit){
+        that.initPinTuanData();
+        that.setData({ isInit: false });
+      }
     }).catch(e => console.log(e));
   },
   // 规格选择部分

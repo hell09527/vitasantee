@@ -1,5 +1,6 @@
 const app = new getApp();
 var time = require("../../../utils/util.js");
+let staticData = require('../../../utils/data.js');
 
 Page({
   /**
@@ -11,7 +12,9 @@ Page({
     defaultImg: '',
     member_info: {},
     tel:'',
-    
+    // 界面列表
+    orderList: [],
+    itemsList: []
   },
 
   /**
@@ -25,6 +28,8 @@ Page({
       Base: base,
       defaultImg: defaultImg
     })
+    let mineList = JSON.parse(JSON.stringify(staticData.mine));
+    that.setData(mineList);
   },
 
   //跳转
@@ -58,7 +63,16 @@ Page({
         let code = res.code;
         let data = res.data;
         if (code == 0) {
+          // 初始化显示列表
+          let orderList = JSON.parse(JSON.stringify(staticData.mine.orderList));
+          // 我的订单
+          orderList[0].num = data.unpaidOrder; //待付款
+          orderList[1].num = data.shipmentPendingOrder; //待发货
+          orderList[2].num = data.goodsNotReceivedOrder;  //待收货
+          orderList[4].num = data.refundOrder;  //订单售后
+          // 用户数据
           that.setData({
+            orderList,
             unpaidOrder: data.unpaidOrder,
             shipmentPendingOrder: data.shipmentPendingOrder,
             goodsNotReceivedOrder: data.goodsNotReceivedOrder,
@@ -71,6 +85,8 @@ Page({
             memberCouponCount: data.memberCouponCount,
             goodsFavoritesCount: data.goodsFavoritesCount,
           })
+
+          
         }
         // console.log(res)
       }
@@ -87,7 +103,11 @@ Page({
           let img = member_info.user_info.user_headimg;
           member_info.user_info.user_headimg = app.IMG(img); //图片路径处理
           let tel = data.user_info.user_tel;
+          // 设置惠选师显示隐藏
+          let itemsList = JSON.parse(JSON.stringify(that.data.itemsList));
+          itemsList[4].show = (tel != "" && distributor_type != 0 && distributor_type != 1);
           that.setData({
+            itemsList,
             member_info: res.data,
             tel: tel,
             distributor_type,
@@ -163,9 +183,7 @@ Page({
       //判断是否是付费会员的接口
       that.REUSE_member();
     } else {
-
       app.employIdCallback = employId => {
-        console.log(employId)
         if (employId != '') {
           //判断是否是付费会员的接口
           that.REUSE_member();
@@ -190,7 +208,6 @@ Page({
     })
 
   },
-
   // 进群
   toAddInoGroup:function(){
     wx.navigateTo({

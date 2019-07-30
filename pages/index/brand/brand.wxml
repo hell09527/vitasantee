@@ -23,7 +23,8 @@
         <block wx:for='{{goodsList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
           <view class='goods-list-item' catchtap='toGood' data-id='{{item.category_id}}'>
             <image src="{{item.category_pic}}" mode="widthFix"/>
-            <view style='text-align:center;color:#333;line-height:20px;'>{{item.category_name}}</view>
+            <view class='flex' style='text-align:center;color:#333;line-height:20px;height:40px;align-items: center;justify-content: center;padding:10rpx;'>{{item.category_name}}</view>
+            <!-- <view style='text-align:center;color:#333;line-height:20px;'>{{item.category_name}}</view> -->
           </view>
         </block>
       </view>
@@ -36,7 +37,7 @@
       <view class='goods-list' style='padding:20rpx 0;'>
         <block wx:for='{{brandList}}' wx:key='' wx:for-item='item' wx:for-index='index'>
           <view class='goods-list-item' catchtap='toBrand' data-id='{{item.brand_id}}' data-title='{{item.brand_name}}' style='padding:0;'>
-            <image src="{{item.brand_ads}}" mode="widthFix" style='width:100%;border:1px solid #e5e5e5;'/>
+            <image src="{{item.brand_ads}}" mode="widthFix" style='box-sizing: border-box;width:100%;border:1px solid #e5e5e5;'/>
             <view class='flex' style='text-align:center;color:#333;line-height:20px;height:40px;align-items: center;justify-content: center;padding:10rpx;'>{{item.brand_name}}</view>
           </view>
         </block>

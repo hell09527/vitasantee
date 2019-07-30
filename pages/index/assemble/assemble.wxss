@@ -110,12 +110,12 @@
     left: 0;
     right: 0;
     bottom: 0;
-    border-top: 2rpx solid #e5e5e5;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #fff;
     z-index: 100;
+    box-shadow: 0 -4rpx 8rpx rgba(229,229,229,.6);
 }
 .assemble-bottom-bar.pb40{
     padding-bottom: 40rpx;
@@ -127,10 +127,11 @@
     text-align: center;
     line-height: 80rpx;
     font-size: 32rpx;
-    color: rgba(0,0,0,0.3);
+    color: #e40046;
 }
 .assemble-bottom-bar>view.active{
-    color: #e40046;
+    color: #fff;
+    background-color: #e40046;
 }
 .assemble-bottom-bar>view:before{
     position: absolute;
@@ -139,7 +140,7 @@
     left: 0;
     bottom: 0;
     width: 2rpx;
-    background-color: #e5e5e5;
+    background-color: #e40046;
 }
 .assemble-bottom-bar>view:first-child:before{
     display: none;

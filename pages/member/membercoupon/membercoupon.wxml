@@ -1,6 +1,4 @@
 <scroll-view>
-
-  
     <view class="cf-content">
       <view class="cf-tab-item {{status==1?'select':''}}" data-status="1" catchtap='topNav'>未使用
       </view>
@@ -15,11 +13,11 @@
         <view class="coupon-item {{status==1?'coupon-item-user':'coupon-item-nouser'}}">
           <view class="coupon-left {{status>1?'backgroundColor':''}}">
             <view class="coupon-left-price">
-              <text style='font-size:24px;font-weight:600;'>￥</text>
-              <text style='font-size:30px;font-weight:600;'>{{item.money}}</text>
+              <text style='font-size:30rpx;font-weight:600;'>￥</text>
+              <text style='font-size:40rpx;font-weight:600;'>{{item.money}}</text>
             </view>
-            <view style='color:#fff;font-size:12px;' wx:if='{{status==1}}'>满￥{{item.at_least}}可使用</view> 
-            <view style='color:#999;font-size:12px;' wx:else>满￥{{item.at_least}}可使用</view>
+            <view style='color:#fff;font-size:20rpx;' wx:if='{{status==1}}'>满￥{{item.at_least}}可使用</view> 
+            <view style='color:#999;font-size:20rpx;' wx:else>满￥{{item.at_least}}可使用</view>
           </view>
           <view class='coupon_right_box'>
             <view class="coupon-middle">
@@ -36,7 +34,7 @@
             </block>
             <block wx:if='{{status>1}}'>
               <view class='coupon-right' style='height:100%'>
-                <image src="{{status==2?'https://static.vitasantee.com/chapter-1@2x.png':'https://static.vitasantee.com/chapter-2@2x.png'}}" mode="widthFix" style='width:100rpx;margin-top:40rpx;'/>
+                <image src="{{status==3?'https://static.vitasantee.com/chapter-1@2x.png':'https://static.vitasantee.com/chapter-2@2x.png'}}" mode="widthFix" style='width:100rpx;margin-top:40rpx;'/>
               </view>
             </block>
           </view>

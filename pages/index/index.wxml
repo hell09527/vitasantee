@@ -264,8 +264,8 @@
         </view>
         <!-- 新版布局(新品推荐与热卖入口) -->
         <view class="new-hot-area flex-spb">
-          <image class="new-hot-item" src="{{new_img.adv_image}}" mode="aspectFill" lazy-load="true" catchtap='toNewProduct'/>
-          <image class="new-hot-item" src="{{index_goods_img.adv_image}}" mode="aspectFill" lazy-load="true"catchtap='toHotProduct'/>
+          <image class="new-hot-item" src="{{new_img.adv_image}}" mode="widthFix" lazy-load="true" catchtap='toNewProduct'/>
+          <image class="new-hot-item" src="{{index_goods_img.adv_image}}" mode="widthFix" lazy-load="true"catchtap='toHotProduct'/>
         </view>
         <!-- 品牌推荐 -->
         <view class='brand' wx:if='{{brand_goods.length>0}}'>
@@ -298,13 +298,13 @@
     </view>
   </form>
   <!-- //客服 -->
-  <button class="a new-btn buy-cart {{isHide==0?'yuan':'hide-kf'}}  cks {{isTop==0?'hide':''}}" style='bottom:72px;' catchtap='goTop'>
+  <button wx:if="{{loaded}}" class="a new-btn buy-cart {{isHide==0?'yuan':'hide-kf'}}  cks {{isTop==0?'hide':''}}" style='bottom:72px;' catchtap='goTop'>
     <view>
       <image src="https://static.vitasantee.com/%E8%BF%94%E5%9B%9E%E9%A1%B6%E9%83%A8.png" mode='widthFix'></image>
     </view>
     <!-- <text class="ke_fu">客服</text> -->
   </button>
-  <button class="a new-btn buy-cart" open-type="contact" session-from="weapp" class="{{isHide==0?'yuan':'hide-kf'}}  cks">
+  <button wx:if="{{loaded}}" class="a new-btn buy-cart" open-type="contact" session-from="weapp" class="{{isHide==0?'yuan':'hide-kf'}}  cks">
     <view>
       <image src="https://static.vitasantee.com/%E5%AE%A2%E6%9C%8D.png" mode='widthFix'></image>
     </view>

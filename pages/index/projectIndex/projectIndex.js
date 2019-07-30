@@ -74,9 +74,12 @@ Page({
       console.log(222);
     }
 
-
-
+    this.initData();
+  },
+  initData(){
+    let that = this;
     // 获取活动详情
+    let id = that.data.data.id;
     app.sendRequest({
       url: "api.php?s=/Activity/activityInfo",
       data: { master_id: id },
@@ -87,6 +90,10 @@ Page({
           if (actList[i].goods_info) {
             new_actList.push(actList[i]);
           }
+        }
+        // 标题设置
+        if(res.data.title){
+          wx.setNavigationBarTitle({ title: res.data.title });
         }
 
         console.log(res);
@@ -110,15 +117,10 @@ Page({
       data: { limit: 4 },
       method: 'POST',
       success: function (res) {
-        let activities = res.data.data;
-        let cur = activities.filter(item => item.id = id);
-        if(cur.length>0)wx.setNavigationBarTitle({ title: cur[0].title });
-        that.setData({ activities });
+        that.setData({ activities: res.data.data });
       }
     });
-
   },
-
 
   // 跳转链接
   toLink: function (e) {

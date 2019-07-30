@@ -42,7 +42,7 @@ var common = {
         // var padding = dec + 1 - (fixed.length - fixed.indexOf('.'));  
         // for(var i = 0; i < padding; i++) fixed += '0';  
         // return fixed;
-        return num.toFixed(2);
+        return isNaN(parseFloat(num))?'0.00':parseFloat(num).toFixed(2);
     },
     // 昵称匿名
     blurName: function(str){

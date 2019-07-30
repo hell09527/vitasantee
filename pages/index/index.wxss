@@ -1010,7 +1010,6 @@ swiper-container{
 .new-hot-area image{
   display: block;
   width: calc(50% - 10rpx);
-  height: 200rpx;
 }
 
 

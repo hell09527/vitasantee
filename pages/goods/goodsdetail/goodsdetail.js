@@ -709,9 +709,11 @@ Page({
                 attr_value_items_format = data.sku_list[i].attr_value_items_format;
                 sku_id = data.sku_list[i].sku_id;
                 member_price = data.sku_list[i].member_price;
-
+                data.price = data.sku_list[i].price;
+                data.promotion_price = data.sku_list[i].promotion_price || data.sku_list[i].promote_price;
                 stock = data.sku_list[i].stock;
                 sku_info = data.sku_list[i];
+                data.mansong_name = data.sku_list[i].mansong_name;
               }
             }
             console.log(stock, 'stock');
@@ -735,12 +737,17 @@ Page({
             let activeSecItem = null;
             // 修改默认秒杀规格index
             if (data.seckill_detail && data.seckill_detail.length > 0) {
+              // 折扣率
+              data.seckill_detail = data.seckill_detail.map(i => {
+                i.discount = Number((i.discount_price/i.price)*10).toFixed(2);
+                return i;
+              })
               activeSecKill = data.seckill_detail.findIndex(i => i.sku_id == sku_id);
               activeSecItem = data.seckill_detail[activeSecKill];
               if (activeSecItem.start_time < that.data.now && activeSecItem.end_time > that.data.now) {
-                goods_info.promotion_price = Number(activeSecItem.price * activeSecItem.discount / 10).toFixed(2);
+                goods_info.promotion_price = Number(activeSecItem.discount_price).toFixed(2);
               }else{
-                goods_info.promotion_price_preview = Number(activeSecItem.price * activeSecItem.discount / 10).toFixed(2);
+                goods_info.promotion_price_preview = Number(activeSecItem.discount_price).toFixed(2);
                 goods_info.promotion_price = activeSecItem.price;
               }
               goods_info.price = activeSecItem.price;
@@ -771,7 +778,7 @@ Page({
             }
             // 拼团
             if(data.pintuan){
-              data.pintuanPrice = Number(data.promotion_price*data.pintuan.discount/10).toFixed(2);
+              data.pintuanPrice = Number(data.price*data.pintuan.discount/10).toFixed(2);
             }
 
             console.log(data.sku_list.length, 'ori_range');
@@ -1418,14 +1425,14 @@ Page({
         let Lei_price = goods_info.sku_list[i].inside_price;
         let is_inside_sell = goods_info.sku_list[i].is_inside_sell;
         let market_price = goods_info.sku_list[i].market_price;
+        goods_info.mansong_name = goods_info.sku_list[i].mansong_name;
         that.setData({
           is_inside_sell
         })
-        if (is_inside_sell == 0) {
-          goods_info.market_price = market_price;
-          goods_info.promote_price = sku_promote;
-          goods_info.price = sku_price;
-        } else {
+        goods_info.market_price = market_price;
+        goods_info.promotion_price = sku_promote;
+        goods_info.price = sku_price;
+        if (is_inside_sell == 1) {
           goods_info.inside_price = sku_let;
           goods_info.inside_price = Lei_price
         }
@@ -1446,9 +1453,9 @@ Page({
       activeSecKill = goods_info.seckill_detail.findIndex(i => i.sku_id == sku_id);
       activeSecItem = goods_info.seckill_detail[activeSecKill];
       if (activeSecItem.start_time < that.data.now && activeSecItem.end_time > that.data.now) {
-        goods_info.promotion_price = Number(activeSecItem.price * activeSecItem.discount / 10).toFixed(2);
+        goods_info.promotion_price = Number(activeSecItem.discount_price).toFixed(2);
       }else{
-        goods_info.promotion_price_preview = Number(activeSecItem.price * activeSecItem.discount / 10).toFixed(2);
+        goods_info.promotion_price_preview = Number(activeSecItem.discount_price).toFixed(2);
         goods_info.promotion_price = activeSecItem.price;
       }
       goods_info.price = activeSecItem.price;
@@ -2573,8 +2580,9 @@ Page({
                     }, 2000);
 
                   },
-                  fail() {
-                    console.log(res)
+                  fail(e) {
+                    console.log('FileSystemManager');
+                    console.log(e)
                   },
                 });
               }
@@ -2679,6 +2687,7 @@ Page({
     let list = [2, 3];
     if(!this.data.goods_info.seckill_detail)return false;
     let cur = this.data.goods_info.seckill_detail[this.data.activeSecKill];
+    console.log(cur);
     // 一开始秒杀或者存在秒杀
     if ((list.indexOf(detail.promotion_type) != -1 && detail.promotion_detail) || cur) {
       return parseInt(cur.discount) != 10;

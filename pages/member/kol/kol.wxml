@@ -1,4 +1,6 @@
  
+<wxs src="../../../wxs/common.wxs" module="common"></wxs>
+ 
 <!-- 引入tempalte  -->
 <import src="/templates/dataChoose-template/dataChoose-template.wxml" />
 <import src="/templates/list-item-template/list-item-template.wxml" />
@@ -219,22 +221,22 @@
           <!-- 第一 -->
           <view class="ratio" style='color:#d0021b' wx:if='{{index==0}}'>
             <text>分润</text>
-            <text>{{item.fraction}}</text>
+            <text>¥{{common.fixed(item.fraction_money)}}</text>
           </view>
           <!-- 第二 -->
           <view class="ratio" style='color:#f57923' wx:elif='{{index==1}}'>
             <text>分润</text>
-            <text>{{item.fraction}}</text>
+            <text>¥{{common.fixed(item.fraction_money)}}</text>
           </view>
           <!-- 第三 -->
           <view class="ratio" style='color:#f9b649' wx:elif='{{index==2}}'>
             <text>分润</text>
-            <text>{{item.fraction}}</text>
+            <text>¥{{common.fixed(item.fraction_money)}}</text>
           </view>
           <!-- 其他 -->
           <view class="ratio" wx:else>
             <text>分润</text>
-            <text>{{item.fraction}}</text>
+            <text>¥{{common.fixed(item.fraction_money)}}</text>
           </view>
         </view>
       </block>

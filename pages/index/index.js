@@ -78,28 +78,29 @@ Page({
       console.log("********kol_id", kol_id);
     }
 
-    let times = 0;
-    let load_timer = setInterval(function () {
-      console.log('logining');
-      times++;
-      let token = app.globalData.token;
-      if (token != '') {
-        // app.showBox(that, '登陆成功');
-        that.setData({
-          maskStatus: 0
-        })
-        clearInterval(load_timer);
-      } else if (times == 15) {
-        app.showBox(that, '登录超时...');
-        that.setData({
-          maskStatus: 0
-        })
-        clearInterval(load_timer);
-        return;
-      }
-    }, 1000);
+    // let times = 0;
+    // let load_timer = setInterval(function () {
+    //   console.log('logining');
+    //   times++;
+    //   let token = app.globalData.token;
+    //   if (token != '') {
+    //     // app.showBox(that, '登陆成功');
+    //     that.setData({
+    //       maskStatus: 0
+    //     });
+    //     clearInterval(load_timer);
+    //   } else if (times == 15) {
+    //     app.showBox(that, '登录超时...');
+    //     that.setData({
+    //       maskStatus: 0
+    //     })
+    //     clearInterval(load_timer);
+    //     return;
+    //   }
+    // }, 1000);
 
-    that.indexInit(that);
+    // 初始化数据
+    that.initData(that);
   },
   // 去拼购页面
   toAssemblePage(){
@@ -287,6 +288,10 @@ Page({
       let { code, data } = res;
       if (code == 0) that.data.defaultImg = data;
     }).catch(e => console.log(e));
+
+    if(!that.data.imgUrls || that.data.imgUrls.length == 0){
+      that.initData();
+    }
   },
 
   toClosePrompt: function () {
@@ -394,7 +399,6 @@ Page({
     }
     //开始计时
     let timer = setInterval(function () {
-      console.log('timer');
       if (count_second > 0) {
         count_second--;
         //时间计算
@@ -426,7 +430,7 @@ Page({
   /**
    * 首页初始化
    */
-  indexInit: function (that) {  
+  initData: function (that) {  
     // let data = {
     //   limit: 2
     // }
@@ -516,6 +520,9 @@ Page({
     SERVERS.HOME.getIndexData.post().then(res => {
       if (res.code == 0) {
         that.detailIndexData(res);
+        that.setData({
+          loaded: true
+        });
         wx.stopPullDownRefresh();
       }
     }).catch(e => console.log(e))
@@ -960,19 +967,23 @@ Page({
     //   isRefreshing: true,
     //   hasMoreData: true
     // })
-    this.indexInit(that)//数据请求
+    this.initData(that)//数据请求
   },
 
   onPageScroll: function (e) {
     // console.log(e.scrollTop)
     if (e.scrollTop > 1580) {
-      this.setData({
-        isTop: 1
-      })
+      if(this.data.isTop == 0){
+        this.setData({
+          isTop: 1
+        })
+      }
     } else {
-      this.setData({
-        isTop: 0
-      })
+      if(this.data.isTop == 1){
+        this.setData({
+          isTop: 0
+        })
+      }
     }
   },
 
@@ -992,23 +1003,29 @@ Page({
 
   // 页面滚动事件//滑动开始事件
   handletouchtart: function (event) {
-    this.setData({
-      isHide: 1
-    })
+    if(this.data.isHide == 0){
+      this.setData({
+        isHide: 1
+      })
+    }
   },
   // 滑动移动事件
   handletouchmove: function (event) {
     // console.log(event.changedTouches[0].pageY, 222222)
-    this.setData({
-      isHide: 1
-    })
+    if(this.data.isHide == 0){
+      this.setData({
+        isHide: 1
+      })
+    }
   },
   //滑动结束事件
   handletouchend: function (event) {
     // console.log(event, 222222)
-    this.setData({
-      isHide: 0
-    })
+    if(this.data.isHide == 1){
+      this.setData({
+        isHide: 0
+      })
+    }
   },
 
 })

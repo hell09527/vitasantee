@@ -71,9 +71,10 @@
     </block>
 </view>
 <!-- 拼团规则 -->
-<view wx:if="{{type == 'pintuan'}}" class="template">
+<view wx:if="{{type == 'pintuan'}}" class="template" style="background: #fff;">
     <view class='headline' style="font-size: 18px;">拼团活动规则</view>
-    <view class='headline'>更新规则</view>
+    <view class='head_text'></view>
+    <!-- <view class='headline'>更新规则</view>
     <view class='head_text'>拼团商品不定期更新，限量放送，售完即止。</view>
     <view class='headline'>参加方式</view>
     <view class='head_text'>1. 在拼团商品活动页面中选择商品，点击【拼团】进入支付页；支付成功即开团/参团成功</view>
@@ -84,5 +85,26 @@
     <view class='head_text'>1. 拼团商品不与网站其它优惠福利同享；</view>
     <view class='head_text'>2. 拼团商品不可使用优惠券，不支持礼品卡支付；</view>
     <view class='head_text'>3. 邀新团仅限新用户参团；</view>
-    <view class='head_text'>4. 通过不正当手段参与拼团活动，维美善特有权撤销相关订单。</view>
+    <view class='head_text'>4. 通过不正当手段参与拼团活动，维美善特有权撤销相关订单。</view> -->
+    <view class='headline'>1、什么是邀新团?</view>
+    <view class='head_text'>· 任意用户都可开团成为团长，但仅限新用户参团</view>
+    <view class='head_text'>· 成团人数请参考商品详情页</view>
+    <view class='headline'>2、什么是普通团?</view>
+    <view class='head_text'>· 任意用户可开团或参团</view>
+    <view class='head_text'>· 成团人数请参考商品详情页</view>
+    <view class='headline'>3、如何当团长?</view>
+    <view class='head_text'>选取喜爱的拼团商品-点击开团并支付-邀请好友参团-达到成团人数-拼团成功-维美善特发货-确认收货</view>
+    <image src="https://static.vitasantee.com/rule_pt_start.jpg" mode="widthFix" style="display:block;width:100%;"/>
+    <view class='head_text'></view>
+    <view class='headline'>4、如何参团?</view>
+    <view class='head_text'>打开邀请链接-点击参团并支付-继续分享加速成团-达到成团人数-拼团成功-维 美善特发货-确认收货</view>
+    <image src="https://static.vitasantee.com/rule_pt_join.jpg" mode="widthFix" style="display:block;width:100%;"/>
+    <view class='head_text'></view>
+    <view class='headline'>5、什么情况下会拼团失败?</view>
+    <view class='head_text'>开团满规定拼团时间内仍未凑齐成团人数的，则拼团失败</view>
+    <view class='headline'>6、拼团失败金额如何返还?</view>
+    <view class='head_text'>拼团失败后，退款会在 1 个工作日内原路返回支付账户中</view>
+    <view class='headline'>7、拼团商品可以退货吗?</view>
+    <view class='head_text'>· 正在拼团中的订单不可申请退货</view>
+    <view class='head_text'>· 跨境商品非质量问题不退不换</view>
 </view>

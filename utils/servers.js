@@ -193,6 +193,7 @@ function ajax(url){
         // upload: data => '待添加'
     }
 }
+
 /**
  * 默认promise请求
  * @param {string} url  请求地址
@@ -219,7 +220,17 @@ function fetchData(url,data = {},method) {
             method: method,
             dataType: 'json',
             success: res => resolve(SERVERS.interceptors.response(res)),
-            fail: e => reject(e),
+            fail: e => {
+                wx.stopPullDownRefresh();
+                debounce(function(){
+                    wx.showToast({
+                        title: '网络连接失败',
+                        icon: 'none',
+                        mask: false
+                    });
+                },2000)();
+                reject(e)
+            },
             complete: SERVERS.interceptors.finally
         });
     })
@@ -258,5 +269,16 @@ function serilize(obj){
     }
     return query.length ? query.substr(0, query.length - 1) : query;
 }
+// 防抖
+function debounce(fn, wait) {    
+    var timeout = null;    
+    return function() {        
+        if(timeout !== null) return;
+        fn&&fn();       
+        timeout = setTimeout(() => {
+          clearTimeout(timeout)
+        }, wait);    
+    }
+  }
 
 module.exports = SERVERS;

@@ -2,5 +2,8 @@
   "navigationBarTitleText": "",
   "enablePullDownRefresh": true,
   "backgroundColor": "#e40046",
-  "usingComponents": {}
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "tabTitle": "/components/common/tabTitle/tabTitle"
+  }
 }

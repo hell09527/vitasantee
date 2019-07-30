@@ -2,10 +2,12 @@
 const app = getApp();
 const data = require('../../../utils/tmp.js');
 const SERVERS = require('../../../utils/servers.js');
+const core = require('../../../utils/core.js');
 const { calcDateTime, formatNumber } = require('../../../utils/util.js');
-var timer = null;
+let timer = null;
 Page({
   data: {
+    title: '拼团',
     barIndex: '',//tabbar-index 底部tabbar列表
     bottomBarList: [{
       name: '拼团商品',
@@ -32,29 +34,39 @@ Page({
     assembleBtnList: ['去付款', '邀请好友拼团', '查看我的订单', '已退款'],
     page: 1,
     // 其他
-    isIphoneX: false
+    isIphoneX: false,
+    redirect: false
   },
   onLoad: function (options) {
-    this.setData({
+    let that = this;
+    that.setData({
       unregistered: app.globalData.unregistered,
       tel: app.globalData.user_tel || '',
       isIphoneX: app.globalData.isIphoneX
     });
-    this.checkUserLoginState();
-    
-    // 初始化数据
     switch(options.show_status){
       case '1':
-          this.tabbarChange(0);
-          this.shopBarChange(1);
+          that.tabbarChange(0);
+          that.shopBarChange(1);
         break;
       case '2':
-          this.tabbarChange(1);
+          that.shopBarChange(0);
+          core.checkAuthorize('scope.userInfo').then(res => {
+            wx.showLoading({
+              title: '加载中...',
+              mask: true
+            });
+            that.setData({ redirect: true });
+            //首次不会执行token拿不到
+            that.checkUserLoginState();
+          }).catch(e => {
+            that.tabbarChange(1);
+          });
         break;
       case '0':
       default:
-          this.tabbarChange(0);
-          this.shopBarChange(0);
+          that.tabbarChange(0);
+          that.shopBarChange(0);
     }
   },
   onShow(){
@@ -62,6 +74,15 @@ Page({
   },
   onUnload() {
     clearInterval(timer);
+  },
+  navigateTap(e) {
+    if (e.detail) {
+      wx.switchTab({
+        url: '/pages/index/index'
+      });
+    }else {
+      wx.navigateBack();
+    }
   },
   // 拼团商品tab切换
   shopBarChange(e) {
@@ -84,7 +105,6 @@ Page({
   },
   //tab切换
   tabbarChange(barIndex) {
-    console.log(1);
     if((barIndex == 1)&&((this.data.unregistered == 1) || (this.data.tel == ''))){
       return wx.navigateTo({
         url: '/pages/member/resgin/resgin'
@@ -101,9 +121,9 @@ Page({
           this.initData(2); //初始化邀新团
         break;
     }
-    wx.setNavigationBarTitle({
+    this.setData({
       title: nextBar.title || nextBar.name
-    });
+    })
   },
   // 初始化列表数据
   initData(type) {
@@ -136,6 +156,7 @@ Page({
   // 初始化我的拼团
   initMineAssemble(){
     let that = this;
+    if(app.globalData.unregistered !== 0)return;
     clearInterval(timer);
     SERVERS.MEMBER.myPintuanList.post().then(res => {
       let { code, data } = res;
@@ -234,8 +255,8 @@ Page({
       return {};
     }else{
       return {
-        title: '邀请好友拼团',
-        path: '/pages/index/assembleInvite/assembleInvite?show_type=0&pt_startup_id=' + e.target.dataset.ptid,
+        title: '发现超值好物，邀请你一起拼团',
+        path: '/pages/index/assembleInvite/assembleInvite?show_type=1&pt_startup_id=' + e.target.dataset.ptid,
         imageUrl: e.target.dataset.img
       }
     }
@@ -256,6 +277,7 @@ Page({
   // 获取用户信息
   getUserInfo() {
     let that = this;
+    console.log('getUserInfo');
     SERVERS.MEMBER.getMemberDetail.post().then(res => {
       let { code, data } = res;
       if (code == 0) {
@@ -275,6 +297,13 @@ Page({
           wx.navigateTo({
             url: '/pages/member/resgin/resgin',
           })
+        }else{
+          console.log('redirect:' + that.data.redirect);
+          // 跳转到我的拼团
+          if(that.data.redirect){
+            that.tabbarChange(1);
+            that.setData({ redirect: false });
+          }
         }
       }
     }).catch(e => console.log(e));

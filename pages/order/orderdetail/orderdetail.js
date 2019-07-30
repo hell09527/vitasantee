@@ -16,7 +16,9 @@ Page({
     goodsDetailFlag: 0,
     verificationFlag: 0,
     logisticsFlag: 0,
-    pintuanStatusShow: ['待付款', '正在拼团', '拼团成功', '拼团失败']
+    pintuanStatusShow: ['待付款', '正在拼团', '拼团成功', '拼团失败'],
+    refundFlag: 0,
+    isOrderList: true , //从订单列表打开当前页面的
   },
 
   /**
@@ -36,8 +38,37 @@ Page({
         order_id: options.id
       })
     }
+    let currentPages =  getCurrentPages();
+
+    if(currentPages.length > 2){
+      let isOrderList = currentPages[currentPages.length - 2].route == 'pages/order/myorderlist/myorderlist';
+      this.setData({ isOrderList });
+    }else{
+      this.setData({ isOrderList: false });
+    }
+    
   },
 
+  /**
+   * 退款/退货
+   */
+  refund: function(event){
+    let that = this;
+    let refundFlag = that.data.refundFlag;
+    // let status = that.data.status;
+    let order_goods_id = event.currentTarget.dataset.id;
+    let name= event.currentTarget.dataset.name;
+   let ship=event.currentTarget.dataset.ship;
+      let status=event.currentTarget.dataset.status
+
+    if (refundFlag == 1){
+      return false;
+    }
+    app.clicked(that, 'refundFlag');
+    wx.navigateTo({
+      url: '/pages/order/refunddetail/refunddetail?id=' + order_goods_id + '&status=' + status + '&name=' + name+ '&ship=' + ship,
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

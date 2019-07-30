@@ -1,6 +1,7 @@
 <!--pages/index/assemble/assemble.wxml-->
 <import src="/templates/new-product-template/new-product-template.wxml" />
 <view class="assemble-content">
+    <tabTitle title="{{title}}" bindnavigateTap="navigateTap"></tabTitle>
     <!-- 拼团商品列表 -->
     <view wx:if="{{barIndex == 0}}" class="assemble-shop-box">
         <view class="assemble-shop-bar">

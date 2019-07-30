@@ -16,46 +16,8 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
-    //是否授权数据更新
-    let updata = app.globalData.unregistered;
-    app.sendRequest({
-      url: 'api.php?s=Goods/getHotSaleGoods',
-      data: {},
-      success: function (res) {
-        // console.log(res)
-        let code = res.code;
-        if (code == 0) {
-          let data = res.data;
-
-          // console.log(data);
-          let new_pro = data.list_hot.map(item => {
-            let tmp = item.sku_list.sort((a,b) => a.promote_price - b.promote_price)[0];
-            item.market_price = tmp.market_price;
-            item.price = tmp.price;
-            item.promote_price = tmp.promote_price;
-            return item;
-          });
-          var adv_index = data.adv_hot;
-          let adv_list = adv_index.adv_list;
-          if (adv_index.is_use != 0) {
-            for (let index in adv_list) {
-              let img = adv_list[index].adv_image;
-              adv_list[index].adv_image = app.IMG(img);
-            }
-          } else {
-            adv_list = [];
-          }
-
-          that.setData({
-            goodsList: new_pro, //新品推荐
-            imgUrls: adv_list,
-            swiperHeight: adv_index.ap_height,
-            unregistered: updata
-          });
-        }
-      }
-    })
-
+    
+    that.initData();
     if (app.globalData.token && app.globalData.token != '') {
       //判断是否是付费会员的接口
       that.XXS_reuse();
@@ -150,7 +112,47 @@ Page({
       }
     })
   },
+  // 初始化数据
+  initData(){
+    let that = this;
+    app.sendRequest({
+      url: 'api.php?s=Goods/getHotSaleGoods',
+      data: {},
+      success: function (res) {
+        // console.log(res)
+        let code = res.code;
+        if (code == 0) {
+          let data = res.data;
 
+          // console.log(data);
+          let new_pro = data.list_hot.map(item => {
+            let tmp = item.sku_list.sort((a,b) => a.promote_price - b.promote_price)[0];
+            item.market_price = tmp.market_price;
+            item.price = tmp.price;
+            item.promote_price = tmp.promote_price;
+            return item;
+          });
+          var adv_index = data.adv_hot;
+          let adv_list = adv_index.adv_list;
+          if (adv_index.is_use != 0) {
+            for (let index in adv_list) {
+              let img = adv_list[index].adv_image;
+              adv_list[index].adv_image = app.IMG(img);
+            }
+          } else {
+            adv_list = [];
+          }
+
+          that.setData({
+            goodsList: new_pro, //新品推荐
+            imgUrls: adv_list,
+            swiperHeight: adv_index.ap_height,
+            unregistered: app.globalData.unregistered
+          });
+        }
+      }
+    })
+  },
   /**没登录*/
   Crossdetails: function () {
     let _that = this;
@@ -203,7 +205,6 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
   },
 
   /**

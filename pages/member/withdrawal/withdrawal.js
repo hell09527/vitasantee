@@ -267,7 +267,11 @@ Page({
     var that=this;
     var account_type = this.data.remain?1:2;
     // console.log(price, account_type)
-
+    // 身份上传检测
+    if(this.data.switchover == 0){
+      app.showBox(that,'请先上传身份证信息');
+      return;
+    }
 
     
 
@@ -277,11 +281,10 @@ Page({
     } else if(price>that.data.maxMoey){
       console.log('来了老弟1、2')
       return;
-    }else if(price > parseFloat(remainPrice) && account_type==1){
-
+    }else if(price > parseFloat(remainPrice) && account_type == 1){
       console.log('来了老弟3')
       return;
-    }else if(price > parseFloat(rewardPrice && account_type==1)){
+    }else if(price > parseFloat(rewardPrice) && account_type == 2){
       return;
     }
     else {
@@ -299,21 +302,13 @@ Page({
         success: function (res) {
           var data=res.data;
           if(data=='-2015'){
-            that.setData({
-              prompt: '提现功能未启用',
-            })
+            app.showBox(that,'提现功能未启用');
           } else if (data == '-2017') {
-            that.setData({
-              prompt: '申请提现小于单笔最低提现',
-            })
+            app.showBox(that,'申请提现小于单笔最低提现');
           } else if (data == '-2020') {
-            that.setData({
-              prompt: '今日申请提现大于单日最高提现',
-            })
+            app.showBox(that,'今日申请提现大于单日最高提现');
           } else if (data == '-4008') {
-            that.setData({
-              prompt: '用户余额不足',
-            })
+            app.showBox(that,'用户余额不足');
           } else if(res.code==1) {
             that.setData({
               Astop:true

@@ -24,7 +24,8 @@
             <view class="span price">￥{{combo.main_goods.promotion_price}}</view>
           </view>
           <block wx:if='{{combo.main_goods.sku_list[0].sku_name != "" && combo.main_goods.sku_list[0].sku_name != undefined}}'>
-            <view class="p select_sku" catchtap='skuShow' data-index='{{index}}' data-key='0' data-id='{{combo.main_goods.goods_id}}' data-type='main'>
+           <!-- catchtap='skuShow' -->
+            <view class="p select_sku" data-index='{{index}}' data-key='0' data-id='{{combo.main_goods.goods_id}}' data-type='main'>
               <view class="span select_sku_28">已选规格：
                 <block wx:if="{{combo.main_goods.sku_id == undefined || combo.main_goods.sku_id == ''}}">
                   {{combo.main_goods.sku_list[0].sku_name}}
@@ -35,7 +36,7 @@
                   </block>
                 </block>
               </view>
-              <view class="i fa fa-angle-right fa-lg"></view>
+              <!-- <view class="i fa fa-angle-right fa-lg"></view> -->
             </view>
           </block>
         </view>
@@ -53,7 +54,8 @@
               <view class="span price">￥{{goods.promotion_price}}</view>
             </view>
             <block wx:if='{{goods.sku_list[0].sku_name != "" && goods.sku_list[0].sku_name != undefined}}'>
-              <view class="p select_sku" catchtap='skuShow' data-index='{{index}}' data-key='{{key}}' data-id='{{goods.goods_id}}' data-type='combo'>
+            <!-- catchtap='skuShow' -->
+              <view class="p select_sku"  data-index='{{index}}' data-key='{{key}}' data-id='{{goods.goods_id}}' data-type='combo'>
                 <view class="span select_sku_28">已选规格：
                   <block wx:if="{{goods.sku_id == undefined || goods.sku_id == ''}}">
                     {{goods.sku_list[0].sku_name}}
@@ -64,7 +66,7 @@
                     </block>
                   </block>
                 </view>
-                <view class="i fa fa-angle-right fa-lg"></view>
+                <!-- <view class="i fa fa-angle-right fa-lg"></view> -->
               </view>
             </block>
           </view>

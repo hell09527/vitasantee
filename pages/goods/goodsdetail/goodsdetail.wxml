@@ -50,7 +50,7 @@
         </block>
         <!-- promotion_type 0正常 2限时 3秒杀 -->
         <!-- 商品图，价格 -->
-        <block wx:if="{{goods_info.promotion_type == 2 && goods_info.promotion_detail != ''}}">
+        <block wx:if="{{goods_info.promotion_type == 2 && goods_info.promotion_detail != ''&&!isAssemble}}">
             <view class="goods-header js-goods-header goods-activity clearfix">
                 <view class="goods-price {{timer_array.end==1?'gray':''}}">
                     <view class="current-price activity-price">
@@ -181,8 +181,8 @@
                 <view class="assemble-price">
                     <view class="assemble-price-intro">
                         <text class="assemble-label">{{pintuanGoodsInfo.people_num}}人团</text>
-                        <text>¥ {{common.fixed(goods_info.promotion_price*pintuanGoodsInfo.discount/10)}}</text>
-                        <text class="sos" style="line-height:22px;">¥ {{goods_info.promotion_price}}</text>
+                        <text>¥ {{common.fixed(goods_info.price * pintuanGoodsInfo.discount/10)}}</text>
+                        <text class="sos" style="line-height:22px;">¥ {{goods_info.price}}</text>
                     </view>
                     <!-- <view class="assemble-num">
                         已拼1271件
@@ -533,9 +533,18 @@
         <block wx:if='{{!isAssemble&&goods_info.comboPackageGoodsArray.goods_array[0] != undefined}}'>
             <view class='a combo-package' catchtap='comboPackages' data-id='{{goods_info.goods_id}}'>
                 <view class="price_postage">
-                    <view class="span price_postage_tit single">
-                        组合套餐
-                        <image class="i jiantou" src='/images/goods/assistant_right.png'></image>
+                    <view class="span flex-spb">
+                        <view class="price_postage_tit single" style="display:flex;width: 80%;align-items:center;">
+                            <text>{{goods_info.comboPackageGoodsArray.combo_package_name}}</text>
+                            <text style="margin-left: 4px;height: 22px;line-height: 8px;color: #e40006">
+                                ¥{{common.fixed(goods_info.comboPackageGoodsArray.combo_package_price)}}
+                            </text>
+                        </view>
+                        <view style="display:flex;justify-content:flex-end;align-items:center;width: 20%">
+                            <text style="margin-right: 10rpx;color: #333;">点击购买</text>
+                            <image class="i jiantou" src='/images/goods/assistant_right.png'></image>
+                        </view>
+                        
                     </view>
                 </view>
                 <view class="hr with-margin-l"></view>
@@ -751,7 +760,7 @@
                         </block>
                         <block wx:else>
                             <view class="p pro-price" id="price">
-                                ￥{{common.fixed(goods_info.promotion_price*pintuanGoodsInfo.discount/10)}}
+                                ￥{{common.fixed(goods_info.price*pintuanGoodsInfo.discount/10)}}
                             </view>
                         </block>
                         <view style='color:#CC9933' wx:if="{{goods_info.vip_price>0}}">
@@ -961,13 +970,13 @@
                         </block>
                         <block wx:else>
                             <view class="a big-btn orange-btn c-addcard-btn big-btn-2-2 center" bindtap="singleBuy">
-                                <view class="text-ellipsis-2" style="color: #fff;font-size:15px;line-height:20px;padding:5px;">
-                                    单独购买 ¥ {{goods_info.promotion_price}}
+                                <view class="text-ellipsis-2" style="color: #fff;font-size:15px;line-height:20px;padding:5px;text-align:center">
+                                    <text decode>单独购买 \n ¥ {{goods_info.promotion_price}}</text>
                                 </view>
                             </view>
                             <button class="text-ellipsis-2" class="a big-btn red-btn c-buy-btn big-btn-2-2 center" bindtap="{{(unregistered==0 && tel!='')?'sBuyShow':'Crossdetails'}}" data-type="pintuan">
-                                <view style="color: #fff;font-size:15px;line-height:20px;padding:5px;">
-                                    {{pintuanGoodsInfo.people_num}}人团 ¥ {{common.fixed(goods_info.promotion_price*pintuanGoodsInfo.discount/10)}}
+                                <view style="color: #fff;font-size:15px;line-height:20px;padding:5px;text-align:center">
+                                    <text decode>{{pintuanGoodsInfo.people_num}}人团 \n ¥ {{common.fixed(goods_info.price*pintuanGoodsInfo.discount/10)}}</text>
                                 </view>
                             </button>
                         </block>

@@ -210,7 +210,7 @@
   line-height: 50px;
   text-align: center;
   color: #fff;
-  background: #FF4E00;
+  background: #e40046;
   float: right;
 }
 

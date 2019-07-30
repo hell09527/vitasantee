@@ -17,7 +17,8 @@ Component({
   data: {
     statusBarHeight: 20,
     barHeight: 64,
-    isAndroid: false
+    isAndroid: false,
+    stackOne: false
   },
   lifetimes: {
     attached: function () {
@@ -32,6 +33,7 @@ Component({
           that.setData(data);
         }
       });
+      that.setData({ stackOne: getCurrentPages().length == 1 });
     }
   },
   methods: {
@@ -44,6 +46,10 @@ Component({
       }else{
         return 44;
       }
+    },
+    // navigateTap
+    navigateTap(){
+      this.triggerEvent('navigateTap',this.data.stackOne);
     }
   }
 })

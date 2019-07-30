@@ -73,68 +73,53 @@ Page({
       console.log(Uid, 'uid')
       if (Uid) {
         console.log('进来了')
-        app.sendRequest({
-          url: 'api.php?s=Distributor/applyUserName',
-          data: { uid: Uid },
-          success: function (res) {
-            console.log(res);
-            listData.recommend_user = Uid;
-            if (res.code == 1) {
+        listData.recommend_user = Uid;
+        that.getUserFromID(Uid).then(res => {
+          if (res.code == 1) {
+            if (uid) {
               var recommend_user = res.data;
               that.setData({
                 recommend: recommend_user,
-                listData,
+                listData
               })
             }
           }
-        })
+        }).catch(e => console.log(e));
       }
       console.log(uid)
     } else if (options.uid) {
       var uid = options.uid;
-      app.sendRequest({
-        url: 'api.php?s=Distributor/applyUserName',
-        data: { uid: uid },
-        success: function (res) {
-          listData.recommend_user = uid;
-          let showTitle = '推荐人';
-          if (res.code == 1) {
-            if (uid) {
-              var recommend_user = res.data;
-              that.setData({
-                recommend: recommend_user,
-                listData,
-                showTitle
-              })
-            }
+      listData.recommend_user = uid;
+      that.getUserFromID(uid).then(res => {
+        let showTitle = '推荐人';
+        if (res.code == 1) {
+          if (uid) {
+            var recommend_user = res.data;
+            that.setData({
+              recommend: recommend_user,
+              listData,
+              showTitle
+            })
           }
         }
-      })
-
-
+      }).catch(e => console.log(e));
     } else if (this.data.uid) {
       var uid = this.data.uid;
-      console.log(uid)
-      app.sendRequest({
-        url: 'api.php?s=Distributor/applyUserName',
-        data: { uid: uid },
-        success: function (res) {
-          console.log(res);
-          listData.recommend_user = uid;
-          listData.is_recommend = app.globalData.is_recommend;
-          let showTitle = app.globalData.showTitle;
-          if (res.code == 1) {
-            if (uid) {
-              var recommend_user = res.data;
-              that.setData({
-                recommend: recommend_user,
-                listData,
-                showTitle
-              })
-            }
+      listData.recommend_user = uid;
+      that.getUserFromID(uid).then(res => {
+        listData.is_recommend = app.globalData.is_recommend;
+        let showTitle = app.globalData.showTitle;
+        if (res.code == 1) {
+          if (uid) {
+            var recommend_user = res.data;
+            that.setData({
+              recommend: recommend_user,
+              listData,
+              showTitle
+            })
           }
         }
-      })
+      }).catch(e => console.log(e));
     }
 
     // app.unregisteredCallback = unregistered => {
@@ -149,6 +134,18 @@ Page({
    */
   onReady: function () {
 
+  },
+  // 通过id获取用户信息
+  getUserFromID(uid){
+    return new Promise((resolve,reject) => {
+      if(uid == 0)return reject(null);
+      app.sendRequest({
+        url: 'api.php?s=Distributor/applyUserName',
+        data: { uid },
+        success: res => resolve(res),
+        fail: e => reject(e)
+      });
+    });
   },
 
   XXS_reuse: function () {
@@ -204,6 +201,7 @@ Page({
         url: 'api.php?s=Distributor/applyDistributor',
         data: listData,
         success: function (res) {
+          console.log('toApply')
           console.log(res)
           if (res.code == 1) {
             wx.navigateTo({

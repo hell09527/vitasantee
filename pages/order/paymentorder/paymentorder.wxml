@@ -1,3 +1,4 @@
+<wxs src="../../../wxs/common.wxs" module="common"></wxs>
 
 <scroll-view>
 <view class="order-total-pay top-fix" style="border-bottom:2px solid gray; padding:0 20rpx;">
@@ -261,15 +262,18 @@
 
         <view class="dividing-line"><!-- 分隔行 --></view>
 
-        <!-- <view class="item-options {{shop_config.order_balance_pay==1?'':'hide'}}">
-            <view class='label'>使用余额
-                <view class="b account_balance">￥{{member_account.balance}}</view>
+        <!-- <view class="item-options {{shop_config.order_balance_pay==1?'':'hide'}}"> -->
+        <view class="item-options flex-spb {{member_account.balance>0?'':'hide'}}">
+            <view class='label' style="width: auto">使用余额
+                <text class="b account_balance">￥{{member_account.balance}}</text>
             </view>
-            <view class='span'>使用
+            <view class='span'>
+                <switch checked bindchange="inputBalance" style="zoom:0.8;" color="#e40046"/>
+                <!-- 使用
                 <input type="digit" id="account_balance" bindinput='inputBalance' data-max="{{member_account.balance}}"
-                       placeholder="0.00"/>元
+                       placeholder="0.00"/>元 -->
             </view>
-        </view> -->
+        </view>
         <!--<view class="dividing-line">&lt;!&ndash; 分隔行 &ndash;&gt;</view>-->
         <!--
               <view class="item-options">
@@ -359,12 +363,13 @@
                     <view class='b' id="invoice_tax_money">{{order_invoice_money}}</view>
                 </view>
             </view>
-            <!-- <view class="p {{shop_config.order_balance_pay==1?'':'hide'}}">
+            <!-- <view class="p {{shop_config.order_balance_pay==1?'':'hide'}}"> -->
+            <view class="p {{balance>0?'':'hide'}}">
                 <view class='label'>使用余额：</view>
                 <view class='span'>￥
                     <view class='b' id="use_balance">{{balance}}</view>
                 </view>
-            </view> -->
+            </view>
         </view>
     </view>
 
@@ -389,27 +394,33 @@
     <view style="height: 50px"></view>
 
     <view class="order-total-pay bottom-fix" style='padding:0;'>
-        <view class="pay-container clearfix">
-            <view style='flex:1;display: flex;justify-content:flex-start;'>
-              <view class="span c-gray-darker">实付金额：</view>
-              <view class="span font-size-13 theme-price-color">
-                  <view class='b'>￥{{pay_money}}</view>
-                  <block wx:if='{{order_info.count_point_exchange != 0 && order_info.count_point_exchange != undefined}}'>
-                      <view class='span theme-price-color'>+{{order_info.count_point_exchange}}积分</view>
-                  </block>
-              </view>
+        <view class="pay-container clearfix" style="display: flex;justify-content:space-between;align-items: center;padding: 10rpx 20rpx;">
+            <view style="display: flex;flex-direction:column;line-height:40rpx;flex:1;">
+                <view style='flex:1;display: flex;justify-content:flex-start;'>
+                    <view class="span c-gray-darker">实付金额：</view>
+                    <view class="span font-size-13 theme-price-color">
+                        <view class='b'>￥{{pay_money}}</view>
+                        <block wx:if='{{order_info.count_point_exchange != 0 && order_info.count_point_exchange != undefined}}'>
+                            <view class='span theme-price-color'>+{{order_info.count_point_exchange}}积分</view>
+                        </block>
+                    </view>
+                </view>
+                <view wx:if='{{balance > 0}}' style="text-align:left">
+                    <text>余额支付：{{common.fixed(balance)}}</text>
+                    <text decode>&nbsp;&nbsp;微信支付：{{common.fixed(pay_money - balance)}}</text>
+                </view>
             </view>
             <!-- catchtap='commitOrder' -->
-            <block>
+            <!-- <block> -->
                 <!-- <view>{{order_source_type}}</view> -->
 
-                <form bindsubmit="commitOrder" report-submit="true">
-                    <button class="commit-bill-btn" formType="submit">提交订单</button>
-                </form>
+            <form bindsubmit="commitOrder" report-submit="true">
+                <button class="commit-bill-btn" formType="submit">提交订单</button>
+            </form>
                 
                 <!--<button class="commit-bill-btn" catchtap="commitOrder">提交订单</button>-->
                 <!-- <button class="commit-bill-btn" catchtap='sidShow'>提交订单</button> -->
-            </block>
+            <!-- </block> -->
         </view>
 
         <view class="{{isIphoneX?'Lise':''}}"></view>

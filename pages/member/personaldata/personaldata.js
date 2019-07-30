@@ -7,6 +7,7 @@ Page({
   data: {
     Base: '',
     defaultImg: '',
+    detail: {},
     user_info: {},
     listClickFlag: 0,
     isInside:0,   //是否有内购活动
@@ -56,6 +57,7 @@ Page({
           console.log(user_info);
           user_info.user_headimg = app.IMG(user_info.user_headimg); //图片路径处理
           that.setData({
+            detail: data,
             user_info: user_info,
             is_employee: data.is_employee
           })

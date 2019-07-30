@@ -28,12 +28,19 @@
           </view>
         </view>
       </view>
-
       <view  data-url="" class="view">
         <view>
           <view class="title">邮箱</view>
           <view class="cont-value" catchtap='listClick' data-url='member/updateemail/updateemail'>
             <view class="value">{{user_info.user_email!=''?user_info.user_email:'　'}}<text> > </text></view>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{detail&&detail.balance>0}}"  data-url="" class="view">
+        <view>
+          <view class="title">余额</view>
+          <view class="cont-value">
+            <view class="value">{{detail.balance}}</view>
           </view>
         </view>
       </view>

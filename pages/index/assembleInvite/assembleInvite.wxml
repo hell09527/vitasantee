@@ -8,10 +8,7 @@
 </view>
 <block wx:if="{{detail}}">
     <!-- 自定义头部 -->
-    <tabTitle title="{{title}}">
-        <!-- 自定义返回按钮与home按钮 -->
-        <image slot="left" class="nav-icon {{stackOne?' home':''}}" bindtap="navigateTap" src="{{stackOne?'/images/bottom/home_uncheck.png':'/images/index/left.png'}}" mode="aspectFit"/>
-    </tabTitle>
+    <tabTitle title="{{title}}" bindnavigateTap="navigateTap"></tabTitle>
     <!-- 主体内容 -->
     <view class="assemble-invite">
         <view class="goods-detail">
@@ -88,13 +85,13 @@
             </view>
         </view>
         <!-- 未参与显示商品详情 -->
-        <view wx:if="{{!hasMine}}" class="goods-detail-template">
+        <view wx:if="{{!hasMine && pintTuanData.status <= 1}}" class="goods-detail-template">
             <template is="wxParse" data="{{wxParseData:description.nodes}}" />
         </view>
     </view>
     <!-- 已参与显示推荐团购商品  -->
-    <view wx:if="{{hasMine}}" class="goods-detail-template">
-        <view class="title">拼购推荐</view>
+    <view wx:if="{{hasMine || pintTuanData.status > 1}}" class="goods-detail-template">
+        <view wx:if="{{recommend.length > 0}}" class="title">拼购推荐</view>
         <view wx:for="{{recommend}}" wx:key="{{index}}" class="assemble-shop-item">
             <template is="newProductTemplate" data="{{...item,index,is_member_fav_goods:3,assembeTypeState:'一起团'}}" />
         </view>

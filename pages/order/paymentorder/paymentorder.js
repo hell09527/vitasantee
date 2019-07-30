@@ -512,7 +512,7 @@ Page({
                 let data = res.data;
                 console.log(data);
                 if (code == 0) {
-                    data.discount_money = 0;
+                    // data.discount_money = 0;
 
                     if (that.data.ask == 0) {
                         if (typeof data.card_no !== 'undefined') {
@@ -649,6 +649,14 @@ Page({
                         shop_config: data.shop_config,
                     })
                     that.lodingShippingTime(that, data.currentTime);
+                    // 存在余额默认使用
+                    if(data.member_account&&data.member_account.balance > 0){
+                        that.inputBalance({
+                            detail:{
+                                value: true
+                            }
+                        });
+                    }
                 } else {
                     //console.log(444)
                 }
@@ -1285,17 +1293,26 @@ Page({
     /**
      * 余额输入
      */
-    inputBalance: function (event) {
+    inputBalance: function (e) {
         let that = this;
-        let balance = event.detail.value;
-        let max_balance = parseFloat(event.currentTarget.dataset.max);
-
+        let checked = e.detail.value;
+        let balance = 0;
+        let order_info = that.data.order_info; //待付款订单信息
+        let count_money = parseFloat(order_info.count_money); //商品总价
+        // let balance = e.detail.value;
+        // let max_balance = parseFloat(e.currentTarget.dataset.max);
+        let max_balance = parseFloat(that.data.member_account.balance);//用户余额
+        if(checked){
+            if(max_balance >= count_money){
+                balance = count_money;
+            }else{
+                balance = max_balance;
+            }
+        }
         let delivery_type = that.data.delivery_type; //配送方式
         let express = delivery_type == 1 ? parseFloat(that.data.express_money) : parseFloat(that.data.pick_up_money); //运费
         let coupon_money = parseFloat(that.data.coupon_money) // 优惠券金额
-        let order_info = that.data.order_info; //待付款订单信息
         let discount_money = parseFloat(order_info.discount_money); //优惠金额
-        let count_money = parseFloat(order_info.count_money); //商品总价
         discount_money = discount_money + coupon_money;
         let order_invoice_tax = parseFloat(that.data.shop_config.order_invoice_tax); //发票税率
         let invoice_need = that.data.invoice_need; //是否需要发票
@@ -1317,7 +1334,7 @@ Page({
         balance = parseFloat(balance).toFixed(2);
         balance = isNaN(balance) ? 0.00 : balance;
 
-        if (balance <= 0.01 && balance > 0) {
+        if (balance < 0.01 && balance > 0) {
             balance = 0.00;
             app.showBox(that, '余额输入错误');
         }
@@ -1346,7 +1363,7 @@ Page({
 
         that.setData({
             balance: balance,
-            pay_money: pay_money
+            // pay_money: pay_money
         })
         return balance;
     },
@@ -1500,6 +1517,11 @@ Page({
             app.restStatus(that, 'commitOrderFlag');
             return false;
         }
+         // 余额
+         console.log('消耗余额：'+that.data.balance)
+         if(that.data.balance > 0){
+             pay_money = pay_money - that.data.balance;
+         }
 
 
         // if (that.data.userN.length == 0 || that.data.passW.length == 0) {
@@ -1541,7 +1563,7 @@ Page({
                 pay_money = that.data.pay_money
                 pay_money = Number(pay_money) - Number(that.data.max)
             }
-
+           
 
             pay_money = pay_money.toFixed(2);
             pay_type = pay_money == 0 ? 0 : pay_type;
@@ -1598,7 +1620,10 @@ Page({
             data.pt_startup_id = pt_startup_id;
             data.pintuan_type = 2;
         }
+        console.log('下单数据');
+        console.log(data);
         console.log(that.data.uid)
+        console.log(pay_money)
         app.sendRequest({
             url: url,
             data: data,

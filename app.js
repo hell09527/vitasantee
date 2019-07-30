@@ -7,7 +7,6 @@ App({
  /a/dsa sadaswqwqewqkhhjhjhqqweqwewqewe  * 全局变量
    */
   globalData: {
-    // siteBaseUrl: "https://dev02.vitasantee.com/",
     siteBaseUrl: "", //服务器url
     wx_info: null,
     encryptedData: '',
@@ -35,6 +34,7 @@ App({
       is_use: 0
     },
     isIphoneX: false,
+    netWorkType: 'none',
     userInfo: null,
     webSiteInfo: {},
     tab_parm: '',
@@ -48,17 +48,16 @@ App({
     unregistered: 0, //登录状态(已登录0,未登录1)
     recommendUser: '',   //惠选师推荐人
     traffic_acquisition_source: '',     //引流来源
+    isGetUsering: false
   },
   //app初始化函数
   onLaunch: function () {
     let that = this;
 
     // 请求初始化(默认开发模式)
-
     SERVERS.init(false);
 
     that.globalData.siteBaseUrl = SERVERS.getBase();
-
     //请求拦截函数
     SERVERS.interceptors.request = function (data) {
       wx.showLoading({
@@ -68,12 +67,11 @@ App({
       data.token = that.globalData.token;
       return data;
     };
-    
     SERVERS.interceptors.response = function (res) {
       // 请求部分报错统一处理
       let { code, message } = res.data;
       if (code == -50) {
-        if(message != '手机号已存在'){
+        if (message != '手机号已存在') {
           that.showModal({
             content: message,
           });
@@ -87,26 +85,23 @@ App({
       return res.data;
     };
     // 请求完成(无论请求成功还是失败都将执行)
-    SERVERS.interceptors.finally = function(){
+    SERVERS.interceptors.finally = function () {
       wx.hideLoading();
     }
-
+    // 本地存储检测
+    that.localStorageCheck();
     // 用户设备检测(统计)
     that.userDeviceDetect();
-
-    // 更新检查
-    that.updateCheck();
-
-    // 自动登录(如果已授权)
-    that.getwechatUserInfo();
-
-    // 默认数据
-    that.defaultImg();
-    // that.webSiteInfo();//被注释原因未知
-    that.copyRightIsLoad();
-    that.loadTask();
+    // 请求数据
+    core.wxApi('getNetworkType').then(res => {
+      that.globalData.netWorkType = res.networkType;
+      if(res.networkType != 'none'){
+        that.loadData();
+      }
+    }).catch(e => console.log(e));
+    
   },
-  onShow: function (options) {
+  onShow: function () {
     let that = this;
     // 全局iphone X判断
     core.wxApi('getSystemInfo').then(res => {
@@ -114,11 +109,60 @@ App({
         that.globalData.isIphoneX = true;
       }
     }).catch(e => console.log(e));
+    // 开启网络监测
+    that.netListener();
+  },
+  //loadData
+  loadData() {
+    let that = this;
+    // 更新检查
+    this.updateCheck();
+    // 默认数据
+    this.defaultImg();
+    // that.webSiteInfo();//被注释原因未知
+    this.copyRightIsLoad();
+    this.loadTask();
+    // 自动登录(如果已授权)
+    return this.getwechatUserInfo();
+  },
+  // 用户网络监测
+  netListener() {
+    let that = this;
+    wx.onNetworkStatusChange((res) => {
+      console.log(res);
+      // 断网提示
+      if (!res.isConnected) {
+        wx.showToast({
+          icon: 'none',
+          title: '网络连接已断开'
+        });
+      }
+      // 之前断网并且现在已联网
+      if (that.globalData.netWorkType == 'none' && res.isConnected) {
+        let pages = getCurrentPages();
+        console.log(pages.map(p => p.route))
+        let stackTop = pages[pages.length - 1];
+        // 防止首页多次请求getUserInfo导致解码失败(切的太快，，不需要重新获取，，直接刷新首页吧)
+        if(that.globalData.isGetUsering)return reload(stackTop);
+        // 网络重连后
+        debounce(() => {
+          that.loadData().then(res => {
+            reload(stackTop)
+          }).catch(() => reload(stackTop));
+        },2000)();
+        // 重载页面
+        function reload(stackTop) {
+          stackTop.onLoad(stackTop.options);
+          stackTop.onShow();
+        }
+      }
+      that.globalData.netWorkType = res.networkType;
+    });
   },
   // 用户设备检测(统计用户调研)、、备用
-  userDeviceDetect(){
+  userDeviceDetect() {
     core.wxApi('getSystemInfo').then(res => {
-      for(let key in core.systemInfo){
+      for (let key in core.systemInfo) {
         console.log(`${core.systemInfo[key]}: ${res[key]}`);
       }
     }).catch(e => console.log(e));
@@ -126,45 +170,100 @@ App({
   //登录检测(用户是否已授权(或者授权未过期) -> wx.login获取code -> wx.getUserInfo获取用户信息)
   getwechatUserInfo: function () {
     let that = this;
-    core.checkAuthorize('scope.userInfo').then(core.wxApi).then(res => {
-      that.globalData.code = res.code;
-      return core.wxApi('getUserInfo');
-    }).then(res => {
-      that.setWxInfo(res.rawData);
-      that.setEncryptedData(res.encryptedData);
-      that.setIv(res.iv);
-      that.wechatLogin(); //自动登录或注册
-    }).catch(e => {
-      console.log(e);
-      that.globalData.unregistered = 1;
+    return new Promise((resolve, reject) => {
+      that.globalData.isGetUsering = true;
+      core.checkAuthorize('scope.userInfo').then(core.wxApi).then(res => {
+        that.globalData.code = res.code;
+        return core.wxApi('getUserInfo');
+      }).then(res => {
+        that.globalData.isGetUsering = false;
+        console.log('getUserInfo');
+        console.log(res);
+        that.setWxInfo(res.rawData);
+        that.setEncryptedData(res.encryptedData);
+        that.setIv(res.iv);
+        return that.wechatLogin(); //自动登录或注册
+      }).then(res => {
+        resolve(res)
+      }).catch(e => {
+        that.globalData.unregistered = 1;
+        that.globalData.isGetUsering = false;
+        console.log(e);
+        reject(e);
+      });
     });
+
   },
   //微信登录(按钮)
   wechatLogin: function () {
     let that = this;
     let { code, store_id, encryptedData, iv } = that.globalData;
-    if (encryptedData == undefined || iv == undefined) {
-      return false;
-    }
-    // 登录接口
-    SERVERS.LOGIN.getWechatEncryptInfo.post({
-      code: code,
-      encryptedData: encryptedData,
-      iv: iv,
-      store_id
-    }).then(res => {
-      let code = res.code;
-      if (code == 0 || code == 10) {
-        that.globalData.unregistered = 0;
-        that.setOpenid(res.data.openid);
-        that.setToken(res.data.token);
-        if (that.employIdCallback) {
-          that.employIdCallback(res.data.token)
-        } 
-      }else{
-        that.globalData.unregistered = 1;
+    return new Promise((resolve, reject) => {
+      if (encryptedData == undefined || iv == undefined) {
+        return reject(null);
       }
-    }).catch(e => console.log(e));
+      // 登录接口
+      SERVERS.LOGIN.getWechatEncryptInfo.post({
+        code: code,
+        encryptedData: encryptedData,
+        iv: iv,
+        store_id
+      }).then(res => {
+        let code = res.code;
+        if (code == 0 || code == 10) {
+          that.globalData.unregistered = 0;
+          that.setOpenid(res.data.openid);
+          that.setToken(res.data.token);
+          if (that.employIdCallback) {
+            that.employIdCallback(res.data.token)
+          }
+          resolve(res.data);
+        } else {
+          that.globalData.unregistered = 1;
+          reject(1);
+        }
+      }).catch(e => reject(e));
+    });
+  },
+  // 本地文件存储检测
+  localStorageCheck() {
+    let fs = wx.getFileSystemManager();
+    fs.stat({
+      path: wx.env.USER_DATA_PATH,
+      recursive: true,
+      success: res => {
+        let size = 0;
+        let fileList = [];
+        if (Object.prototype.toString.call(res.stats) == '[object Array]') {
+          for (let i = 0, len = res.stats.length; i < len; i++) {
+            if (res.stats[i].path.match(/(.png)$/)) {
+              fileList.push(wx.env.USER_DATA_PATH + '/' + res.stats[i].path);
+            }
+            size += res.stats[i].stats.size;
+          }
+        } else {
+          size = res.stats.size;
+        }
+        size = size / 1024 / 1024;
+        console.log('图片文件列表：', fileList);
+        console.log('当前内存已使用：' + size.toFixed(2) + 'M');
+        if (size >= 9) { //最大10M(预清空)
+          Promise.all(fileList.map(f => rmFile(fs, f))).then(res => {
+            console.log('内存已满自动清空');
+          }).catch(e => console.log(e));
+        }
+      }
+    });
+    // 删除文件
+    function rmFile(fs, path) {
+      return new Promise((resolve, reject) => {
+        fs.unlink({
+          filePath: path,
+          success: res => resolve(res),
+          fail: e => reject(e)
+        });
+      });
+    }
   },
   /**
    * 界面弹框
@@ -251,12 +350,12 @@ App({
    * 后台计划任务
    */
   loadTask() {
-    SERVERS.COMMON.load_task.post().then(res => {}).catch(e => console.log(e));
+    SERVERS.COMMON.load_task.post().then(res => { }).catch(e => console.log(e));
   },
   // 更新检查
   updateCheck() {
     const updateManager = wx.getUpdateManager()
-    updateManager.onCheckForUpdate(res => {});
+    updateManager.onCheckForUpdate(res => { });
     updateManager.onUpdateReady(function () {
       wx.showModal({
         title: '更新提示',
@@ -289,7 +388,6 @@ App({
     let requestUrl;
     data.token = that.globalData.token;
     // console.log(data.token)
-
     if (param.method == '' || param.method == undefined) {
       param.method = 'POST';
     }
@@ -356,14 +454,22 @@ App({
           },
           fail: function (res) {
             that.hideToast();
-            wx.hideLoading();
-            that.showModal({
-              content: '请求失败,请检查网络',
-            })
+            // that.showModal({
+            //   content: '请求失败,请检查网络',
+            // })
+            debounce(function () {
+              wx.showToast({
+                title: '网络连接失败',
+                icon: 'none',
+                mask: false
+              });
+            }, 2000)();
             typeof param.fail == 'function' && param.fail(res.data);
           },
 
           complete: function (res) {
+            wx.hideLoading();
+            wx.stopPullDownRefresh();
             param.hideLoading || that.hideToast();
             typeof param.complete == 'function' && param.complete(res.data);
           }
@@ -575,6 +681,17 @@ App({
       that.sendRequest(params);
     })
   },
+})
 
 
-  })
+// 防抖
+function debounce(fn, wait) {    
+  var timeout = null;    
+  return function() {        
+      if(timeout !== null) return;
+      fn&&fn();       
+      timeout = setTimeout(() => {
+        clearTimeout(timeout)
+      }, wait);    
+  }
+}

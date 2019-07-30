@@ -480,19 +480,39 @@ Page({
     let k = event.currentTarget.dataset.key;
     let status = event.currentTarget.dataset.status;
     let cart_list = that.data.cart_list;
-    let total_price = that.data.total_price;
+    let total_price = parseFloat(that.data.total_price);
+    let inside_price = parseFloat(that.data.inside_price);
     let is_checked = 0;
     let check_all = 1;
+    //正常价格
     let promotion_price = parseFloat(cart_list[i][k].promotion_price);
+    // 内购价格
+    let interior_price = parseFloat(cart_list[i][k].interior_price);
     let num = parseInt(cart_list[i][k].num);
-    // let inside_price = 0;
+    let is_inside = cart_list[i][k].is_inside;
     if (status == 0) {
       status = 1;
-      total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
+      if(is_inside == 1){
+        total_price = parseFloat(total_price) + parseFloat(interior_price * num);
+        inside_price = parseFloat(inside_price) + parseFloat(interior_price * num);
+      }else{
+        total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
+      }
     } else {
       status = 0;
-      total_price = parseFloat(total_price) - parseFloat(promotion_price * num);
+      if(is_inside == 1){
+        total_price = parseFloat(total_price) - parseFloat(interior_price * num);
+        inside_price = parseFloat(inside_price) - parseFloat(interior_price * num);
+      }else{
+        total_price = parseFloat(total_price) - parseFloat(promotion_price * num);
+      }
     }
+    // if(is_inside == 1){
+    //   inside_price = parseFloat(inside_price) + parseFloat(inside_price_goods * num);
+    // }else{
+    //   inside_price = parseFloat(inside_price) - parseFloat(inside_price_goods * num);
+    // }
+    console.log(cart_list[i][k]);
     // try{
 
     // }catch(e){
@@ -511,13 +531,13 @@ Page({
         }
       }
     }
-
+    console.log(inside_price)
     that.setData({
       cart_list: cart_list,
       is_checked: is_checked,
       check_all: check_all,
-      // inside_price,
       total_price: total_price.toFixed(2),
+      inside_price: inside_price.toFixed(2)
     })
 
     this.keep_unselected();
@@ -549,6 +569,7 @@ Page({
     let check_all = that.data.check_all;
     let cart_list = that.data.cart_list;
     let total_price = 0.00;
+    let inside_price = 0.00;
     let status = 0;
 
     if (check_all == 1) {
@@ -564,8 +585,14 @@ Page({
         cart_list[index][key].status = status;
         if (status == 1) {
           let promotion_price = parseFloat(cart_list[index][key].promotion_price);
+          let interior_price = parseFloat(cart_list[index][key].interior_price);
           let num = parseInt(cart_list[index][key].num);
-          total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
+          if(cart_list[index][key].is_inside == 1){
+            total_price = parseFloat(total_price) + parseFloat(interior_price * num);
+            inside_price = parseFloat(inside_price) + parseFloat(interior_price * num);
+          }else{
+            total_price = parseFloat(total_price) + parseFloat(promotion_price * num);
+          }
         }
       }
     }
@@ -575,6 +602,7 @@ Page({
       cart_list: cart_list,
       is_checked: check_all,
       total_price: total_price.toFixed(2),
+      inside_price: inside_price.toFixed(2)
     })
     this.keep_unselected();
   },

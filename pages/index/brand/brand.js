@@ -20,6 +20,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    this.initData();
+  },
+  // 初始化数据
+  initData(){
     var that = this;
     let base = app.globalData.siteBaseUrl;
     let defaultImg = app.globalData.defaultImg;
@@ -97,7 +101,6 @@ Page({
         }
     }).catch(e => console.log(e));
   },
-
   // 跳转搜索页
   toSearch: function () {
     var that=this;
@@ -190,7 +193,9 @@ Page({
       search_text: '',
       isInput: 1,
     })
-
+    if(!that.data.goods_category_list || that.data.goods_category_list.length == 0){
+      this.initData();
+    }
   },
 
   /**
@@ -211,7 +216,7 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-    this.onLoad();
+    this.initData();
   },
 
   /**
