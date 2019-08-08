@@ -149,6 +149,35 @@
             </block>
           </view>
         </view>
+         <!-- 拼团 -->
+        <view wx:if="{{assemble_list&&assemble_list.length>0}}" class='Timelimit' style="margin-bottom: 20rpx;">
+          <view class='recommended_title' style='padding-bottom:20rpx;background: #fff;' bindtap="toAssemblePage">
+            <view class='timeLimit-title'>
+              <view style='position: relative' class="flex-spb">
+                <view class='activity_title_border' style="width: 6px;height: 60rpx;"></view>
+                <view class='recommended_title_text' style="margin-left: 20rpx">拼团</view>
+              </view>
+            </view>
+            <!-- https://static.vitasantee.com/friends.png -->
+            <view class='flex' style="color: gray;">
+              <image style="margin-right: 10rpx;width: 120rpx;" src="https://static.vitasantee.com/friends.png" mode="widthFix" />
+              他们正在拼
+              <image style="margin-left: 10rpx;" src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" class="more" mode="widthFix" />
+            </view>
+          </view>
+          <view class='Timelimit_item'>
+            <block wx:for='{{assemble_list}}' wx:key='' wx:for-item='item' wx:for-index='index'>
+              <view class='Timelimit_item_detail label-tips' data-label="{{item.people_num}}人团" wx:if='{{index<4}}' data-type="assemble" catchtap='toGood' data-id='{{item.goods_id}}' data-ptid='{{item.pt_goods_id}}'>
+                <image src="{{item.pic_cover_small}}" lazy-load='true' mode="aspectFill" style="width: 100%;height: 68px;"/>
+                <text class='Timelimit_text'>{{item.goods_name}}</text>
+                <view class='Timelimit_price'>
+                  ￥{{common.fixed(item.price*item.discount/10)}}
+                  <!-- <view style='text-decoration:line-through;'>￥{{item.market_price}}</view> -->
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
         <!-- 新品推荐热卖推荐限时抢购 -->
         <view class='recommended_box'>
           <view class='recommended_item_box'></view>
@@ -231,33 +260,6 @@
               <view class='recommended_detail_item' wx:if='{{index<3}}'>
                 <image lazy-load="true" src="{{shops.pic_cover_small}}" mode="widthFix" />
                 <text decode="true">{{shops.introduction}}</text>
-              </view>
-            </block>
-          </view>
-        </view>
-         <!-- 拼团 -->
-        <view wx:if="{{assemble_list&&assemble_list.length>0}}" class='Timelimit' style="margin-bottom: 20rpx;">
-          <view class='recommended_title' style='padding-bottom:20rpx;background: #fff;' bindtap="toAssemblePage">
-            <view class='timeLimit-title'>
-              <view style='position: relative' class="flex-spb">
-                <view class='activity_title_border' style="width: 6px;height: 60rpx;"></view>
-                <view class='recommended_title_text' style="margin-left: 20rpx">邀好友一起拼</view>
-              </view>
-            </view>
-            <view class='flex'>
-              更多
-              <image src="https://static.vitasantee.com/65F560A3-B030-42AE-8C27-D6FAA5C87C94@2x.png" class="more" mode="widthFix" />
-            </view>
-          </view>
-          <view class='Timelimit_item'>
-            <block wx:for='{{assemble_list}}' wx:key='' wx:for-item='item' wx:for-index='index'>
-              <view class='Timelimit_item_detail' wx:if='{{index<4}}' data-type="assemble" catchtap='toGood' data-id='{{item.goods_id}}' data-ptid='{{item.pt_goods_id}}'>
-                <image src="{{item.pic_cover_small}}" lazy-load='true' mode="aspectFill" style="width: 100%;height: 68px;"/>
-                <text class='Timelimit_text'>{{item.goods_name}}</text>
-                <view class='Timelimit_price'>
-                  ￥{{common.fixed(item.price*item.discount/10)}}
-                  <!-- <view style='text-decoration:line-through;'>￥{{item.market_price}}</view> -->
-                </view>
               </view>
             </block>
           </view>

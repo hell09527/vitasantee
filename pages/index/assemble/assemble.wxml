@@ -9,7 +9,7 @@
         </view>
         <view class="assemble-shop-list">
             <view wx:for="{{shopList}}" wx:key="{{index}}" class="assemble-shop-item">
-                <template is="newProductTemplate" data="{{...item,index,unregistered,tel,assembeTypeState: '一起拼'}}" />
+                <template is="newProductTemplate" data="{{...item,index,unregistered,tel,assembeTypeState: '去开团'}}" />
             </view>
             <view wx:if="{{shopList&&shopList.length == 0}}" class="empty">
                 暂无拼团商品数据

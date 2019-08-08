@@ -1,6 +1,7 @@
 var wxParse = require('../../../wxParse/wxParse.js');
 const SERVERS = require('../../../utils/servers.js');
 var time = require("../../../utils/util.js");
+var core = require("../../../utils/core.js");
 var timer = null; 
 var assembleTimer = null;
 
@@ -106,6 +107,7 @@ Page({
     pt_goods_id: '', //拼团商品id
     pt_startup_id: '',//拼团记录id(用于和已开始拼团合团)
     ptStatusList: ['', '普通团', '邀新团'],
+    product: {}, //好物圈分享数据
   },
   //测试数据
   last: function () {
@@ -643,27 +645,38 @@ Page({
               spec_value_data: data.img_list[0].pic_cover_big,
               spec_value_data_big_src: data.img_list[0].pic_cover_big,
             };
+            // 排序函数
             function actualTmpPrice(a,b){
-              let t = a.discount*a.price - b.discount*b.price;
-              console.log('hh2 ',b.discount*b.price);
+              let t = a.discount_price - b.discount_price;
               return t;
             };
-            //是否存在秒杀
+            // 默认规格名称
             let sku_name = '';
             if(data.spec_list[0]&&data.spec_list[0].value[0]){
               sku_name = data.spec_list[0].value[0].spec_value_name;
             }
+            // 默认规格最低价格显示
+            let tmpSkuList = data.sku_list.sort((a,b) => a.promote_price - b.promote_price);
+            if(tmpSkuList[0]){
+              sku_id = tmpSkuList[0].sku_id;
+              sku_name = tmpSkuList[0].sku_name;
+            }
+            //其次秒杀最低价
             if (data.seckill_detail && data.seckill_detail.length > 0) {
               let tmpSecList = data.seckill_detail.sort(actualTmpPrice);
-              
               let defaultSecItem = tmpSecList[0];
-              console.log(defaultSecItem);
               if (defaultSecItem) {
                 sku_id = defaultSecItem.sku_id;
                 sku_name = defaultSecItem.sku_name;
               }
             }
-            console.log(sku_name);
+            // 存在内购
+            let inside_sku = data.sku_list.filter(i => i.is_inside_sell == 1);
+            if(inside_sku.length > 0 && that.data.is_employee == 1){ //存在内购且当前用户为员工
+              let inside_list = inside_sku.sort((a,b) => a.inside_price - b.inside_price);
+              sku_id = inside_list[0].sku_id;
+              sku_name = inside_list[0].sku_name;
+            }
             //规格默认选中(通过规格名称)
 
             for (let i = 0; i < data.spec_list.length; i++) {
@@ -689,6 +702,7 @@ Page({
 
 
             console.log(data.spec_list);
+            console.log(attr_value_items);
             
 
             let ori_range = [];  //显示价格范围
@@ -711,12 +725,19 @@ Page({
                 member_price = data.sku_list[i].member_price;
                 data.price = data.sku_list[i].price;
                 data.promotion_price = data.sku_list[i].promotion_price || data.sku_list[i].promote_price;
+                data.market_price = data.sku_list[i].market_price;
                 stock = data.sku_list[i].stock;
                 sku_info = data.sku_list[i];
                 data.mansong_name = data.sku_list[i].mansong_name;
+                // 内购价格设置
+                if(data.sku_list[i].is_inside_sell == 1){
+                  is_inside_sell = 1;
+                  data.inside_price = data.sku_list[i].inside_price;
+                }
               }
             }
             console.log(stock, 'stock');
+            console.log(sku_id, 'sku_id');
 
             let Max_ori = Math.max(...ori_range).toFixed(2);
             let Min_ori = Math.min(...ori_range).toFixed(2);
@@ -783,6 +804,9 @@ Page({
 
             console.log(data.sku_list.length, 'ori_range');
             console.log(scale, 'bazaar_range');
+            // 初始化好物分享数据
+            that.initProduct(goods_info);
+            
             that.setData({
               goods_info: goods_info,
               spec_list: data.spec_list,
@@ -799,7 +823,8 @@ Page({
               Min_bazaar,
               scale,
               activeSecKill,
-              activeSecKillShow
+              activeSecKillShow,
+              is_inside_sell
             })
 
             let comment_type = 0;
@@ -825,7 +850,42 @@ Page({
       url: '/pages/goods/brandlist/brandlist?id=' + id,   //+'&store_id=1'
     })
   },
-
+  initProduct(goodsInfo){
+    let url = '/pages/goods/goodsdetail/goodsdetail?';
+    let share = {
+      goods_id: goodsInfo.goods_id
+    }
+    if(this.data.isAssemble){
+      share.isAssemble = true;
+      share.pt_goods_id = this.options.pt_goods_id;
+    }
+    let product = {
+      item_code: goodsInfo.goods_id.toString(),
+      title: goodsInfo.goods_name,
+      desc: goodsInfo.introduction || goodsInfo.goods_name,
+      category_list: goodsInfo.category_name.split('>').map(i => i.trim()).filter( i => i != ''),
+      image_list: goodsInfo.img_list.map(i => i.pic_cover_big),
+      src_mini_program_path: url + core.serilize(share),
+      sku_list: goodsInfo.sku_list.map(sku => {
+        let state = 1; //在售
+        if(goodsInfo.state == 0){ //下架
+          state = 2;
+        }else if(sku.stock == 0){ //卖完
+          state = 3;
+        }
+        return {
+          sku_id: sku.sku_id,
+          price: sku.promote_price,
+          original_price: sku.price,
+          state
+        }
+      }),
+      brand_info:{
+        name: app.globalData.webSiteInfo.title
+      }
+    }
+    this.setData({ product });
+  },
   /**
    * 生命周期函数--监听页面隐藏
    */
@@ -888,41 +948,35 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function (options) {
+  onShareAppMessage: function () {
+    console.log(this)
     let that = this;
     let goods_info = that.data.goods_info;
     let uid = app.globalData.uid;
-    let XQ_share_url = '/pages/goods/goodsdetail/goodsdetail?goods_id=' + goods_info.goods_id;
     let infoText = that.data.goods_info.introduction;
-    console.log("identifying: " + uid);
-    if (that.data.distributor_type == 0) {
-      return {
-        title: infoText,
-        path: XQ_share_url,
-        imageUrl: goods_info.picture_detail.pic_cover_small,
-        success: function (res) {
-          app.showBox(that, '分享成功');
-        },
-        fail: function (res) {
-          app.showBox(that, '分享失败');
-        }
+    let share_url = '/pages/goods/goodsdetail/goodsdetail?';
+    // 默认获取打开该页面的参数
+    let shareData = {
+      goods_id: goods_info.goods_id
+    };
+    if(that.data.distributor_type != 0)shareData.uid = uid;
+    if(that.data.isAssemble){
+      shareData.isAssemble = true;
+      shareData.pt_goods_id = that.options.pt_goods_id;
+    }
+    share_url += core.serilize(shareData);
+    console.log(share_url);
+    return {
+      title: infoText,
+      path: share_url,
+      imageUrl: goods_info.picture_detail.pic_cover_small,
+      success: function (res) {
+        app.showBox(that, '分享成功');
+      },
+      fail: function (res) {
+        app.showBox(that, '分享失败');
       }
     }
-    else {
-      return {
-        title: infoText,
-        path: XQ_share_url + '&uid=' + uid,
-        imageUrl: goods_info.picture_detail.pic_cover_small,
-        success: function (res) {
-          app.showBox(that, '分享成功');
-        },
-        fail: function (res) {
-          app.showBox(that, '分享失败');
-        }
-      }
-    }
-
-
     let is_share = 0;
 
     that.setData({
@@ -2690,7 +2744,7 @@ Page({
     console.log(cur);
     // 一开始秒杀或者存在秒杀
     if ((list.indexOf(detail.promotion_type) != -1 && detail.promotion_detail) || cur) {
-      return parseInt(cur.discount) != 10;
+      return cur?parseInt(cur.discount) != 10:false;
     } else{
       return false;
     }
@@ -2813,4 +2867,8 @@ Page({
       isHide: 0
     })
   },
+  // 好物圈分享失败
+  hwError(e){
+    console.log(e);
+  }
 })

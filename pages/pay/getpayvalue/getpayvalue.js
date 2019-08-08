@@ -68,7 +68,7 @@ Page({
                         out_trade_no: out_trade_no,
                         pay_money: pay_money,
                         nick_name: nick_name,
-                        pt_startup_id: options.pt_startup_id
+                        pt_startup_id: options.pt_startup_id || ''
                     })
                 } else {
                     wx.switchTab({
@@ -137,122 +137,139 @@ Page({
      */
     payOrder: function (event) {
         let that = this;
-        let pay_money = that.data.pay_money
-        let out_trade_no = that.data.out_trade_no;
-        let openid = app.globalData.openid;
-        console.log(openid, '135')
         let payOrderFlag = that.data.payOrderFlag;
-        console.log(that.data.ty)
-
         if (payOrderFlag == 1) {
             return false;
         }
         app.clicked(that, 'payOrderFlag');
-
-        // SERVERS.CART.appletWechatPay.post({
-        //     out_trade_no: out_trade_no,
-        //     openid: openid
-        // }).then(res => console.log(res)).catch(e => console.log(e));
-
-        app.sendRequest({
-            url: 'api.php?s=pay/appletWechatPay',
-            data: {
-                out_trade_no: out_trade_no,
-                openid: openid
-            },
-            success: function (res) {
-                let data = res.data;
-                if (data.return_code == 'FAIL') {
-                    app.showBox(that, '支付失败');
-                    app.restStatus(that, 'payOrderFlag');
-                    return false;
-                }
-                let out_trade_no = that.data.out_trade_no;
-                console.log(res, "iuhygtfrewdewc", that.data.ty)
-                wx.requestPayment({
-                    timeStamp: data.timestamp.toString(),
-                    nonceStr: data.nonce_str,
-                    'package': 'prepay_id=' + data.prepay_id,
-                    signType: 'MD5',
-                    paySign: data.PaySign,
-                    success: function (res) {
-                        console.log(res, 'UId');
-                        //  优惠卷
-                        app.sendRequest({
-                            url: 'api.php?s=Order/giveFullOfGifts',
-                            data: {
-                                out_trade_no: out_trade_no,
-                            },
-                            success(res) {
-
-                            }
-                        })
-
-                        app.sendRequest({
-                            url: 'api.php?s=order/orderPayTemplateCreate',
-                            data: {
-                                out_trade_no: out_trade_no,
-                                open_id: app.globalData.openid,
-                                form_id: event.detail.formId,
-                                warn_type: 1,
-                                send_type: that.data.ty,
-                                price: pay_money
-                            },
-                            success(c) {
-                                "use strict";
-                                console.log(that.data.present)
-                                that.data.present
-                                if (that.data.present == 1) {
-                                    // console.log(1111)
-                                    app.aldstat.sendEvent('礼物商品支付成功');
-                                    wx.navigateTo({
-                                        url: '/pages/pay/paycallback/paycallback?type=1&&status=1&&out_trade_no=' + out_trade_no + '&pt_startup_id=' + that.data.pt_startup_id,
-                                    })
-                                } else if (that.data.present == 2) {
-                                    // app.aldstat.sendEvent('支付成功');
-                                    // console.log(222)
-                                    wx.reLaunch({
-                                        url: '/package/payMembers/paySuccess/paySuccess',
-                                    })
-                                } else {
-                                    // console.log(333)
-                                    app.aldstat.sendEvent('普通商品支付成功');
-
-                                    wx.navigateTo({
-                                        url: '/pages/pay/paycallback/paycallback?status=1&out_trade_no=' + out_trade_no + '&pt_startup_id=' + that.data.pt_startup_id,
-                                    })
-                                }
-
-                            }
-                        });
-
-                        // wx.navigateTo({
-                        //    url: '/pages/pay/paycallback/paycallback?status=1&out_trade_no=' + out_trade_no,
-                        // })
-                    },
-                    fail: function (res) {
-                        console.log(res);
-                        //取消支付
-                        if (res.errMsg == 'requestPayment:fail cancel') {
-                            app.showBox(that, '取消支付');
-                            if(!that.data.pt_startup_id){
-                                wx.navigateTo({
-                                    url: '/pages/pay/paycallback/paycallback?status=-1&out_trade_no=' + out_trade_no + '&pt_startup_id=' + that.data.pt_startup_id,
-                                });
-                            }else{
-                                wx.navigateBack({
-                                    delta: 2
-                                });
-                            }
-                        }
-                    },
-                    complete: function (res) {
-                        // wx.reLaunch({
-                        //   url: '/pages/pay/paycallback/paycallback',
-                        // })
+        console.log(typeof that.data.pt_startup_id)
+        console.log(that.data.pt_startup_id)
+        // 拼团
+        // if(that.data.pt_startup_id && that.data.pt_startup_id != 'undefined'){
+        //     that.createPintuanTemplate(event).then(that.startPayOrder).then(() => that.createTemplate(event)).then(this.payAfter).catch(e => console.log(e));
+        // }else{
+            
+        // }     
+        that.startPayOrder().then(() => that.createTemplate(event)).then(this.payAfter).catch(e => console.log(e));      
+    },
+    payAfter(){
+        let that = this;
+        let out_trade_no = that.data.out_trade_no;
+        console.log(that.data.present)
+        if (that.data.present == 1) {
+            app.aldstat.sendEvent('礼物商品支付成功');
+            wx.navigateTo({
+                url: '/pages/pay/paycallback/paycallback?type=1&&status=1&&out_trade_no=' + out_trade_no + '&pt_startup_id=' + that.data.pt_startup_id,
+            })
+        } else if (that.data.present == 2) {
+            // app.aldstat.sendEvent('支付成功');
+            wx.reLaunch({
+                url: '/package/payMembers/paySuccess/paySuccess',
+            })
+        } else {
+            app.aldstat.sendEvent('普通商品支付成功');
+            wx.navigateTo({
+                url: '/pages/pay/paycallback/paycallback?status=1&out_trade_no=' + out_trade_no + '&pt_startup_id=' + that.data.pt_startup_id,
+            })
+        }
+    },
+    startPayOrder(){
+        let that = this;
+        let out_trade_no = that.data.out_trade_no;
+        let openid = app.globalData.openid;
+        return new Promise((resolve,reject) => {
+            app.sendRequest({
+                url: 'api.php?s=pay/appletWechatPay',
+                data: {
+                    out_trade_no: out_trade_no,
+                    openid: openid
+                },
+                success: function (res) {
+                    let data = res.data;
+                    if (data.return_code == 'FAIL') {
+                        app.showBox(that, '支付失败');
+                        app.restStatus(that, 'payOrderFlag');
+                        return false;
                     }
-                })
-            }
-        })
+                    let out_trade_no = that.data.out_trade_no;
+                    console.log(res, "iuhygtfrewdewc", that.data.ty)
+                    wx.requestPayment({
+                        timeStamp: data.timestamp.toString(),
+                        nonceStr: data.nonce_str,
+                        'package': 'prepay_id=' + data.prepay_id,
+                        signType: 'MD5',
+                        paySign: data.PaySign,
+                        success: function (res) {
+                            //  优惠卷
+                            app.sendRequest({
+                                url: 'api.php?s=Order/giveFullOfGifts',
+                                data: {
+                                    out_trade_no: out_trade_no,
+                                }
+                            })
+                            resolve(res);
+                        },
+                        fail: function (res) {
+                            console.log(res);
+                            //取消支付
+                            if (res.errMsg == 'requestPayment:fail cancel') {
+                                app.showBox(that, '取消支付');
+                                if(!that.data.pt_startup_id){
+                                    wx.navigateTo({
+                                        url: '/pages/pay/paycallback/paycallback?status=-1&out_trade_no=' + out_trade_no + '&pt_startup_id=' + that.data.pt_startup_id,
+                                    });
+                                }else{
+                                    wx.navigateBack({
+                                        delta: 2
+                                    });
+                                }
+                            }
+                        },
+                        complete: function (res) {
+                            // wx.reLaunch({
+                            //   url: '/pages/pay/paycallback/paycallback',
+                            // })
+                        }
+                    })
+                }
+            })
+        });
+    },
+    createPintuanTemplate(){
+        let that = this;
+        let pay_money = that.data.pay_money
+        let out_trade_no = that.data.out_trade_no;
+        return new Promise((resolve,reject) => {
+            app.sendRequest({
+                url: 'api.php?s=order/pintuanOrderPayTemplateCreate',
+                data: {
+                    out_trade_no: out_trade_no,
+                    open_id: app.globalData.openid,
+                    form_id: event.detail.formId
+                },
+                success: res => resolve(res),
+                fail: e => reject(e)
+            });
+        });
+    },
+    createTemplate(event){
+        let that = this;
+        let pay_money = that.data.pay_money
+        let out_trade_no = that.data.out_trade_no;
+        return new Promise((resolve,reject) => {
+            app.sendRequest({
+                url: 'api.php?s=order/orderPayTemplateCreate',
+                data: {
+                    out_trade_no: out_trade_no,
+                    open_id: app.globalData.openid,
+                    form_id: event.detail.formId,
+                    warn_type: 1,
+                    send_type: that.data.ty,
+                    price: pay_money
+                },
+                success: res => resolve(res),
+                fail: e => reject(e)
+            });
+        });
     }
 })

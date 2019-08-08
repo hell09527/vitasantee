@@ -424,6 +424,7 @@ Page({
    */
   refund: function (event) {
     let that = this;
+    let form_id = event.detail.formId;
     let refundFlag = that.data.refundFlag;
     let order_id = that.data.order_id;
     let order_goods_id = that.data.order_goods_id;
@@ -473,7 +474,9 @@ Page({
         refund_type: refund_type,
         refund_require_money: refund_require_money,
         refund_reason: refund_reason,
-        refund_require_num: refund_require_num
+        refund_require_num: refund_require_num,
+        open_id: app.globalData.openid,
+        form_id
       },
       success: function (res) {
         let code = res.code;
@@ -639,7 +642,6 @@ Page({
   },
   //滑动结束事件
   handletouchend: function (event) {
-    console.log(event, 222222)
     this.setData({
       isHide: 0
     })

@@ -115,8 +115,8 @@ Page({
   selectCheck: function (e) {
     let that = this;
     let id = e.currentTarget.dataset.id;
-    let child = e.currentTarget.dataset.child;   //第一个二级分类的id
-    let childId = child.child_list[0].category_id;
+    // let child = e.currentTarget.dataset.child;   //第一个二级分类的id
+    // let childId = child.child_list[0].category_id;
     // console.log(child.child_list[0].category_id)
     wx.navigateTo({
       url: '/pages/goods/goodslist/goodslist?first_index=' + id,

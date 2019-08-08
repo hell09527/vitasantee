@@ -85,15 +85,17 @@
             </view>
         </view>
         <!-- 未参与显示商品详情 -->
-        <view wx:if="{{!hasMine && pintTuanData.status <= 1}}" class="goods-detail-template">
-            <template is="wxParse" data="{{wxParseData:description.nodes}}" />
+        <view wx:if="{{!hasMine && pintTuanData.status <= 1}}" class="detail_info_wrap">
+            <view class="detail_list">
+                <template is="wxParse" data="{{wxParseData:description.nodes}}" />
+            </view>
         </view>
     </view>
     <!-- 已参与显示推荐团购商品  -->
     <view wx:if="{{hasMine || pintTuanData.status > 1}}" class="goods-detail-template">
         <view wx:if="{{recommend.length > 0}}" class="title">拼购推荐</view>
         <view wx:for="{{recommend}}" wx:key="{{index}}" class="assemble-shop-item">
-            <template is="newProductTemplate" data="{{...item,index,is_member_fav_goods:3,assembeTypeState:'一起团'}}" />
+            <template is="newProductTemplate" data="{{...item,index,is_member_fav_goods:3,assembeTypeState:'去开团'}}" />
         </view>
     </view>
 </block>

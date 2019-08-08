@@ -145,6 +145,10 @@ Page({
   initGoodsDetail(pintuan) {
     let that = this;
     let id = pintuan.goods_id;
+    //  wxParse下拉刷新时会造成样式丢失，销毁重置可恢复，但会闪烁
+    // that.setData({
+    //   description: null
+    // });
     SERVERS.GOODS.goodsDetail.post({
       goods_id: id
     }).then(res => {

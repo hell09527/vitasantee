@@ -42,8 +42,8 @@
              <view style='color:red;font-size: 14px;' wx:if='{{hint==3}}'>输入金额已超过可提现金额</view>
            
       <form bindsubmit="toApply" report-submit="true">
-          <button  wx:if='{{Astop && switchover == 1}}'  class='head-btn'  formType="submit" disabled >立即提现</button>
-          <button  wx:if='{{!Astop || switchover == 0}}'  class='head-btn'  formType="submit" disabled='false'>立即提现</button>
+          <button  wx:if='{{Astop && switchover == 1}}'  class='head-btn'  formType="submit" >立即提现</button>
+          <button  wx:if='{{!Astop || switchover == 0}}'  class='head-btn'  formType="submit" disabled>立即提现</button>
 
       </form>
     

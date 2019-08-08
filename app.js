@@ -36,7 +36,9 @@ App({
     isIphoneX: false,
     netWorkType: 'none',
     userInfo: null,
-    webSiteInfo: {},
+    webSiteInfo: {
+      title: '维美善特'
+    },
     tab_parm: '',
     tab_type: '',
     copyRight: {//页面底部logo
@@ -52,10 +54,15 @@ App({
   },
   //app初始化函数
   onLaunch: function () {
-    let that = this;
-
+    let that = this,DEV = false, title = {
+      dev: '卞如测试',
+      pro: '维美善特'
+    };
     // 请求初始化(默认开发模式)
-    SERVERS.init(false);
+    SERVERS.init(DEV);
+
+    // 小程序名称
+    that.globalData.webSiteInfo.title = title[DEV?'dev':'pro'];
 
     that.globalData.siteBaseUrl = SERVERS.getBase();
     //请求拦截函数
@@ -304,6 +311,7 @@ App({
       let { code, data } = res;
       if (code == 0) {
         that.globalData.webSiteInfo = data;
+        console.log(data);
         if (data.title != '' && data.title != undefined) {
           wx.setNavigationBarTitle({
             title: data.title,

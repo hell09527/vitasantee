@@ -57,7 +57,7 @@
                         <!-- <view class='span'>￥</view> -->
                         <view class="i js-goods-price price">￥{{goods_info.promotion_price}}</view>
                         <view class="span price-title js-price-title {{timer_array.end==1?'gray':''}}">
-                            限时体验
+                            {{goods_info.promotion_detail&&goods_info.promotion_detail.discount_name || goods_info.promotion_info || '限时体验'}}
                         </view>
                     </view>
                     <!-- <view class='em' class="original-price">{{goods_info.price}}</view> -->
@@ -232,7 +232,7 @@
                                 </view>
                             </view>
                         </view>
-                        <view class="assemble-btn" data-item="{{item}}" bindtap="assembleTap">一起拼</view>
+                        <view class="assemble-btn" data-item="{{item}}" bindtap="assembleTap">去参团</view>
                     </view>
                 </block>
                 
@@ -254,7 +254,7 @@
                                         </view>
                                     </view>
                                 </view>
-                                <view class="assemble-btn" data-item="{{ptItem}}" bindtap="assembleTap">一起拼</view>
+                                <view class="assemble-btn" data-item="{{ptItem}}" bindtap="assembleTap">去参团</view>
                             </view>
                         </swiper-item>
                     </swiper>
@@ -989,6 +989,7 @@
     <!-- 分享弹出框 +  制作海报 -->
     <view class="mask " wx:if="{{TT}}" id="mask" catchtap='popupClose'></view>
     <view class="orienation" wx:if="{{TT}}" animation='{{animation}}'>
+        <share-button class="hw-share" product="{{product}}" type="0" binderror="hwError"/>
         <button open-type="share">分享给好友</button>
         <button catchtap="producer">制作海报</button>
         <button catchtap='popupClose'>取消</button>

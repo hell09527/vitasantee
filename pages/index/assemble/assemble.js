@@ -139,6 +139,7 @@ Page({
         let list = res.data.data.map(item => {
           item.pic_cover_small = item.picture.pic_cover_small;
           item.promote_price = Number(item.price*item.discount/10).toFixed(2);
+          item.remain_price = Number(item.price - item.promote_price).toFixed(2);
           return item;
         });
         let page = that.data.page;

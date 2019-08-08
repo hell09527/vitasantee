@@ -1,5 +1,5 @@
 <template name="newProductTemplate">
-  <view class='goods_item' catchtap='toGood' data-id='{{goods_id}}' data-ptid="{{pt_goods_id}}" data-suid="{{pt_startup_id}}">
+  <view class="goods_item {{assembeTypeState?' label-tips':''}}" catchtap='toGood' data-id='{{goods_id}}' data-ptid="{{pt_goods_id}}" data-suid="{{pt_startup_id}}" data-label="{{people_num || 0}}人团">
       <image src="{{pic_cover_small}}" mode="widthFix" lazy-load="true"/>
       <view class='goods_detail'>
         <view style='font-size:14px;color:#333;'>
@@ -12,7 +12,8 @@
         <view class='goods_bottom'>
           <view class='goods_price'>
             <text style='font-size:14px;color:#005882;margin-right:8px;'>￥{{promote_price}}</text>
-            <view wx:if="{{market_price>promote_price}}">￥{{market_price}}</view>
+            <view wx:if="{{!remain_price && market_price - promote_price > 0}}">￥{{market_price}}</view>
+            <view wx:if="{{remain_price}}" style='color:#e40046;text-decoration: none;line-height: 40rpx'>省￥{{remain_price}}</view>
           </view>
           <!-- 拼团 -->
           <view wx:if="{{assembeTypeState}}" class="assembe-btn" data-id="{{goods_id}}" data-ptid="{{pt_goods_id}}" catchtap="assembeTap">{{assembeTypeState}}</view>

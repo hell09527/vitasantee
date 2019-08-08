@@ -101,9 +101,9 @@ Page({
         this.setData({
           layout: true
         })
-        that.weChatLoginModify(res.detail);
+        that.weChatLoginModify();
       } else {
-        that.weChatLoginModify(res.detail,that.weChatMobileLoginModify);
+        that.weChatLoginModify(that.weChatMobileLoginModify);
       }
     } else {
       this.setData({
@@ -114,17 +114,18 @@ Page({
   },
   /***
    * (修改)微信登录获取用户信息部分
-   * @param {object} info  用户授权后返回的数据(e.detail)
    * @param {function} fn  用户登录后回调
    *  */ 
-  weChatLoginModify(info,fn){
-    let that = this;
+  weChatLoginModify(fn){
+    let that = this,data = {};
     // 微信登录获取code
     core.wxApi().then(res => {
-      let code = res.code;
+      data.code = res.code;
+      return core.wxApi('getUserInfo');
+    }).then(info => {
       // 登录api
       SERVERS.LOGIN.getWechatEncryptInfo.post({
-        code,
+        code: data.code,
         iv: info.iv,
         encryptedData: info.encryptedData,
         traffic_acquisition_source: app.globalData.traffic_acquisition_source

@@ -460,6 +460,7 @@ Page({
         let cart_list = that.data.cart_list;
         let share_last = that.data.share_last;
         let pt_goods_id = that.data.pt_goods_id;
+        let pt_startup_id = that.data.pt_startup_id;
 
         let parm = {
             order_tag: order_tag
@@ -493,6 +494,7 @@ Page({
         } else if (order_tag == 'pintuan') {
             parm.order_sku_list = order_sku_list;
             parm.pt_goods_id = pt_goods_id;
+            parm.pt_startup_id = pt_startup_id;
         }
         else {
             console.log('&&&&&&&')
@@ -584,7 +586,7 @@ Page({
                     let express_company_list = data.express_company_list;
                     express_company_list = express_company_list == undefined ? [] : express_company_list;
                     data.address_default = data.address_default == undefined ? [] : data.address_default;
-                    data.promotion_full_mail = data.promotion_full_mail == undefined ? [] : data.promotion_full_mail;
+                    data.promotion_full_mail = data.promotion_full_mail == undefined ? {} : data.promotion_full_mail;
 
                     //选中默认物流
                     if (parseInt(data.express_company_count) > 0 && shipping_company_id == 0 && data.express_company_list[0] != undefined && shop_config && shop_config.seller_dispatching == 1) {
@@ -621,9 +623,12 @@ Page({
 
                     if (that.data.is_use_card == 1) {
                         discount_money = Number(discount_money) - Number(that.data.max)
-
                     }
 
+                    // 满额包邮
+                    if(data.promotion_full_mail.is_open == 1 && pay_money >= data.promotion_full_mail.full_mail_money){
+                        pay_money = pay_money - data.express;
+                    }
 
 
                     that.setData({
@@ -1664,24 +1669,24 @@ Page({
                         } else {
                             app.setTabType('');
                         }
-
+                        let templateCreateUrl = order_tag == 'pintuan'?'pintuanOrderPayTemplateCreate':'orderCreateTemplateCreate';
                         app.sendRequest({
-                            url: 'api.php?s=order/orderPayTemplateCreate',
+                            url: 'api.php?s=order/' + templateCreateUrl,
                             data: {
                                 out_trade_no: out_trade_no,
                                 open_id: app.globalData.openid,
-                                form_id: event.detail.formId,
-                                warn_type: 2,
+                                form_id: event.detail.formId
                             },
                             success(c) {
-                                "use strict";
-                                wx.navigateTo({
-                                    url: '/pages/pay/getpayvalue/getpayvalue?present=0&out_trade_no=' + out_trade_no + '&pt_startup_id=' + data.pt_startup_id
-                                })
+                                let naviUrl = '';
+                                if(order_tag == 'pintuan'){
+                                    naviUrl = '/pages/pay/getpayvalue/getpayvalue?present=0&out_trade_no=' + out_trade_no + '&pt_startup_id=' + data.pt_startup_id;
+                                }else{
+                                    naviUrl = '/pages/pay/getpayvalue/getpayvalue?present=0&out_trade_no=' + out_trade_no;
+                                }
+                                wx.navigateTo({ url: naviUrl });
                             }
                         })
-
-
                     }
                 }
                 //console.log(res)

@@ -461,3 +461,19 @@ line-height:80rpx;
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
+/* 通用左上角标签 */
+.label-tips{
+  position: relative;
+}
+.label-tips:before{
+  position: absolute;
+  top: 14rpx;
+  left: 0;
+  content: attr(data-label);
+  padding: 0 10rpx;
+  font-size: 20rpx;
+  color: #fff;
+  border-top-right-radius: 6rpx;
+  border-bottom-right-radius: 6rpx;
+  background-color: #e40046;
+}

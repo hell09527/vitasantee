@@ -20,7 +20,7 @@
 		"enhance": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.7.7",
+	"libVersion": "2.8.0",
 	"appid": "wxc5a426c09ac5cebc",
 	"projectname": "vta",
 	"isGameTourist": false,
@@ -44,7 +44,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 11,
+			"current": 12,
 			"list": [
 				{
 					"id": 0,
@@ -126,10 +126,10 @@
 					"scene": null
 				},
 				{
-					"id": 12,
-					"name": "拼团",
-					"pathName": "pages/index/assemble/assemble",
-					"query": "type=pintuan",
+					"id": -1,
+					"name": "好物圈分享",
+					"pathName": "pages/goods/goodsdetail/goodsdetail",
+					"query": "goods_id=14&isAssemble=true&pt_goods_id=3",
 					"scene": null
 				}
 			]

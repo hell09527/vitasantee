@@ -1907,12 +1907,33 @@ border-radius: 0;
   height:100rpx;
   background: #fff;
   text-align: center;
-  margin: 0auto;
+  margin: 0 auto;
   line-height: 100rpx;
   border-radius: 0;
   border-bottom: 1px solid #ccc;
 }
-.orienation :nth-child(2){
+/* 好物圈插件样式复写 */
+.orienation .hw-share{
+  line-height: 100rpx;
+  text-align: center;
+}
+.orienation .hw-share view{
+  width: 100%;
+  font-size: 18px;
+  background-color: #fff;
+  outline: none;
+}
+.orienation .hw-share>view{
+  border-bottom: 1px solid #ccc;
+}
+.orienation .hw-share navigator{
+  padding: 0;
+}
+.orienation .hw-share navigator:hover,
+.orienation .hw-share navigator:active{
+  background-color: #fff;
+}
+.orienation :nth-child(3){
   margin-bottom:15rpx ;
 }
 canvas{
